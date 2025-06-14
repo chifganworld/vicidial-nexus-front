@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Phone, PhoneOff, ArrowLeft, Mic, MicOff, ArrowRightLeft } from 'lucide-react';
+import { Phone, PhoneOff, ArrowLeft, Mic, MicOff, Timer } from 'lucide-react';
 import { useSip } from '@/providers/SipProvider';
 import { SessionState } from 'sip.js';
 import TransferModal from '@/components/agent/TransferModal';
@@ -13,7 +14,32 @@ interface DialPadProps {
 
 const DialPad: React.FC<DialPadProps> = ({ lead }) => {
   const [dialedNumber, setDialedNumber] = useState('');
-  const { makeCall, hangup, sessionState, isMuted, toggleMute } = useSip();
+  const { makeCall, hangup, sessionState, isMuted, toggleMute, callContext } = useSip();
+  const [callDuration, setCallDuration] = useState(0);
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout | undefined;
+    if (sessionState === SessionState.Established && callContext?.startTime) {
+      setCallDuration(Math.floor((Date.now() - (callContext.startTime || Date.now())) / 1000));
+      timer = setInterval(() => {
+        setCallDuration(prevDuration => prevDuration + 1);
+      }, 1000);
+    } else {
+      setCallDuration(0);
+    }
+
+    return () => {
+      if (timer) {
+        clearInterval(timer);
+      }
+    };
+  }, [sessionState, callContext?.startTime]);
+
+  const formatDuration = (seconds: number) => {
+    const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+    const s = (seconds % 60).toString().padStart(2, '0');
+    return `${m}:${s}`;
+  };
 
   const handleKeyPress = (key: string) => {
     setDialedNumber((prev) => prev + key);
@@ -59,12 +85,20 @@ const DialPad: React.FC<DialPadProps> = ({ lead }) => {
           placeholder="Enter number"
           className="text-center text-xl h-12"
         />
-        <div className="text-center text-sm font-medium text-gray-500 h-6 absolute -bottom-6 w-full">
-            {sessionState}
-        </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-2 mt-4">
+      <div className="text-center text-sm font-medium h-6">
+        {isCallActive ? (
+            <div className="flex items-center justify-center gap-2 text-green-400">
+                <Timer className="h-4 w-4 animate-pulse" />
+                <span>{formatDuration(callDuration)}</span>
+            </div>
+        ) : (
+            <span className="text-gray-500">{sessionState}</span>
+        )}
+      </div>
+
+      <div className="grid grid-cols-3 gap-2">
         {buttons.map((btn) => (
           <Button
             key={btn}

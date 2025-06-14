@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Phone, Pause } from 'lucide-react';
+import { Phone, Pause, PhoneOff } from 'lucide-react';
 import DialPad from '@/components/DialPad';
 import LeadInfoDisplay from '@/components/LeadInfoDisplay';
 import AgentStatsDisplay from '@/components/AgentStatsDisplay';
@@ -17,6 +17,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Database } from '@/integrations/supabase/types';
 import { useSip } from '@/providers/SipProvider';
 import DispositionModal from '@/components/agent/DispositionModal';
+import { useSessionTracker } from '@/hooks/useSessionTracker';
 
 export type Lead = Database['public']['Tables']['leads']['Row'];
 
@@ -25,6 +26,16 @@ const AgentConsole: React.FC = () => {
   const queryClient = useQueryClient();
   const audioRef = useRef<HTMLAudioElement>(null);
   const { setAudioElement } = useSip();
+  const navigate = useNavigate();
+
+  const { 
+    isPaused, 
+    togglePause, 
+    endSession, 
+    formattedCurrentSessionTime,
+    formattedTotalBreakTime,
+    formattedTotalSessionTime
+  } = useSessionTracker();
 
   useEffect(() => {
     if (audioRef.current) {
@@ -93,6 +104,12 @@ const AgentConsole: React.FC = () => {
   const handleLeadAction = () => {
     queryClient.invalidateQueries({ queryKey: ['currentLead'] });
   };
+  
+  const handleEndSession = async () => {
+    endSession();
+    await supabase.auth.signOut();
+    navigate('/auth');
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 p-4 md:p-8">
@@ -102,7 +119,17 @@ const AgentConsole: React.FC = () => {
         <div className="flex justify-between items-center">
           <h1 className="text-3xl font-bold text-gray-800">Agent Console</h1>
           <div className="flex items-center gap-4">
-            <Button variant="outline"><Pause className="mr-2 h-4 w-4" /> Pause</Button>
+            <div className="text-sm text-gray-600 flex items-center gap-4 border-r pr-4">
+              <span>Session: {formattedCurrentSessionTime}</span>
+              <span>Break: {formattedTotalBreakTime}</span>
+              <span>Total Today: {formattedTotalSessionTime}</span>
+            </div>
+            <Button variant="destructive" onClick={handleEndSession}>
+              <PhoneOff className="mr-2 h-4 w-4" /> End Session
+            </Button>
+            <Button variant={isPaused ? "default" : "outline"} onClick={togglePause}>
+              <Pause className="mr-2 h-4 w-4" /> {isPaused ? 'Resume' : 'Pause'}
+            </Button>
             <Link to="/">
               <Button variant="outline">Back to Home</Button>
             </Link>
@@ -115,9 +142,7 @@ const AgentConsole: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <AgentStatsDisplay />
         <LeadInfoDisplay lead={currentLead} isLoading={isLoadingLead} />
-
         <CallLogs />
-
         <Card className="bg-green-950/20 backdrop-blur-sm border-green-400/20">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Dialer</CardTitle>
