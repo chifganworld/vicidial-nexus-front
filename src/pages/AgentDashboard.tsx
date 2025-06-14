@@ -2,9 +2,10 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Phone, Users, BarChart2 } from 'lucide-react';
+import { Phone, BarChart2 } from 'lucide-react';
 import DialPad from '@/components/DialPad';
-import LeadInfoDisplay from '@/components/LeadInfoDisplay'; // Import the new component
+import LeadInfoDisplay from '@/components/LeadInfoDisplay';
+import AgentStatsDisplay from '@/components/AgentStatsDisplay';
 
 const AgentDashboard: React.FC = () => {
   return (
@@ -25,29 +26,14 @@ const AgentDashboard: React.FC = () => {
             <Phone className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            {/* <div className="text-2xl font-bold mb-2">Call Control</div> Removed this title as DialPad itself is descriptive */}
             <DialPad />
           </CardContent>
         </Card>
 
-        <LeadInfoDisplay /> {/* Replace placeholder with the new component */}
+        <LeadInfoDisplay />
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Real-time Stats</CardTitle>
-            <BarChart2 className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">Performance</div>
-            <p className="text-xs text-muted-foreground">
-              Your current session statistics.
-            </p>
-            {/* Placeholder for Stats Component */}
-            <div className="mt-4 p-4 border rounded-md bg-gray-50 text-center">
-              Agent Stats (Coming Soon)
-            </div>
-          </CardContent>
-        </Card>
+        <AgentStatsDisplay />
+
       </div>
 
       <div className="mt-8">
