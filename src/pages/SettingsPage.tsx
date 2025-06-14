@@ -1,8 +1,9 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Settings as SettingsIcon, Users, MonitorPlay, Cog } from 'lucide-react'; // Using MonitorPlay for Display, Cog for Integrations
+import { Settings as SettingsIcon, Users, MonitorPlay, Cog, ListChecks } from 'lucide-react';
 
 const SettingsPage: React.FC = () => {
   const settingsCategories = [
@@ -24,6 +25,13 @@ const SettingsPage: React.FC = () => {
       description: 'Add, remove, or modify user accounts and roles.',
       link: '/settings/users',
       icon: <Users className="h-6 w-6" />,
+      comingSoon: false,
+    },
+    {
+      title: 'Campaign Settings',
+      description: 'Configure campaign-specific settings and parameters.',
+      link: '/settings/campaigns',
+      icon: <ListChecks className="h-6 w-6" />,
       comingSoon: false,
     },
   ];
