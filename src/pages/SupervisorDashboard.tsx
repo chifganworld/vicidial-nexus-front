@@ -1,9 +1,8 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Users, Activity, Eye } from 'lucide-react';
+import { Users, Activity, Eye, Settings as SettingsIcon } from 'lucide-react';
 
 const SupervisorDashboard: React.FC = () => {
   return (
@@ -74,6 +73,12 @@ const SupervisorDashboard: React.FC = () => {
           <Button>Manage Users</Button>
           <Button>Campaign Settings</Button>
           <Button>View Hopper</Button>
+          <Link to="/settings" className="md:col-span-1">
+            <Button variant="outline" className="w-full">
+              <SettingsIcon className="mr-2 h-4 w-4" />
+              Application Settings
+            </Button>
+          </Link>
         </div>
       </div>
     </div>
