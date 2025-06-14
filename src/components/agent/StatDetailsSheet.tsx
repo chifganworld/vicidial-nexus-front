@@ -21,20 +21,28 @@ type StatDetailsSheetProps = {
   children: React.ReactNode;
 };
 
-const fetchCallsByStatus = async (statusName: string) => {
-  const { data, error } = await supabase.rpc('get_agent_calls_by_status', { p_status: statusName });
+type CallRecord = {
+  id: string;
+  created_at: string;
+  phone_number: string | null;
+  duration_seconds: number | null;
+  notes: string | null;
+};
+
+const fetchCallsByStatus = async (statusName: string): Promise<CallRecord[]> => {
+  const { data, error } = await supabase.rpc('get_agent_calls_by_status' as any, { p_status: statusName });
   if (error) {
     console.error(`Error fetching calls for status ${statusName}:`, error);
     throw new Error(error.message);
   }
-  return data;
+  return data || [];
 };
 
 const StatDetailsSheet: React.FC<StatDetailsSheetProps> = ({ statusName, statusTitle, children }) => {
   const { toast } = useToast();
   const [isOpen, setIsOpen] = React.useState(false);
 
-  const { data: calls, isLoading, isError, error } = useQuery({
+  const { data: calls, isLoading, isError, error } = useQuery<CallRecord[], Error>({
     queryKey: ['callsByStatus', statusName],
     queryFn: () => fetchCallsByStatus(statusName),
     enabled: isOpen, // Only fetch when the sheet is open
