@@ -12,16 +12,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import AddUserDialog from '@/components/settings/AddUserDialog';
 import EditUserDialog from '@/components/settings/EditUserDialog';
 import DeleteUserDialog from '@/components/settings/DeleteUserDialog';
-
-type User = {
-  id: string;
-  full_name: string | null;
-  email: string | null;
-  roles: ('agent' | 'supervisor' | 'admin')[];
-  sip_number: string | null;
-  webrtc_number: string | null;
-  sip_password: string | null;
-};
+import { User } from '@/types/user';
 
 const fetchUsers = async () => {
   const { data, error } = await supabase.rpc('get_users_for_management');
