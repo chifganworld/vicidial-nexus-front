@@ -114,6 +114,15 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: boolean
       }
+      update_user_details: {
+        Args: {
+          p_user_id: string
+          p_full_name: string
+          p_sip_number: string
+          p_webrtc_number: string
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       app_role: "agent" | "supervisor" | "admin"

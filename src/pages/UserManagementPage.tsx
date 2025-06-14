@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -10,6 +11,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { ArrowLeft, MoreHorizontal, AlertCircle } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import AddUserDialog from '@/components/settings/AddUserDialog';
+import EditUserDialog from '@/components/settings/EditUserDialog';
 
 type User = {
   id: string;
@@ -95,7 +97,11 @@ const UserManagementPage: React.FC = () => {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuItem disabled>Edit User</DropdownMenuItem>
+              <EditUserDialog user={user}>
+                <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                  Edit User
+                </DropdownMenuItem>
+              </EditUserDialog>
               <DropdownMenuItem disabled className="text-destructive">Delete User</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
