@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -8,8 +7,9 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
-import { ArrowLeft, UserPlus, MoreHorizontal, AlertCircle } from 'lucide-react';
+import { ArrowLeft, MoreHorizontal, AlertCircle } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import AddUserDialog from '@/components/settings/AddUserDialog';
 
 type User = {
   id: string;
@@ -108,10 +108,7 @@ const UserManagementPage: React.FC = () => {
               <CardDescription>View, add, or manage user accounts and roles.</CardDescription>
             </div>
             <div className="flex items-center gap-2">
-              <Button variant="outline" disabled>
-                  <UserPlus className="mr-2 h-4 w-4"/>
-                  Add User
-              </Button>
+              <AddUserDialog />
               <Link to="/settings">
                 <Button variant="outline" size="icon">
                   <ArrowLeft className="h-4 w-4" />
