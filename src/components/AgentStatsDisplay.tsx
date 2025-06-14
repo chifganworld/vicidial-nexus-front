@@ -9,8 +9,8 @@ interface StatItem {
 }
 
 const agentStats: StatItem[] = [
-  { name: 'Calls Made', value: 25 },
-  { name: 'Talk Time', value: '2h 15m' },
+  { name: 'New Leads Today', value: 5 },
+  { name: 'Leads In Progress', value: 12 },
   { name: 'Leads Converted', value: 5 },
   { name: 'Average Handle Time', value: '5m 30s' },
 ];
@@ -27,13 +27,13 @@ const AgentStatsDisplay: React.FC = () => {
   return (
     <Card className="h-full">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium">Real-time Stats</CardTitle>
+        <CardTitle className="text-sm font-medium">Lead Stats</CardTitle>
         {/* Icon can be added here if desired, e.g., <BarChart2 className="h-4 w-4 text-muted-foreground" /> */}
       </CardHeader>
       <CardContent>
-        <div className="text-2xl font-bold mb-1">Performance</div>
+        <div className="text-2xl font-bold mb-1">Lead Performance</div>
         <p className="text-xs text-muted-foreground mb-4">
-          Your current session statistics.
+          Your current lead statistics.
         </p>
         <div className="grid grid-cols-2 gap-4 mb-6">
           {agentStats.map((stat) => (

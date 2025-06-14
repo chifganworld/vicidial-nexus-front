@@ -15,34 +15,39 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { Edit } from 'lucide-react'; // Using Edit icon
+import { Edit } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { Database } from '@/integrations/supabase/types';
 
-interface LeadData {
+type Lead = Database['public']['Tables']['leads']['Row'];
+
+interface FormData {
   name: string;
-  phone: string;
+  phone_number: string;
   email: string;
   notes: string;
 }
 
-// Placeholder for current lead data. In a real app, this would come from props or state.
-const currentLeadData: LeadData = {
-  name: 'John Doe', // Same as sampleLead in LeadInfoDisplay for now
-  phone: '555-123-4567',
-  email: 'john.doe@example.com',
-  notes: 'Initial contact, interested in Product X. Follow up next week regarding pricing details and a potential demo schedule. Mentioned budget concerns.',
-};
+interface UpdateLeadModalProps {
+  lead: Lead | null;
+  onLeadUpdated: () => void;
+}
 
-const UpdateLeadModal: React.FC = () => {
+const UpdateLeadModal: React.FC<UpdateLeadModalProps> = ({ lead, onLeadUpdated }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [formData, setFormData] = useState<LeadData>(currentLeadData);
+  const [formData, setFormData] = useState<FormData>({ name: '', phone_number: '', email: '', notes: '' });
   const { toast } = useToast();
 
-  // Effect to reset form data when modal is opened with current lead data
   useEffect(() => {
-    if (isOpen) {
-      setFormData(currentLeadData);
+    if (lead) {
+      setFormData({
+        name: lead.name || '',
+        phone_number: lead.phone_number || '',
+        email: lead.email || '',
+        notes: lead.notes || '',
+      });
     }
-  }, [isOpen]);
+  }, [lead]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { id, value } = e.target;
@@ -52,22 +57,40 @@ const UpdateLeadModal: React.FC = () => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // In a real app, you'd send this updated data to a backend or state management
-    console.log('Updated Lead Data:', formData);
-    toast({
-      title: 'Lead Updated Successfully!',
-      description: `Name: ${formData.name}, Phone: ${formData.phone}`,
-      variant: 'default',
-    });
-    setIsOpen(false); // Close dialog
+    if (!lead) {
+      toast({ title: "No lead selected", description: "Please select a lead to update.", variant: "destructive" });
+      return;
+    }
+
+    const { error } = await supabase
+      .from('leads')
+      .update({
+        name: formData.name,
+        phone_number: formData.phone_number,
+        email: formData.email,
+        notes: formData.notes,
+      })
+      .eq('id', lead.id);
+
+    if (error) {
+      toast({ title: "Error updating lead", description: error.message, variant: "destructive" });
+    } else {
+      toast({
+        title: 'Lead Updated Successfully!',
+        description: `Name: ${formData.name}, Phone: ${formData.phone_number}`,
+        variant: 'default',
+      });
+      onLeadUpdated();
+      setIsOpen(false);
+    }
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button>
+        <Button disabled={!lead}>
           <Edit className="mr-2 h-4 w-4" /> Update Lead
         </Button>
       </DialogTrigger>
@@ -89,16 +112,15 @@ const UpdateLeadModal: React.FC = () => {
                 value={formData.name}
                 onChange={handleChange}
                 className="col-span-3"
-                required
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="phone" className="text-right">
+              <Label htmlFor="phone_number" className="text-right">
                 Phone
               </Label>
               <Input
-                id="phone"
-                value={formData.phone}
+                id="phone_number"
+                value={formData.phone_number}
                 onChange={handleChange}
                 className="col-span-3"
                 type="tel"
@@ -143,4 +165,3 @@ const UpdateLeadModal: React.FC = () => {
 };
 
 export default UpdateLeadModal;
-

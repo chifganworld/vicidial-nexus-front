@@ -14,28 +14,57 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { Search } from 'lucide-react';
+import { Search, UserCheck } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { Database } from '@/integrations/supabase/types';
 
-const SearchLeadModal: React.FC = () => {
+type Lead = Database['public']['Tables']['leads']['Row'];
+
+interface SearchLeadModalProps {
+  onLeadSelect: (lead: Lead) => void;
+}
+
+const SearchLeadModal: React.FC<SearchLeadModalProps> = ({ onLeadSelect }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState<Lead[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
   const { toast } = useToast();
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
   };
 
-  const handleSearchSubmit = (e: React.FormEvent) => {
+  const handleSearchSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // In a real app, you'd perform the search operation here
-    console.log('Search Query:', searchQuery);
-    toast({
-      title: 'Search Initiated',
-      description: `Searching for: ${searchQuery}`,
-      variant: 'default',
-    });
-    // Potentially close dialog or display results within it
-    // setIsOpen(false); 
+    if (!searchQuery.trim()) return;
+
+    setIsSearching(true);
+    setSearchResults([]);
+
+    const { data, error } = await supabase
+      .from('leads')
+      .select()
+      .or(`name.ilike.%${searchQuery}%,phone_number.ilike.%${searchQuery}%,email.ilike.%${searchQuery}%`)
+      .limit(10);
+
+    setIsSearching(false);
+
+    if (error) {
+      toast({ title: "Search Error", description: error.message, variant: "destructive" });
+    } else {
+      setSearchResults(data || []);
+      if (!data || data.length === 0) {
+        toast({ title: "No results found", description: `No leads matched your search for "${searchQuery}".` });
+      }
+    }
+  };
+
+  const handleLeadClick = (lead: Lead) => {
+    onLeadSelect(lead);
+    setSearchQuery('');
+    setSearchResults([]);
+    setIsOpen(false);
   };
 
   return (
@@ -45,7 +74,7 @@ const SearchLeadModal: React.FC = () => {
           <Search className="mr-2 h-4 w-4" /> Search Lead
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Search Lead</DialogTitle>
           <DialogDescription>
@@ -53,29 +82,45 @@ const SearchLeadModal: React.FC = () => {
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSearchSubmit}>
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="searchQuery" className="text-right">
-                Search
-              </Label>
-              <Input
-                id="searchQuery"
-                value={searchQuery}
-                onChange={handleSearchChange}
-                className="col-span-3"
-                placeholder="Enter search term..."
-                required
-              />
-            </div>
-            {/* Future: Display search results here */}
+          <div className="flex items-center space-x-2">
+            <Input
+              id="searchQuery"
+              value={searchQuery}
+              onChange={handleSearchChange}
+              placeholder="Enter search term..."
+              required
+            />
+            <Button type="submit" size="sm" disabled={isSearching}>
+              {isSearching ? '...' : <Search className="h-4 w-4" />}
+            </Button>
           </div>
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button type="button" variant="outline">Cancel</Button>
-            </DialogClose>
-            <Button type="submit">Search</Button>
-          </DialogFooter>
         </form>
+        <div className="mt-4 max-h-60 overflow-y-auto">
+          {searchResults.length > 0 && (
+            <ul className="space-y-2">
+              {searchResults.map((lead) => (
+                <li key={lead.id}>
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start h-auto text-left"
+                    onClick={() => handleLeadClick(lead)}
+                  >
+                    <UserCheck className="mr-2 h-4 w-4 flex-shrink-0" />
+                    <div>
+                      <p className="font-semibold">{lead.name || 'Unnamed Lead'}</p>
+                      <p className="text-xs text-muted-foreground">{lead.phone_number}</p>
+                    </div>
+                  </Button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+        <DialogFooter>
+          <DialogClose asChild>
+            <Button type="button" variant="outline">Close</Button>
+          </DialogClose>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

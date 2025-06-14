@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -13,8 +13,76 @@ import SearchLeadModal from '@/components/SearchLeadModal';
 import ViewCallbacksModal from '@/components/ViewCallbacksModal';
 import StatsBar from '@/components/agent/StatsBar';
 import CallLogs from '@/components/agent/CallLogs';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
+import { Database } from '@/integrations/supabase/types';
+
+export type Lead = Database['public']['Tables']['leads']['Row'];
 
 const AgentConsole: React.FC = () => {
+  const [currentLead, setCurrentLead] = useState<Lead | null>(null);
+  const queryClient = useQueryClient();
+
+  const { data: lead, isLoading: isLoadingLead } = useQuery({
+    queryKey: ['currentLead'],
+    queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return null;
+
+      const { data, error } = await supabase
+        .from('leads')
+        .select('*')
+        .or(`agent_id.eq.${user.id},agent_id.is.null`)
+        .order('updated_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (error) {
+        console.error('Error fetching lead:', error);
+        throw error;
+      }
+      return data;
+    },
+  });
+
+  useEffect(() => {
+    if (lead) {
+      setCurrentLead(lead);
+    }
+  }, [lead]);
+
+  // Realtime subscription for leads table
+  useEffect(() => {
+    const channel = supabase
+      .channel('realtime-leads-channel')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'leads' },
+        (payload) => {
+          console.log('Lead change received!', payload);
+          
+          const updatedLead = payload.new as Lead;
+
+          // If the updated lead is the current one, refresh it
+          if (updatedLead && updatedLead.id === currentLead?.id) {
+            setCurrentLead(updatedLead);
+          }
+          
+          queryClient.invalidateQueries({ queryKey: ['currentLead'] });
+          queryClient.invalidateQueries({ queryKey: ['callLogs'] });
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [queryClient, currentLead]);
+
+  const handleLeadAction = () => {
+    queryClient.invalidateQueries({ queryKey: ['currentLead'] });
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 p-4 md:p-8">
       <header className="mb-8">
@@ -39,7 +107,7 @@ const AgentConsole: React.FC = () => {
           </CardContent>
         </Card>
 
-        <LeadInfoDisplay />
+        <LeadInfoDisplay lead={currentLead} isLoading={isLoadingLead} />
 
         <AgentStatsDisplay />
 
@@ -49,9 +117,9 @@ const AgentConsole: React.FC = () => {
       <div className="mt-8">
         <h2 className="text-2xl font-semibold text-gray-700 mb-4">Quick Actions</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-          <AddLeadModal />
-          <UpdateLeadModal />
-          <SearchLeadModal />
+          <AddLeadModal onLeadAdded={handleLeadAction} />
+          <UpdateLeadModal lead={currentLead} onLeadUpdated={handleLeadAction} />
+          <SearchLeadModal onLeadSelect={setCurrentLead} />
           <ViewCallbacksModal />
         </div>
       </div>

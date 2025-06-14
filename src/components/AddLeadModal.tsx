@@ -16,23 +16,23 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { Plus } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
 
-interface LeadFormData {
-  name: string;
-  phone: string;
-  email: string;
-  notes: string;
+interface AddLeadModalProps {
+  onLeadAdded: () => void;
 }
 
-const AddLeadModal: React.FC = () => {
+const AddLeadModal: React.FC<AddLeadModalProps> = ({ onLeadAdded }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [formData, setFormData] = useState<LeadFormData>({
+  const [formData, setFormData] = useState({
     name: '',
-    phone: '',
+    phone_number: '',
     email: '',
     notes: '',
   });
   const { toast } = useToast();
+  const { user } = useAuth();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { id, value } = e.target;
@@ -42,16 +42,32 @@ const AddLeadModal: React.FC = () => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // In a real app, you'd send this data to a backend or state management
-    console.log('New Lead Data:', formData);
-    toast({
-      title: 'Lead Added Successfully!',
-      description: `Name: ${formData.name}, Phone: ${formData.phone}`,
+    if (!user) {
+      toast({ title: "Authentication Error", description: "You must be logged in to add a lead.", variant: "destructive" });
+      return;
+    }
+
+    const { error } = await supabase.from('leads').insert({
+      name: formData.name,
+      phone_number: formData.phone_number,
+      email: formData.email,
+      notes: formData.notes,
+      agent_id: user.id, // Assign to current agent
     });
-    setFormData({ name: '', phone: '', email: '', notes: '' }); // Reset form
-    setIsOpen(false); // Close dialog
+
+    if (error) {
+      toast({ title: "Error adding lead", description: error.message, variant: "destructive" });
+    } else {
+      toast({
+        title: 'Lead Added Successfully!',
+        description: `Name: ${formData.name}, Phone: ${formData.phone_number}`,
+      });
+      setFormData({ name: '', phone_number: '', email: '', notes: '' }); // Reset form
+      onLeadAdded();
+      setIsOpen(false); // Close dialog
+    }
   };
 
   return (
@@ -79,16 +95,15 @@ const AddLeadModal: React.FC = () => {
                 value={formData.name}
                 onChange={handleChange}
                 className="col-span-3"
-                required
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="phone" className="text-right">
+              <Label htmlFor="phone_number" className="text-right">
                 Phone
               </Label>
               <Input
-                id="phone"
-                value={formData.phone}
+                id="phone_number"
+                value={formData.phone_number}
                 onChange={handleChange}
                 className="col-span-3"
                 type="tel"
@@ -133,4 +148,3 @@ const AddLeadModal: React.FC = () => {
 };
 
 export default AddLeadModal;
-
