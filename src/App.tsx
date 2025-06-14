@@ -23,6 +23,7 @@ import { SipProvider } from '@/providers/SipProvider';
 import UnauthorizedPage from './pages/UnauthorizedPage';
 import { DisplaySettingsProvider } from './contexts/DisplaySettingsContext';
 import HopperPage from './pages/HopperPage';
+import CampaignSettingsPage from './pages/CampaignSettingsPage';
 
 const queryClient = new QueryClient();
 
@@ -48,6 +49,7 @@ function App() {
                   <Route path="/supervisor" element={<SupervisorDashboard />} />
                   <Route path="/reports" element={<ReportsPage />} />
                   <Route path="/hopper" element={<HopperPage />} />
+                  <Route path="/settings/campaigns" element={<CampaignSettingsPage />} />
                 </Route>
 
                 {/* Admin Routes */}

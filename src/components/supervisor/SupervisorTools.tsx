@@ -10,7 +10,7 @@ const SupervisorTools: React.FC = () => {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <Button asChild><Link to="/reports">View Agent Stats</Link></Button>
         <Button asChild><Link to="/settings/users">Manage Users</Link></Button>
-        <Button asChild><Link to="/settings">Campaign Settings</Link></Button>
+        <Button asChild><Link to="/settings/campaigns">Campaign Settings</Link></Button>
         <Button asChild><Link to="/hopper">View Hopper</Link></Button>
       </div>
     </>
