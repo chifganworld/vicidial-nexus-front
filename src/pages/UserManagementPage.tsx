@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -18,7 +17,7 @@ type User = {
   id: string;
   full_name: string | null;
   email: string | null;
-  roles: string[];
+  roles: ('agent' | 'supervisor' | 'admin')[];
   sip_number: string | null;
   webrtc_number: string | null;
   sip_password: string | null;

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -25,7 +24,7 @@ type User = {
   id: string;
   full_name: string | null;
   email: string | null;
-  roles: string[];
+  roles: ('agent' | 'supervisor' | 'admin')[];
   sip_number: string | null;
   webrtc_number: string | null;
   sip_password: string | null;
@@ -36,7 +35,7 @@ const formSchema = z.object({
   sip_number: z.string().optional(),
   webrtc_number: z.string().optional(),
   sip_password: z.string().optional(),
-  roles: z.array(z.string()).refine((value) => value.some((item) => item), {
+  roles: z.array(z.enum(['agent', 'supervisor', 'admin'])).refine((value) => value.some((item) => item), {
     message: 'You have to select at least one role.',
   }),
 });
