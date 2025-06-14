@@ -18,6 +18,7 @@ import { ThemeProvider } from './components/ThemeProvider';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import AdministrationPage from './pages/AdministrationPage';
 import { SipProvider } from '@/providers/SipProvider';
+import UnauthorizedPage from './pages/UnauthorizedPage';
 
 const queryClient = new QueryClient();
 
@@ -30,6 +31,7 @@ function App() {
             <Routes>
               <Route path="/" element={<IndexPage />} />
               <Route path="/auth" element={<AuthPage />} />
+              <Route path="/unauthorized" element={<UnauthorizedPage />} />
               
               {/* Agent Route */}
               <Route element={<ProtectedRoute allowedRoles={['agent', 'supervisor', 'admin']} />}>

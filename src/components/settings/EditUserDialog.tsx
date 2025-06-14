@@ -1,10 +1,11 @@
+
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/hooks/use-toast';
+import { useToast } from '@/components/ui/use-toast';
 import {
   Dialog,
   DialogContent,
@@ -18,6 +19,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Checkbox } from '@/components/ui/checkbox';
 
 type User = {
   id: string;
@@ -34,7 +36,16 @@ const formSchema = z.object({
   sip_number: z.string().optional(),
   webrtc_number: z.string().optional(),
   sip_password: z.string().optional(),
+  roles: z.array(z.string()).refine((value) => value.some((item) => item), {
+    message: 'You have to select at least one role.',
+  }),
 });
+
+const ROLES = [
+  { id: 'agent', label: 'Agent' },
+  { id: 'supervisor', label: 'Supervisor' },
+  { id: 'admin', label: 'Admin' },
+];
 
 interface EditUserDialogProps {
   user: User;
@@ -52,7 +63,8 @@ const EditUserDialog: React.FC<EditUserDialogProps> = ({ user, children }) => {
       full_name: user.full_name || '',
       sip_number: user.sip_number || '',
       webrtc_number: user.webrtc_number || '',
-      sip_password: user.sip_password || '',
+      sip_password: '', // Leave blank to not change password
+      roles: user.roles || [],
     },
   });
 
@@ -63,7 +75,8 @@ const EditUserDialog: React.FC<EditUserDialogProps> = ({ user, children }) => {
         p_full_name: values.full_name,
         p_sip_number: values.sip_number || null,
         p_webrtc_number: values.webrtc_number || null,
-        p_sip_password: values.sip_password || null,
+        p_sip_password: values.sip_password || '',
+        p_roles: values.roles,
       });
 
       if (error) {
@@ -76,6 +89,7 @@ const EditUserDialog: React.FC<EditUserDialogProps> = ({ user, children }) => {
         description: `${user.full_name || user.email} has been updated successfully.`,
       });
       queryClient.invalidateQueries({ queryKey: ['usersForManagement'] });
+      queryClient.invalidateQueries({ queryKey: ['userRoles', user.id] }); // Invalidate roles cache
       setOpen(false);
     },
     onError: (error) => {
@@ -98,7 +112,7 @@ const EditUserDialog: React.FC<EditUserDialogProps> = ({ user, children }) => {
         <DialogHeader>
           <DialogTitle>Edit User: {user.full_name || user.email}</DialogTitle>
           <DialogDescription>
-            Make changes to the user's profile. Click save when you're done.
+            Make changes to the user's profile and roles. Click save when you're done.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -155,6 +169,54 @@ const EditUserDialog: React.FC<EditUserDialogProps> = ({ user, children }) => {
                 </FormItem>
               )}
             />
+
+            <FormField
+              control={form.control}
+              name="roles"
+              render={() => (
+                  <FormItem>
+                      <div className="mb-2">
+                          <FormLabel>Roles</FormLabel>
+                      </div>
+                      <div className="space-y-2">
+                      {ROLES.map((item) => (
+                          <FormField
+                              key={item.id}
+                              control={form.control}
+                              name="roles"
+                              render={({ field }) => {
+                                  return (
+                                      <FormItem
+                                          key={item.id}
+                                          className="flex flex-row items-center space-x-3 space-y-0"
+                                      >
+                                          <FormControl>
+                                              <Checkbox
+                                                  checked={field.value?.includes(item.id)}
+                                                  onCheckedChange={(checked) => {
+                                                      const updatedRoles = checked
+                                                          ? [...field.value, item.id]
+                                                          : field.value?.filter(
+                                                              (value) => value !== item.id
+                                                            );
+                                                      field.onChange(updatedRoles);
+                                                  }}
+                                              />
+                                          </FormControl>
+                                          <FormLabel className="font-normal">
+                                              {item.label}
+                                          </FormLabel>
+                                      </FormItem>
+                                  );
+                              }}
+                          />
+                      ))}
+                      </div>
+                      <FormMessage />
+                  </FormItem>
+              )}
+            />
+            
             <DialogFooter>
               <DialogClose asChild>
                 <Button type="button" variant="secondary">Cancel</Button>
