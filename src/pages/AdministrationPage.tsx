@@ -3,7 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Settings as SettingsIcon, Shield } from 'lucide-react';
+import { Settings as SettingsIcon, Shield, FileText, DatabaseZap } from 'lucide-react';
 
 const AdministrationPage: React.FC = () => {
   const adminCategories = [
@@ -12,6 +12,18 @@ const AdministrationPage: React.FC = () => {
       description: 'Configure integrations, display, and user management.',
       link: '/settings',
       icon: <SettingsIcon className="h-6 w-6" />,
+    },
+    {
+      title: 'Audit Log',
+      description: 'Review a history of important actions taken by users.',
+      link: '/admin/audit-log',
+      icon: <FileText className="h-6 w-6" />,
+    },
+    {
+      title: 'System Health',
+      description: 'Monitor the status of critical system components.',
+      link: '/admin/system-health',
+      icon: <DatabaseZap className="h-6 w-6" />,
     },
   ];
 

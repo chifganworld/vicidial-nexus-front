@@ -17,6 +17,8 @@ import { Toaster as ShadcnToaster } from "@/components/ui/toaster";
 import { ThemeProvider } from './components/ThemeProvider';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import AdministrationPage from './pages/AdministrationPage';
+import AuditLogPage from './pages/AuditLogPage';
+import SystemHealthPage from './pages/SystemHealthPage';
 import { SipProvider } from '@/providers/SipProvider';
 import UnauthorizedPage from './pages/UnauthorizedPage';
 
@@ -47,6 +49,8 @@ function App() {
               {/* Admin Routes */}
               <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
                 <Route path="/admin" element={<AdministrationPage />} />
+                <Route path="/admin/audit-log" element={<AuditLogPage />} />
+                <Route path="/admin/system-health" element={<SystemHealthPage />} />
                 <Route path="/settings" element={<SettingsPage />} />
                 <Route path="/settings/display" element={<DisplaySettingsPage />} />
                 <Route path="/settings/users" element={<UserManagementPage />} />

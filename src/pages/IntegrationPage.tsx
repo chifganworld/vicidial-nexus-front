@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import IntegrationPageHeader from '@/components/integrations/IntegrationPageHeader';
 import VicidialIntegrationTab from '@/components/integrations/VicidialIntegrationTab';
 import SipIntegrationTab from '@/components/integrations/SipIntegrationTab';
+import SipTrunksTab from '@/components/integrations/SipTrunksTab';
 
 const IntegrationPage: React.FC = () => {
   return (
@@ -17,15 +18,19 @@ const IntegrationPage: React.FC = () => {
         <IntegrationPageHeader backLink="/settings" />
         <CardContent>
           <Tabs defaultValue="vicidial" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
+            <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="vicidial">Vicidial API</TabsTrigger>
               <TabsTrigger value="sip">SIP Server</TabsTrigger>
+              <TabsTrigger value="trunks">SIP Trunks</TabsTrigger>
             </TabsList>
             <TabsContent value="vicidial">
               <VicidialIntegrationTab />
             </TabsContent>
             <TabsContent value="sip">
               <SipIntegrationTab />
+            </TabsContent>
+            <TabsContent value="trunks">
+              <SipTrunksTab />
             </TabsContent>
           </Tabs>
         </CardContent>

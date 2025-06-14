@@ -9,6 +9,33 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      audit_logs: {
+        Row: {
+          action: string
+          created_at: string
+          details: Json | null
+          id: number
+          user_email: string | null
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          details?: Json | null
+          id?: number
+          user_email?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          details?: Json | null
+          id?: number
+          user_email?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       call_logs: {
         Row: {
           agent_id: string | null
@@ -172,6 +199,69 @@ export type Database = {
         }
         Relationships: []
       }
+      sip_trunks: {
+        Row: {
+          allow_codecs: string[] | null
+          created_at: string
+          dtmf_mode: string
+          from_domain: string | null
+          from_user: string | null
+          host: string
+          id: string
+          insecure: string[] | null
+          is_active: boolean
+          nat: string
+          port: number
+          protocol: string
+          qualify: boolean
+          registration: string
+          secret: string | null
+          trunk_name: string
+          updated_at: string
+          username: string | null
+        }
+        Insert: {
+          allow_codecs?: string[] | null
+          created_at?: string
+          dtmf_mode?: string
+          from_domain?: string | null
+          from_user?: string | null
+          host: string
+          id?: string
+          insecure?: string[] | null
+          is_active?: boolean
+          nat?: string
+          port?: number
+          protocol?: string
+          qualify?: boolean
+          registration?: string
+          secret?: string | null
+          trunk_name: string
+          updated_at?: string
+          username?: string | null
+        }
+        Update: {
+          allow_codecs?: string[] | null
+          created_at?: string
+          dtmf_mode?: string
+          from_domain?: string | null
+          from_user?: string | null
+          host?: string
+          id?: string
+          insecure?: string[] | null
+          is_active?: boolean
+          nat?: string
+          port?: number
+          protocol?: string
+          qualify?: boolean
+          registration?: string
+          secret?: string | null
+          trunk_name?: string
+          updated_at?: string
+          username?: string | null
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -266,6 +356,13 @@ export type Database = {
       grant_admin_to_self: {
         Args: Record<PropertyKey, never>
         Returns: undefined
+      }
+      has_role: {
+        Args: {
+          p_user_id: string
+          p_role: Database["public"]["Enums"]["app_role"]
+        }
+        Returns: boolean
       }
       is_user_supervisor_or_admin: {
         Args: Record<PropertyKey, never>
