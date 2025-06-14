@@ -8,12 +8,10 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { campaign_id, ...updates } = await req.json();
-    if (!campaign_id) {
-        throw new Error("campaign_id is required.");
-    }
-    if (Object.keys(updates).length === 0) {
-        throw new Error("At least one field to update is required.");
+    const { datetime_start, datetime_end, agent_user, campaign_id, time_format, group_by_campaign } = await req.json()
+
+    if (!datetime_start || !datetime_end) {
+        throw new Error("Start and end datetimes are required.");
     }
 
     const supabaseClient = createClient(
@@ -34,16 +32,23 @@ Deno.serve(async (req) => {
     const { vicidial_domain, api_user, api_password } = vicidialIntegration;
 
     const params = new URLSearchParams({
-      source: 'lovable-update-campaign',
+      source: 'lovable',
       user: api_user,
       pass: api_password,
-      function: 'update_campaign',
-      campaign_id,
-      ...updates
+      function: 'agent_stats_export',
+      datetime_start: datetime_start.replace('T', ' ').substring(0, 19),
+      datetime_end: datetime_end.replace('T', ' ').substring(0, 19),
+      header: 'YES',
+      stage: 'pipe',
     });
 
-    const vicidialUrl = `https://${vicidial_domain}/vicidial/non_agent_api.php?${params.toString()}`;
+    if (agent_user) params.append('agent_user', agent_user);
+    if (campaign_id) params.append('campaign_id', campaign_id);
+    if (time_format) params.append('time_format', time_format);
+    if (group_by_campaign) params.append('group_by_campaign', group_by_campaign);
 
+    const vicidialUrl = `https://${vicidial_domain}/vicidial/non_agent_api.php?${params.toString()}`;
+    
     const response = await fetch(vicidialUrl);
     const textResponse = await response.text();
 
@@ -52,7 +57,25 @@ Deno.serve(async (req) => {
       throw new Error(`Vicidial API Error: ${textResponse}`);
     }
 
-    return new Response(JSON.stringify({ message: 'Campaign updated successfully', details: textResponse }), {
+    const lines = textResponse.trim().split('\n');
+    if (lines.length < 2) {
+      return new Response(JSON.stringify([]), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 200,
+      });
+    }
+
+    const header = lines[0].split('|');
+    const data = lines.slice(1).map(line => {
+      const values = line.split('|');
+      const row: { [key: string]: string } = {};
+      header.forEach((h, i) => {
+        row[h.trim()] = values[i] ? values[i].trim() : '';
+      });
+      return row;
+    });
+
+    return new Response(JSON.stringify(data), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 200,
     });

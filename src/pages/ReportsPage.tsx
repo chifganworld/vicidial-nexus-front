@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -6,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { BarChartBig, FileText, Users } from 'lucide-react';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import CallDispositionReport from '@/components/reports/CallDispositionReport';
+import AgentStatsExportReport from '@/components/reports/AgentStatsExportReport';
 
 const ReportsPage: React.FC = () => {
   return (
@@ -29,7 +29,20 @@ const ReportsPage: React.FC = () => {
             <p className="text-xs text-muted-foreground">
               Detailed statistics for agent activity and performance.
             </p>
-            <Button className="mt-4 w-full" disabled>View Agent Stats Export</Button>
+            <Sheet>
+                <SheetTrigger asChild>
+                    <Button className="mt-4 w-full">View Agent Stats Export</Button>
+                </SheetTrigger>
+                <SheetContent className="w-full sm:max-w-full md:w-3/4 lg:w-2/3 xl:w-1/2 p-0">
+                  <SheetHeader className="p-6">
+                    <SheetTitle>Agent Stats Export</SheetTitle>
+                    <SheetDescription>
+                      Generate an agent statistics report from Vicidial.
+                    </SheetDescription>
+                  </SheetHeader>
+                  <AgentStatsExportReport />
+                </SheetContent>
+            </Sheet>
           </CardContent>
         </Card>
 
