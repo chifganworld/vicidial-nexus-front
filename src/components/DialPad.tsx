@@ -29,7 +29,11 @@ const DialPad: React.FC<DialPadProps> = ({ lead }) => {
   };
 
   const handleCall = () => {
-    makeCall(dialedNumber, lead ? Number(lead.id) : null);
+    if (lead) {
+      makeCall(dialedNumber, Number(lead.id));
+    } else {
+      makeCall(dialedNumber, null);
+    }
   };
 
   const handleHangUp = () => {
@@ -47,7 +51,7 @@ const DialPad: React.FC<DialPadProps> = ({ lead }) => {
   const isCallInProgress = sessionState !== SessionState.Initial && sessionState !== SessionState.Terminated;
 
   return (
-    <div className="w-full max-w-xs mx-auto p-4 space-y-4 bg-white rounded-lg shadow-md">
+    <div className="w-full max-w-xs mx-auto p-4 space-y-4 bg-transparent rounded-lg shadow-none">
       <div className="relative">
         <Input
           type="text"
