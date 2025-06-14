@@ -1,6 +1,5 @@
-
 import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
-import { UserAgent, Inviter, SessionState, UserAgentState, Session } from 'sip.js';
+import { UserAgent, Inviter, SessionState, UserAgentState, Session, Invitation } from 'sip.js';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
@@ -36,16 +35,16 @@ export const SipProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [connectionState, setConnectionState] = useState<UserAgentState>(UserAgentState.Stopped);
   const [sessionState, setSessionState] = useState<SessionState>(SessionState.Initial);
 
-  const { data: sipSettings } = useQuery<SipSettings | null>({
+  const { data: sipSettings } = useQuery({
     queryKey: ['sipSettings'],
-    queryFn: async () => {
-      const { data, error } = await supabase.from('sip_integration').select('*').limit(1).single();
-      if (error && error.code !== 'PGRST116') { // Ignore 'single row not found'
+    queryFn: async (): Promise<SipSettings | null> => {
+      const { data, error } = await supabase.from('sip_integration').select('sip_server_domain, sip_protocol, sip_server_port').limit(1).maybeSingle();
+      if (error) {
         console.error('Error fetching SIP settings:', error);
         toast({ title: 'Error fetching SIP settings', description: error.message, variant: 'destructive' });
         return null;
       }
-      return data;
+      return data ? data as SipSettings : null;
     },
     staleTime: Infinity,
   });
@@ -113,19 +112,40 @@ export const SipProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         userAgent?.stop();
       }
     };
-  }, [sipSettings, userProfile, userAgent]);
+  }, [sipSettings, userProfile]);
 
   useEffect(() => {
     if (session) {
-      session.stateChange.addListener((newState) => {
+      const listener = (newState: SessionState) => {
         setSessionState(newState);
         console.log(`SIP session state changed to: ${newState}`);
-        if(newState === SessionState.Terminated) {
-            setSession(null);
+        if (newState === SessionState.Terminated) {
+          setSession(null);
         }
-      });
+        if (newState === SessionState.Established) {
+          if (audioElement) {
+            const sdh = session.sessionDescriptionHandler;
+            // The type definitions for sessionDescriptionHandler are likely incomplete.
+            // We cast to any to access the underlying peerConnection.
+            const peerConnection = (sdh as any)?.peerConnection;
+            if (peerConnection) {
+              const remoteStream = new MediaStream();
+              peerConnection.getReceivers().forEach((receiver: RTCRtpReceiver) => {
+                if (receiver.track) remoteStream.addTrack(receiver.track);
+              });
+              audioElement.srcObject = remoteStream;
+              audioElement.play().catch(e => console.error("Audio play failed", e));
+            }
+          }
+        }
+      };
+      session.stateChange.addListener(listener);
+
+      return () => {
+        session.stateChange.removeListener(listener);
+      };
     }
-  }, [session]);
+  }, [session, audioElement]);
 
   const makeCall = useCallback(async (destination: string) => {
     if (!userAgent || !sipSettings) {
@@ -144,30 +164,19 @@ export const SipProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }
 
     const inviter = new Inviter(userAgent, target);
-
-    inviter.delegate = {
-      onTrackAdded: () => {
-        if (audioElement) {
-          const remoteStream = new MediaStream();
-          inviter.sessionDescriptionHandler?.peerConnection?.getReceivers().forEach(receiver => {
-            if(receiver.track) remoteStream.addTrack(receiver.track);
-          });
-          audioElement.srcObject = remoteStream;
-          audioElement.play().catch(e => console.error("Audio play failed", e));
-        }
-      }
-    }
     setSession(inviter);
     await inviter.invite();
 
-  }, [userAgent, sipSettings, session, audioElement]);
+  }, [userAgent, sipSettings, session]);
 
   const hangup = useCallback(async () => {
     if (session) {
       if (session.state === SessionState.Established) {
         await session.bye();
-      } else if (session.state === SessionState.Initial || session.state === SessionState.Establishing) {
-        await session.cancel();
+      } else if ((session.state === SessionState.Initial || session.state === SessionState.Establishing) && session instanceof Inviter) {
+        await (session as Inviter).cancel();
+      } else if ((session.state === SessionState.Initial || session.state === SessionState.Establishing) && session instanceof Invitation) {
+        await (session as Invitation).reject();
       }
       setSession(null);
       setSessionState(SessionState.Initial);
