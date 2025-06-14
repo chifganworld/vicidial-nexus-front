@@ -223,6 +223,22 @@ export type Database = {
           status_count: number
         }[]
       }
+      get_agent_lead_stats: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          new_leads_today: number
+          leads_in_progress: number
+          leads_converted: number
+          avg_handle_time_seconds: number
+        }[]
+      }
+      get_agent_weekly_call_stats: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          day_of_week: string
+          calls_count: number
+        }[]
+      }
       get_users_for_management: {
         Args: Record<PropertyKey, never>
         Returns: {

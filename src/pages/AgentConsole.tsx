@@ -70,6 +70,8 @@ const AgentConsole: React.FC = () => {
           
           queryClient.invalidateQueries({ queryKey: ['currentLead'] });
           queryClient.invalidateQueries({ queryKey: ['callLogs'] });
+          queryClient.invalidateQueries({ queryKey: ['agentLeadStats'] });
+          queryClient.invalidateQueries({ queryKey: ['agentWeeklyCallStats'] });
         }
       )
       .subscribe();
