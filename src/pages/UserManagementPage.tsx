@@ -12,6 +12,7 @@ import { ArrowLeft, MoreHorizontal, AlertCircle } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import AddUserDialog from '@/components/settings/AddUserDialog';
 import EditUserDialog from '@/components/settings/EditUserDialog';
+import DeleteUserDialog from '@/components/settings/DeleteUserDialog';
 
 type User = {
   id: string;
@@ -105,7 +106,11 @@ const UserManagementPage: React.FC = () => {
                   Edit User
                 </DropdownMenuItem>
               </EditUserDialog>
-              <DropdownMenuItem disabled className="text-destructive">Delete User</DropdownMenuItem>
+              <DeleteUserDialog userId={user.id} userName={user.full_name || user.email || 'this user'}>
+                <DropdownMenuItem onSelect={(e) => e.preventDefault()} className="text-destructive focus:bg-destructive/10 focus:text-destructive">
+                  Delete User
+                </DropdownMenuItem>
+              </DeleteUserDialog>
             </DropdownMenuContent>
           </DropdownMenu>
         </TableCell>
