@@ -54,6 +54,36 @@ export type Database = {
         }
         Relationships: []
       }
+      vicidial_integration: {
+        Row: {
+          api_password: string
+          api_user: string
+          created_at: string
+          id: string
+          ports: string | null
+          updated_at: string
+          vicidial_domain: string
+        }
+        Insert: {
+          api_password: string
+          api_user: string
+          created_at?: string
+          id?: string
+          ports?: string | null
+          updated_at?: string
+          vicidial_domain: string
+        }
+        Update: {
+          api_password?: string
+          api_user?: string
+          created_at?: string
+          id?: string
+          ports?: string | null
+          updated_at?: string
+          vicidial_domain?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
