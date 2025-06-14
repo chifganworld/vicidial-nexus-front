@@ -1,9 +1,9 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Phone, Users, BarChart2 } from 'lucide-react';
+import DialPad from '@/components/DialPad';
 
 const AgentDashboard: React.FC = () => {
   return (
@@ -24,14 +24,8 @@ const AgentDashboard: React.FC = () => {
             <Phone className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">Call Control</div>
-            <p className="text-xs text-muted-foreground">
-              Access dialing pad and call management features.
-            </p>
-            {/* Placeholder for Dialer Component */}
-            <div className="mt-4 p-4 border rounded-md bg-gray-50 text-center">
-              Dialing Pad & Call Info (Coming Soon)
-            </div>
+            <div className="text-2xl font-bold mb-2">Call Control</div>
+            <DialPad />
           </CardContent>
         </Card>
 
@@ -70,7 +64,6 @@ const AgentDashboard: React.FC = () => {
         </Card>
       </div>
 
-      {/* Further sections for agent specific functionalities can be added here */}
       <div className="mt-8">
         <h2 className="text-2xl font-semibold text-gray-700 mb-4">Quick Actions</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
