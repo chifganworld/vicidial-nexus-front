@@ -1,9 +1,27 @@
-
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { LayoutDashboard, UserCheck, FileText, LogIn } from "lucide-react";
+import { LayoutDashboard, UserCheck, FileText, LogIn, LogOut } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext"; // Import useAuth
+import { toast } from "@/components/ui/use-toast";
 
 const Index = () => {
+  const { session, signOut, loading: authLoading } = useAuth(); // Use auth context
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await signOut();
+      toast({ title: "Logged Out", description: "You have been successfully logged out." });
+      // Navigation to /auth is handled by AuthContext
+    } catch (error: any) {
+      toast({ title: "Logout Failed", description: error.message, variant: "destructive" });
+    }
+  };
+
+  const handleLoginClick = () => {
+    navigate("/auth");
+  };
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-slate-900 to-slate-700 text-white p-4">
       <div className="text-center mb-12">
@@ -45,24 +63,35 @@ const Index = () => {
         </Link>
       </div>
       
-      {/* Placeholder for Login button - assuming auth will be added later */}
-      <Button size="lg" className="bg-blue-500 hover:bg-blue-600 animate-fade-in animation-delay-1200">
-        <LogIn className="mr-2 h-5 w-5" /> Login
-      </Button>
+      {authLoading ? (
+        <Button size="lg" className="bg-gray-500 animate-pulse" disabled>
+          Loading...
+        </Button>
+      ) : session ? (
+        <div className="flex flex-col items-center space-y-4">
+          <p className="text-slate-300">Welcome back, {session.user.email}!</p>
+          <Button 
+            size="lg" 
+            className="bg-red-500 hover:bg-red-600 animate-fade-in animation-delay-1200"
+            onClick={handleLogout}
+          >
+            <LogOut className="mr-2 h-5 w-5" /> Logout
+          </Button>
+        </div>
+      ) : (
+        <Button 
+          size="lg" 
+          className="bg-blue-500 hover:bg-blue-600 animate-fade-in animation-delay-1200"
+          onClick={handleLoginClick}
+        >
+          <LogIn className="mr-2 h-5 w-5" /> Login / Sign Up
+        </Button>
+      )}
 
       <footer className="mt-12 text-sm text-slate-500 animate-fade-in animation-delay-1500">
         <p>&copy; {new Date().getFullYear()} Vicidial Nexus. All rights reserved.</p>
         <p>Powered by Lovable AI</p>
       </footer>
-
-      {/* 
-        Removed <style jsx> block that was causing build errors.
-        The animations defined here (animate-fade-in, animate-scale-in, animation-delay-*) 
-        are defined using Tailwind's animation capabilities or custom CSS if needed.
-        The hover effect class 'hover-scale' was changed to 'hover-scale-custom'
-        to avoid conflict if Tailwind has a similar utility.
-        We can add these animations back using Tailwind or a separate CSS file.
-      */}
     </div>
   );
 };
