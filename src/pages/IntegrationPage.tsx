@@ -39,6 +39,8 @@ const IntegrationPage: React.FC = () => {
       sip_server_domain: '',
       sip_protocol: 'wss',
       sip_server_port: '',
+      sip_username: '',
+      sip_password: '',
     },
   });
 

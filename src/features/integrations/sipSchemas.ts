@@ -9,6 +9,8 @@ export const sipIntegrationSchema = z.object({
   sip_server_port: z.string().refine(val => !isNaN(parseInt(val, 10)) && parseInt(val, 10) > 0 && parseInt(val, 10) < 65536, {
     message: "Must be a valid port number",
   }),
+  sip_username: z.string().optional(),
+  sip_password: z.string().optional(),
 });
 
 export type SipIntegrationFormData = z.infer<typeof sipIntegrationSchema>;

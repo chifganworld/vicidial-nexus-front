@@ -24,6 +24,8 @@ interface SipIntegrationFormProps {
 }
 
 const SipIntegrationForm: React.FC<SipIntegrationFormProps> = ({ form, onSubmit, isLoading }) => {
+  const selectedProtocol = form.watch('sip_protocol');
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 pt-6">
@@ -112,6 +114,44 @@ const SipIntegrationForm: React.FC<SipIntegrationFormProps> = ({ form, onSubmit,
             </FormItem>
           )}
         />
+
+        {(selectedProtocol === 'sip' || selectedProtocol === 'pjsip') && (
+          <>
+            <FormField
+              control={form.control}
+              name="sip_username"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>SIP Username (Optional)</FormLabel>
+                  <FormControl>
+                    <Input placeholder="system_trunk_user" {...field} value={field.value ?? ''} />
+                  </FormControl>
+                  <FormDescription>
+                    Username for your system to register with the SIP server (e.g., a trunk username).
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="sip_password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>SIP Password (Optional)</FormLabel>
+                  <FormControl>
+                    <Input type="password" placeholder="trunk_secret" {...field} value={field.value ?? ''} />
+                  </FormControl>
+                  <FormDescription>
+                    Password for your system to register with the SIP server.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </>
+        )}
+        
         <Button type="submit" disabled={isLoading || form.formState.isSubmitting} className="w-full">
           <Save className="mr-2 h-4 w-4" />
           {isLoading ? 'Saving...' : 'Save SIP Settings'}
