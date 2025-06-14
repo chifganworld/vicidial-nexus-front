@@ -1,7 +1,7 @@
+
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import { corsHeaders } from '../_shared/cors.ts'
 
-// Supabase client for admin access
 const supabaseAdmin = createClient(
   Deno.env.get('SUPABASE_URL') ?? '',
   Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
@@ -13,7 +13,11 @@ Deno.serve(async (req) => {
   }
 
   try {
-    // 1. Fetch Vicidial integration details
+    const { in_groups } = await req.json()
+    if (!in_groups) {
+      throw new Error('in_groups parameter is required.')
+    }
+
     const { data: integrationData, error: integrationError } = await supabaseAdmin
       .from('vicidial_integration')
       .select('vicidial_domain, api_user, api_password')
@@ -26,24 +30,22 @@ Deno.serve(async (req) => {
 
     const { vicidial_domain, api_user, api_password } = integrationData
 
-    // 2. Construct and call Vicidial API
     let domain = vicidial_domain.trim();
     if (domain.startsWith('http//')) domain = domain.replace('http//', 'http://');
     if (domain.startsWith('https//')) domain = domain.replace('https//', 'https://');
-
     if (!domain.startsWith('http://') && !domain.startsWith('https://')) {
       domain = `http://${domain}`;
     }
-    
     const apiUrl = `${domain}/vicidial/non_agent_api.php`
+
     const params = new URLSearchParams({
       source: 'lovable_supervisor',
       user: api_user,
       pass: api_password,
-      function: 'logged_in_agents',
-      stage: 'csv', // Use CSV for comma-separated values
+      function: 'in_group_status',
+      in_groups: in_groups, // e.g., "SALESLINE|SUPPORT"
+      stage: 'pipe',
       header: 'YES',
-      show_sub_status: 'YES', // for more detailed status
     })
 
     const vicidialResponse = await fetch(`${apiUrl}?${params.toString()}`)
@@ -55,31 +57,29 @@ Deno.serve(async (req) => {
 
     const responseText = await vicidialResponse.text()
 
-    // 3. Parse the pipe-delimited response
     if (responseText.includes('ERROR:')) {
       throw new Error(`Vicidial API Error: ${responseText.trim()}`)
     }
     
     const lines = responseText.trim().split('\n').filter(line => line.trim() !== '');
     if (lines.length < 2) {
-      // Only header or no data
       return new Response(JSON.stringify([]), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 200,
       })
     }
 
-    const header = lines[0].split(',').map(h => h.trim().toLowerCase())
-    const agents = lines.slice(1).map(line => {
-      const values = line.split(',')
-      const agentObject = header.reduce((obj, key, index) => {
+    const header = lines[0].split('|').map(h => h.trim().toLowerCase())
+    const stats = lines.slice(1).map(line => {
+      const values = line.split('|')
+      const statsObject = header.reduce((obj, key, index) => {
         obj[key] = values[index] ? values[index].trim() : ''
         return obj
       }, {} as { [key: string]: string })
-      return agentObject
+      return statsObject
     })
 
-    return new Response(JSON.stringify(agents), {
+    return new Response(JSON.stringify(stats), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 200,
     })

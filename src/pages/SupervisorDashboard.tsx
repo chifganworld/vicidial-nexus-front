@@ -3,8 +3,9 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Activity, Eye } from 'lucide-react';
+import { Eye } from 'lucide-react';
 import AgentStatusGrid from '@/components/supervisor/AgentStatusGrid';
+import CampaignPerformance from '@/components/supervisor/CampaignPerformance';
 
 const SupervisorDashboard: React.FC = () => {
   return (
@@ -24,21 +25,7 @@ const SupervisorDashboard: React.FC = () => {
         </div>
         
         <div className="space-y-6">
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Campaign Performance</CardTitle>
-                <Activity className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">Live Metrics</div>
-                <p className="text-xs text-muted-foreground">
-                  Track campaign and in-group statistics.
-                </p>
-                <div className="mt-4 p-4 border rounded-md bg-gray-50 dark:bg-gray-800 text-center">
-                  Campaign Stats (Coming Soon)
-                </div>
-              </CardContent>
-            </Card>
+            <CampaignPerformance />
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -51,7 +38,8 @@ const SupervisorDashboard: React.FC = () => {
                   Listen in or barge into live calls.
                 </p>
                 <div className="mt-4 p-4 border rounded-md bg-gray-50 dark:bg-gray-800 text-center">
-                  Monitoring Tools (Coming Soon)
+                  <p className="font-semibold">Monitoring Not Available</p>
+                  <p className="text-sm text-muted-foreground mt-1">This feature requires agent server IP addresses, which are not currently exposed by the API.</p>
                 </div>
               </CardContent>
             </Card>
