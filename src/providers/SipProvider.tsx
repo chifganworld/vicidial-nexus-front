@@ -10,6 +10,9 @@ type SipContextType = {
   makeCall: (destination: string) => void;
   hangup: () => void;
   setAudioElement: (element: HTMLAudioElement | null) => void;
+  isMuted: boolean;
+  toggleMute: () => void;
+  transfer: (destination: string) => void;
 };
 
 const SipContext = createContext<SipContextType | undefined>(undefined);
@@ -34,6 +37,7 @@ export const SipProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [audioElement, setAudioElement] = useState<HTMLAudioElement | null>(null);
   const [connectionState, setConnectionState] = useState<UserAgentState>(UserAgentState.Stopped);
   const [sessionState, setSessionState] = useState<SessionState>(SessionState.Initial);
+  const [isMuted, setIsMuted] = useState(false);
 
   const { data: sipSettings } = useQuery({
     queryKey: ['sipSettings'],
@@ -147,6 +151,28 @@ export const SipProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }
   }, [session, audioElement]);
 
+  const toggleMute = useCallback(() => {
+    if (session && session.state === SessionState.Established) {
+      const sdh = session.sessionDescriptionHandler;
+      const peerConnection = (sdh as any)?.peerConnection;
+      if (peerConnection) {
+        const newMutedState = !isMuted;
+        peerConnection.getSenders().forEach((sender: RTCRtpSender) => {
+          if (sender.track && sender.track.kind === 'audio') {
+            sender.track.enabled = !newMutedState;
+          }
+        });
+        setIsMuted(newMutedState);
+      }
+    }
+  }, [session, isMuted]);
+  
+  useEffect(() => {
+    if (sessionState === SessionState.Terminated) {
+      setIsMuted(false);
+    }
+  }, [sessionState]);
+
   const makeCall = useCallback(async (destination: string) => {
     if (!userAgent || !sipSettings) {
       toast({ title: "SIP client not ready", description: "Please check your SIP settings and connection.", variant: "destructive" });
@@ -169,6 +195,22 @@ export const SipProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   }, [userAgent, sipSettings, session]);
 
+  const transfer = useCallback(async (destination: string) => {
+    if (!userAgent || !sipSettings) {
+      toast({ title: "SIP client not ready", description: "Please check your SIP settings and connection.", variant: "destructive" });
+      return;
+    }
+    if (session && session.state === SessionState.Established) {
+        const target = UserAgent.makeURI(`sip:${destination}@${sipSettings.sip_server_domain}`);
+        if (!target) {
+            toast({ title: 'Invalid transfer number', description: `Could not create a valid SIP URI for ${destination}`, variant: 'destructive' });
+            return;
+        }
+        await session.refer(target);
+        toast({ title: 'Transfer initiated', description: `Transferring call to ${destination}` });
+    }
+  }, [session, sipSettings, userAgent]);
+
   const hangup = useCallback(async () => {
     if (session) {
       if (session.state === SessionState.Established) {
@@ -189,6 +231,9 @@ export const SipProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     makeCall,
     hangup,
     setAudioElement,
+    isMuted,
+    toggleMute,
+    transfer,
   };
 
   return <SipContext.Provider value={value}>{children}</SipContext.Provider>;

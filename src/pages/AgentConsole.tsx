@@ -1,9 +1,8 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Phone } from 'lucide-react';
+import { Phone, Pause } from 'lucide-react';
 import DialPad from '@/components/DialPad';
 import LeadInfoDisplay from '@/components/LeadInfoDisplay';
 import AgentStatsDisplay from '@/components/AgentStatsDisplay';
@@ -100,9 +99,12 @@ const AgentConsole: React.FC = () => {
       <header className="mb-8">
         <div className="flex justify-between items-center">
           <h1 className="text-3xl font-bold text-gray-800">Agent Console</h1>
-          <Link to="/">
-            <Button variant="outline">Back to Home</Button>
-          </Link>
+          <div className="flex items-center gap-4">
+            <Button variant="outline"><Pause className="mr-2 h-4 w-4" /> Pause</Button>
+            <Link to="/">
+              <Button variant="outline">Back to Home</Button>
+            </Link>
+          </div>
         </div>
       </header>
 
