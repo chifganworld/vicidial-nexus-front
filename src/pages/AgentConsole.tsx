@@ -151,7 +151,7 @@ const AgentConsole: React.FC = () => {
           <CallLogs />
         </div>
         <div className="lg:col-span-1">
-          <Card className="h-full bg-green-950/20 backdrop-blur-sm border-green-400/20">
+          <Card className="h-full bg-green-950/20 backdrop-blur-md border-green-400/20 shadow-lg">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Dialer</CardTitle>
               <Phone className="h-4 w-4 text-muted-foreground" />

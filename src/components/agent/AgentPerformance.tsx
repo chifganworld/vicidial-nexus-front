@@ -72,7 +72,7 @@ const AgentPerformance: React.FC = () => {
 
     if (isLoading) {
         return (
-          <Card className="h-full bg-green-950/20 backdrop-blur-sm border-green-400/20">
+          <Card className="h-full bg-green-950/20 backdrop-blur-md border-green-400/20 shadow-lg">
             <CardHeader>
               <CardTitle className="text-base font-semibold">Agent Performance</CardTitle>
             </CardHeader>
@@ -96,7 +96,7 @@ const AgentPerformance: React.FC = () => {
       }
     
     return (
-        <Card className="h-full bg-green-950/20 backdrop-blur-sm border-green-400/20">
+        <Card className="h-full bg-green-950/20 backdrop-blur-md border-green-400/20 shadow-lg">
           <CardHeader>
             <CardTitle className="text-base font-semibold">Agent Performance</CardTitle>
           </CardHeader>

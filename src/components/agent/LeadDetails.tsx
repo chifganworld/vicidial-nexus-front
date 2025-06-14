@@ -18,7 +18,7 @@ interface LeadDetailsProps {
 const LeadDetails: React.FC<LeadDetailsProps> = ({ lead, isLoading }) => {
   if (isLoading) {
     return (
-      <Card className="h-full bg-green-950/20 backdrop-blur-sm border-green-400/20">
+      <Card className="h-full bg-green-950/20 backdrop-blur-md border-green-400/20 shadow-lg">
         <CardHeader>
           <CardTitle className="text-base font-semibold">Lead Details</CardTitle>
         </CardHeader>
@@ -36,7 +36,7 @@ const LeadDetails: React.FC<LeadDetailsProps> = ({ lead, isLoading }) => {
 
   if (!lead) {
     return (
-      <Card className="h-full flex items-center justify-center bg-green-950/20 backdrop-blur-sm border-green-400/20">
+      <Card className="h-full flex items-center justify-center bg-green-950/20 backdrop-blur-md border-green-400/20 shadow-lg">
         <CardContent className="pt-6">
           <p className="text-muted-foreground">No active lead.</p>
         </CardContent>
@@ -45,7 +45,7 @@ const LeadDetails: React.FC<LeadDetailsProps> = ({ lead, isLoading }) => {
   }
 
   return (
-    <Card className="h-full bg-green-950/20 backdrop-blur-sm border-green-400/20">
+    <Card className="h-full bg-green-950/20 backdrop-blur-md border-green-400/20 shadow-lg">
       <CardHeader>
         <CardTitle className="text-base font-semibold">Lead Details</CardTitle>
       </CardHeader>
