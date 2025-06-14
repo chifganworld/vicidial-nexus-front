@@ -172,6 +172,13 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_agent_call_stats: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          status_name: Database["public"]["Enums"]["call_status"]
+          status_count: number
+        }[]
+      }
       get_users_for_management: {
         Args: Record<PropertyKey, never>
         Returns: {
