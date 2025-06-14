@@ -7,9 +7,18 @@ import { useTheme } from 'next-themes';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
+import { useDisplaySettings } from '@/contexts/DisplaySettingsContext';
+import { Switch } from '@/components/ui/switch';
+import { Separator } from '@/components/ui/separator';
+
 
 const DisplaySettingsPage: React.FC = () => {
   const { theme, setTheme } = useTheme();
+  const { settings, setSettings } = useDisplaySettings();
+
+  const handleShowAvatarsChange = (checked: boolean) => {
+    setSettings(prev => ({ ...prev, showAvatars: checked }));
+  };
 
   return (
     <div className="min-h-screen bg-background p-4 md:p-8 flex justify-center items-center">
@@ -69,6 +78,47 @@ const DisplaySettingsPage: React.FC = () => {
                 </Label>
               </div>
             </RadioGroup>
+          </div>
+
+          <Separator className="my-6" />
+
+          <div className="space-y-4">
+            <h3 className="text-lg font-medium text-foreground">Interface Visibility</h3>
+            <p className="text-sm text-muted-foreground">
+              Control which elements are visible throughout the application.
+            </p>
+            <div className="flex items-center justify-between rounded-lg border p-4">
+              <div className="space-y-0.5">
+                <Label htmlFor="show-avatars" className="text-base">Show User Avatars</Label>
+                <p className="text-sm text-muted-foreground">
+                  Display user avatars in lists and profiles.
+                </p>
+              </div>
+              <Switch
+                id="show-avatars"
+                checked={settings.showAvatars}
+                onCheckedChange={handleShowAvatarsChange}
+              />
+            </div>
+            {/* Placeholder for more settings */}
+            <div className="flex items-center justify-between rounded-lg border p-4 opacity-50">
+              <div className="space-y-0.5">
+                <Label htmlFor="show-agent-performance" className="text-base">Show Agent Performance</Label>
+                 <p className="text-sm text-muted-foreground">
+                  Display the performance stats widget on the Agent Console.
+                </p>
+              </div>
+              <Switch id="show-agent-performance" disabled />
+            </div>
+             <div className="flex items-center justify-between rounded-lg border p-4 opacity-50">
+              <div className="space-y-0.5">
+                <Label htmlFor="show-campaign-performance" className="text-base">Show Campaign Performance</Label>
+                 <p className="text-sm text-muted-foreground">
+                  Display campaign stats on the Supervisor Dashboard.
+                </p>
+              </div>
+              <Switch id="show-campaign-performance" disabled />
+            </div>
           </div>
         </CardContent>
       </Card>

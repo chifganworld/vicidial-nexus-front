@@ -21,6 +21,7 @@ import AuditLogPage from './pages/AuditLogPage';
 import SystemHealthPage from './pages/SystemHealthPage';
 import { SipProvider } from '@/providers/SipProvider';
 import UnauthorizedPage from './pages/UnauthorizedPage';
+import { DisplaySettingsProvider } from './contexts/DisplaySettingsContext';
 
 const queryClient = new QueryClient();
 
@@ -28,41 +29,43 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-        <Router>
-          <AuthProvider>
-            <Routes>
-              <Route path="/" element={<IndexPage />} />
-              <Route path="/auth" element={<AuthPage />} />
-              <Route path="/unauthorized" element={<UnauthorizedPage />} />
-              
-              {/* Agent Route */}
-              <Route element={<ProtectedRoute allowedRoles={['agent', 'supervisor', 'admin']} />}>
-                <Route path="/agent" element={<SipProvider><AgentConsole /></SipProvider>} />
-              </Route>
+        <DisplaySettingsProvider>
+          <Router>
+            <AuthProvider>
+              <Routes>
+                <Route path="/" element={<IndexPage />} />
+                <Route path="/auth" element={<AuthPage />} />
+                <Route path="/unauthorized" element={<UnauthorizedPage />} />
+                
+                {/* Agent Route */}
+                <Route element={<ProtectedRoute allowedRoles={['agent', 'supervisor', 'admin']} />}>
+                  <Route path="/agent" element={<SipProvider><AgentConsole /></SipProvider>} />
+                </Route>
 
-              {/* Supervisor Routes */}
-              <Route element={<ProtectedRoute allowedRoles={['supervisor', 'admin']} />}>
-                <Route path="/supervisor" element={<SupervisorDashboard />} />
-                <Route path="/reports" element={<ReportsPage />} />
-              </Route>
+                {/* Supervisor Routes */}
+                <Route element={<ProtectedRoute allowedRoles={['supervisor', 'admin']} />}>
+                  <Route path="/supervisor" element={<SupervisorDashboard />} />
+                  <Route path="/reports" element={<ReportsPage />} />
+                </Route>
 
-              {/* Admin Routes */}
-              <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
-                <Route path="/admin" element={<AdministrationPage />} />
-                <Route path="/admin/audit-log" element={<AuditLogPage />} />
-                <Route path="/admin/system-health" element={<SystemHealthPage />} />
-                <Route path="/settings" element={<SettingsPage />} />
-                <Route path="/settings/display" element={<DisplaySettingsPage />} />
-                <Route path="/settings/users" element={<UserManagementPage />} />
-                <Route path="/integration" element={<IntegrationPage />} />
-              </Route>
+                {/* Admin Routes */}
+                <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
+                  <Route path="/admin" element={<AdministrationPage />} />
+                  <Route path="/admin/audit-log" element={<AuditLogPage />} />
+                  <Route path="/admin/system-health" element={<SystemHealthPage />} />
+                  <Route path="/settings" element={<SettingsPage />} />
+                  <Route path="/settings/display" element={<DisplaySettingsPage />} />
+                  <Route path="/settings/users" element={<UserManagementPage />} />
+                  <Route path="/integration" element={<IntegrationPage />} />
+                </Route>
 
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-            <SonnerToaster richColors position="top-right" />
-            <ShadcnToaster />
-          </AuthProvider>
-        </Router>
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+              <SonnerToaster richColors position="top-right" />
+              <ShadcnToaster />
+            </AuthProvider>
+          </Router>
+        </DisplaySettingsProvider>
       </ThemeProvider>
     </QueryClientProvider>
   );
