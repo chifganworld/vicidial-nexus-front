@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -12,7 +11,7 @@ const SettingsPage: React.FC = () => {
       description: 'Customize the look and feel of the application.',
       link: '/settings/display',
       icon: <MonitorPlay className="h-6 w-6" />,
-      comingSoon: true,
+      comingSoon: false, // Changed from true
     },
     {
       title: 'Integrations',
