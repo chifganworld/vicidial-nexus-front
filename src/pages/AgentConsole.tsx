@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -151,7 +150,7 @@ const AgentConsole: React.FC = () => {
           <CallLogs />
         </div>
         <div className="lg:col-span-1">
-          <Card className="h-full bg-green-950/20 backdrop-blur-md border-green-400/20 shadow-lg shadow-green-400/20">
+          <Card className="h-full bg-green-950/20 backdrop-blur-md border-green-400/20 shadow-xl shadow-green-400/30">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Dialer</CardTitle>
               <Phone className="h-4 w-4 text-muted-foreground" />
