@@ -139,10 +139,8 @@ const AgentConsole: React.FC = () => {
 
       <StatsBar />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <AgentStatsDisplay />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <LeadInfoDisplay lead={currentLead} isLoading={isLoadingLead} />
-        <CallLogs />
         <Card className="bg-green-950/20 backdrop-blur-sm border-green-400/20">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Dialer</CardTitle>
@@ -152,6 +150,8 @@ const AgentConsole: React.FC = () => {
             <DialPad lead={currentLead} />
           </CardContent>
         </Card>
+        <AgentStatsDisplay />
+        <CallLogs />
       </div>
 
       <div className="mt-8">

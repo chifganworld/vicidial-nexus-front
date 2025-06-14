@@ -100,7 +100,7 @@ const AgentStatsDisplay: React.FC = () => {
         {/* Icon can be added here if desired, e.g., <BarChart2 className="h-4 w-4 text-muted-foreground" /> */}
       </CardHeader>
       <CardContent>
-        <div className="text-xl font-bold mb-1">Lead Performance</div>
+        <div className="text-lg font-bold mb-1">Lead Performance</div>
         <p className="text-xs text-muted-foreground mb-4">
           Your current lead statistics.
         </p>
@@ -114,12 +114,12 @@ const AgentStatsDisplay: React.FC = () => {
         </div>
         <div className="h-48"> {/* Fixed height for the chart container */}
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={chartData}>
+            <BarChart data={chartData} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis allowDecimals={false} />
-              <Tooltip />
-              <Legend />
+              <XAxis dataKey="name" tick={{ fontSize: 10 }} />
+              <YAxis allowDecimals={false} tick={{ fontSize: 10 }} />
+              <Tooltip contentStyle={{ fontSize: '12px' }} />
+              <Legend wrapperStyle={{ fontSize: '12px' }} />
               <Bar dataKey="calls" fill="#8884d8" name="Calls" />
             </BarChart>
           </ResponsiveContainer>
