@@ -151,6 +151,78 @@ const SipIntegrationForm: React.FC<SipIntegrationFormProps> = ({ form, onSubmit,
             />
           </>
         )}
+
+        <div className="!mt-8 pt-6 border-t">
+            <h3 className="text-lg font-medium">Asterisk Manager (AMI) Settings</h3>
+            <p className="text-sm text-muted-foreground">
+                Optional: For features like live queue monitoring.
+            </p>
+        </div>
+
+        <FormField
+          control={form.control}
+          name="ami_host"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>AMI Host</FormLabel>
+              <FormControl>
+                <Input placeholder="Leave blank to use SIP Server Domain" {...field} value={field.value ?? ''} />
+              </FormControl>
+              <FormDescription>
+                The host/IP of your Asterisk Manager Interface.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="ami_port"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>AMI Port</FormLabel>
+              <FormControl>
+                <Input type="text" placeholder="e.g., 5038" {...field} value={field.value ?? ''} />
+              </FormControl>
+              <FormDescription>
+                The port for your AMI connection.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="ami_user"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>AMI Username</FormLabel>
+              <FormControl>
+                <Input placeholder="ami_user" {...field} value={field.value ?? ''} />
+              </FormControl>
+              <FormDescription>
+                Username for your AMI connection.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="ami_secret"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>AMI Secret (Optional)</FormLabel>
+              <FormControl>
+                <Input type="password" placeholder="••••••••" {...field} value={field.value ?? ''} />
+              </FormControl>
+              <FormDescription>
+                Password/secret for your AMI connection. Stored securely.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         
         <Button type="submit" disabled={isLoading || form.formState.isSubmitting} className="w-full">
           <Save className="mr-2 h-4 w-4" />

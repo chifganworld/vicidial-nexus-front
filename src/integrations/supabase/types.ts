@@ -129,6 +129,10 @@ export type Database = {
       }
       sip_integration: {
         Row: {
+          ami_host: string | null
+          ami_port: number | null
+          ami_secret: string | null
+          ami_user: string | null
           created_at: string
           id: string
           sip_password: string | null
@@ -139,6 +143,10 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          ami_host?: string | null
+          ami_port?: number | null
+          ami_secret?: string | null
+          ami_user?: string | null
           created_at?: string
           id?: string
           sip_password?: string | null
@@ -149,6 +157,10 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          ami_host?: string | null
+          ami_port?: number | null
+          ami_secret?: string | null
+          ami_user?: string | null
           created_at?: string
           id?: string
           sip_password?: string | null
