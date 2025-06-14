@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -19,8 +18,7 @@ import DispositionModal from '@/components/agent/DispositionModal';
 import { useSessionTracker } from '@/hooks/useSessionTracker';
 import LeadDetails from '@/components/agent/LeadDetails';
 import AgentPerformance from '@/components/agent/AgentPerformance';
-import { useToast } from '@/hooks/use-toast';
-import { ToastAction } from '@/components/ui/toast';
+import { toast } from '@/components/ui/sonner';
 
 export type Lead = Database['public']['Tables']['leads']['Row'];
 
@@ -30,7 +28,6 @@ const AgentConsole: React.FC = () => {
   const audioRef = useRef<HTMLAudioElement>(null);
   const { setAudioElement } = useSip();
   const navigate = useNavigate();
-  const { toast } = useToast();
 
   const { 
     isPaused, 
@@ -116,35 +113,27 @@ const AgentConsole: React.FC = () => {
   };
 
   const simulateIncomingCall = () => {
-    toast({
-      title: (
-        <div className="flex items-center">
-          <Phone className="h-5 w-5 mr-2 text-green-500 animate-[pulse_1s_cubic-bezier(0.4,0,0.6,1)_infinite]" />
-          <span>Incoming Call</span>
-        </div>
-      ),
-      description: "From: +1 (555) 123-4567 (Jane Doe)",
-      duration: 15000,
-      action: (
-        <>
-          <ToastAction
-            altText="Answer"
-            onClick={() => {
-              toast({ description: "Call answered (simulation)." });
-            }}
-          >
-            Answer
-          </ToastAction>
-          <ToastAction
-            altText="Decline"
-            onClick={() => {
-              toast({ description: "Call declined (simulation).", variant: "destructive" });
-            }}
-          >
-            Decline
-          </ToastAction>
-        </>
-      ),
+    const toastId = toast(
+        <div className="flex w-full items-center justify-between">
+            <div className="flex items-center">
+                <Phone className="h-5 w-5 mr-2 text-green-500 animate-[pulse_1s_cubic-bezier(0.4,0,0.6,1)_infinite]" />
+                <div>
+                    <div className="font-semibold">Incoming Call</div>
+                    <p className="text-sm text-muted-foreground">From: +1 (555) 123-4567 (Jane Doe)</p>
+                </div>
+            </div>
+            <div className="flex gap-2">
+                <Button size="sm" onClick={() => {
+                    toast.success("Call answered (simulation).");
+                    toast.dismiss(toastId);
+                }}>Answer</Button>
+                <Button size="sm" variant="destructive" onClick={() => {
+                    toast.error("Call declined (simulation).");
+                    toast.dismiss(toastId);
+                }}>Decline</Button>
+            </div>
+        </div>, {
+        duration: 15000,
     });
   };
 
