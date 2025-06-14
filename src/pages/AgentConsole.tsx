@@ -1,12 +1,9 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Phone, Pause, PhoneOff } from 'lucide-react';
 import DialPad from '@/components/DialPad';
-import LeadInfoDisplay from '@/components/LeadInfoDisplay';
-import AgentStatsDisplay from '@/components/AgentStatsDisplay';
 import AddLeadModal from '@/components/AddLeadModal';
 import UpdateLeadModal from '@/components/UpdateLeadModal';
 import SearchLeadModal from '@/components/SearchLeadModal';
@@ -19,6 +16,7 @@ import { Database } from '@/integrations/supabase/types';
 import { useSip } from '@/providers/SipProvider';
 import DispositionModal from '@/components/agent/DispositionModal';
 import { useSessionTracker } from '@/hooks/useSessionTracker';
+import LeadDetailsAndStats from '@/components/agent/LeadDetailsAndStats';
 
 export type Lead = Database['public']['Tables']['leads']['Row'];
 
@@ -140,9 +138,9 @@ const AgentConsole: React.FC = () => {
 
       <StatsBar />
 
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="md:col-span-2 space-y-6">
-          <LeadInfoDisplay lead={currentLead} isLoading={isLoadingLead} />
+          <LeadDetailsAndStats lead={currentLead} isLoading={isLoadingLead} />
           <CallLogs />
         </div>
 
@@ -156,9 +154,6 @@ const AgentConsole: React.FC = () => {
               <DialPad lead={currentLead} />
             </CardContent>
           </Card>
-        </div>
-        <div className="md:col-span-1">
-          <AgentStatsDisplay />
         </div>
       </div>
 
