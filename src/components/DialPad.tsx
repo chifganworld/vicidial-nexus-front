@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -127,10 +128,9 @@ const DialPad: React.FC<DialPadProps> = ({ lead, simulatedDuration, onSimulatedH
       </div>
 
       {(isCallActive || isSimulatedCallActive) && (
-        <div className="grid grid-cols-2 gap-2">
-            <Button variant="outline" onClick={toggleMute} className="h-12" disabled={!isCallActive}>
-                {isMuted ? <MicOff className="h-5 w-5 mr-2" /> : <Mic className="h-5 w-5 mr-2" />}
-                {isMuted ? 'Unmute' : 'Mute'}
+        <div className="flex justify-center gap-2">
+            <Button variant="outline" onClick={toggleMute} className="h-12 w-12" disabled={!isCallActive}>
+                {isMuted ? <MicOff className="h-5 w-5" /> : <Mic className="h-5 w-5" />}
             </Button>
             <TransferModal 
               disabled={!isCallActive && !isSimulatedCallActive} 

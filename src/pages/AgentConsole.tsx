@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -160,16 +159,7 @@ const AgentConsole: React.FC = () => {
                       {
                         id: toastId,
                         description: "You are now connected.",
-                        action: {
-                            label: "Hang Up",
-                            onClick: handleSimulatedHangUp,
-                        },
-                        onDismiss: () => { // Also clear on manual dismiss
-                          if (simulatedCallDuration !== undefined) {
-                            handleSimulatedHangUp();
-                          }
-                        },
-                        duration: Infinity, // Keep it open until dismissed
+                        duration: 3000,
                       }
                     );
                 }}>Answer</Button>

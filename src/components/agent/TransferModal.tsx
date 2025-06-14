@@ -43,7 +43,7 @@ const TransferModal: React.FC<TransferModalProps> = ({ disabled, isSimulated = f
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                 <Button variant="outline" className="h-12 w-full" disabled={disabled}>
+                 <Button variant="outline" className="h-12" disabled={disabled}>
                     <ArrowRightLeft className="h-5 w-5 mr-2" /> Transfer
                 </Button>
             </DialogTrigger>
