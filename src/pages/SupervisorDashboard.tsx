@@ -3,7 +3,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Eye } from 'lucide-react';
 import AgentStatusGrid from '@/components/supervisor/AgentStatusGrid';
 import CampaignPerformance from '@/components/supervisor/CampaignPerformance';
 import { useDisplaySettings } from '@/contexts/DisplaySettingsContext';
@@ -29,23 +28,6 @@ const SupervisorDashboard: React.FC = () => {
         
         <div className="space-y-6">
             {settings.showCampaignPerformance && <CampaignPerformance />}
-
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Blind Monitoring</CardTitle>
-                <Eye className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">Call Monitoring</div>
-                <p className="text-xs text-muted-foreground">
-                  Listen in or barge into live calls.
-                </p>
-                <div className="mt-4 p-4 border rounded-md bg-gray-50 dark:bg-gray-800 text-center">
-                  <p className="font-semibold">Monitoring Not Available</p>
-                  <p className="text-sm text-muted-foreground mt-1">This feature requires agent server IP addresses, which are not currently exposed by the API.</p>
-                </div>
-              </CardContent>
-            </Card>
         </div>
       </div>
 
@@ -55,7 +37,7 @@ const SupervisorDashboard: React.FC = () => {
           <Button asChild><Link to="/reports">View Agent Stats</Link></Button>
           <Button asChild><Link to="/settings/users">Manage Users</Link></Button>
           <Button asChild><Link to="/settings">Campaign Settings</Link></Button>
-          <Button disabled>View Hopper</Button>
+          <Button asChild><Link to="/hopper">View Hopper</Link></Button>
         </div>
       </div>
     </div>

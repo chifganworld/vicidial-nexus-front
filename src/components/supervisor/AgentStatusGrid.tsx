@@ -1,6 +1,5 @@
-
 import React from 'react'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useMutation } from '@tanstack/react-query'
 import { supabase } from '@/integrations/supabase/client'
 import {
   Table,
@@ -12,9 +11,11 @@ import {
 } from '@/components/ui/table'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { AlertCircle, Users } from 'lucide-react'
+import { AlertCircle, Users, Headphones, Zap } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { toast } from 'sonner'
 
 type AgentStatus = {
   user: string;
@@ -67,6 +68,33 @@ const AgentStatusGrid: React.FC = () => {
     refetchInterval: 5000, // Refetch every 5 seconds
   })
 
+  const blindMonitorMutation = useMutation({
+    mutationFn: async ({ agent_user, stage }: { agent_user: string, stage: string }) => {
+      const { data, error } = await supabase.functions.invoke('blind-monitor-agent', {
+        body: { agent_user, stage }
+      })
+      if (error) {
+        try {
+            const errorData = await error.context.json();
+            throw new Error(errorData?.error || error.message);
+        } catch (e) {
+            throw new Error(error.message);
+        }
+      }
+      return data
+    },
+    onSuccess: (data) => {
+      toast.success('Monitoring initiated', { description: data.message })
+    },
+    onError: (error: Error) => {
+      toast.error('Monitoring failed', { description: error.message || 'An unknown error occurred.' })
+    }
+  })
+
+  const handleMonitor = (agentUser: string, stage: 'MONITOR' | 'BARGE') => {
+    blindMonitorMutation.mutate({ agent_user: agentUser, stage })
+  }
+
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -86,6 +114,7 @@ const AgentStatusGrid: React.FC = () => {
                 <TableHead>Status</TableHead>
                 <TableHead>Campaign</TableHead>
                 <TableHead className="text-right">Calls Today</TableHead>
+                <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -96,12 +125,13 @@ const AgentStatusGrid: React.FC = () => {
                     <TableCell><Skeleton className="h-4 w-20" /></TableCell>
                     <TableCell><Skeleton className="h-4 w-16" /></TableCell>
                     <TableCell className="text-right"><Skeleton className="h-4 w-8 ml-auto" /></TableCell>
+                    <TableCell><Skeleton className="h-8 w-24" /></TableCell>
                   </TableRow>
                 ))
               )}
               {isError && (
                 <TableRow>
-                  <TableCell colSpan={4}>
+                  <TableCell colSpan={5}>
                     <Alert variant="destructive">
                       <AlertCircle className="h-4 w-4" />
                       <AlertTitle>Error</AlertTitle>
@@ -127,12 +157,34 @@ const AgentStatusGrid: React.FC = () => {
                     </TableCell>
                     <TableCell>{agent.campaign_id}</TableCell>
                     <TableCell className="text-right">{agent.calls_today}</TableCell>
+                    <TableCell>
+                      {(agent.status === 'INCALL' || agent.status === '3-WAY') ? (
+                        <div className="flex gap-1">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleMonitor(agent.user, 'MONITOR')}
+                            disabled={blindMonitorMutation.isPending}
+                          >
+                            <Headphones className="h-4 w-4 mr-1" /> Monitor
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleMonitor(agent.user, 'BARGE')}
+                            disabled={blindMonitorMutation.isPending}
+                          >
+                            <Zap className="h-4 w-4 mr-1" /> Barge
+                          </Button>
+                        </div>
+                      ) : null}
+                    </TableCell>
                   </TableRow>
                 ))
               )}
               {!isLoading && !isError && agents && agents.length === 0 && (
                  <TableRow>
-                  <TableCell colSpan={4} className="text-center py-8">
+                  <TableCell colSpan={5} className="text-center py-8">
                     No agents are currently logged in.
                   </TableCell>
                 </TableRow>

@@ -22,6 +22,7 @@ import SystemHealthPage from './pages/SystemHealthPage';
 import { SipProvider } from '@/providers/SipProvider';
 import UnauthorizedPage from './pages/UnauthorizedPage';
 import { DisplaySettingsProvider } from './contexts/DisplaySettingsContext';
+import HopperPage from './pages/HopperPage';
 
 const queryClient = new QueryClient();
 
@@ -46,6 +47,7 @@ function App() {
                 <Route element={<ProtectedRoute allowedRoles={['supervisor', 'admin']} />}>
                   <Route path="/supervisor" element={<SupervisorDashboard />} />
                   <Route path="/reports" element={<ReportsPage />} />
+                  <Route path="/hopper" element={<HopperPage />} />
                 </Route>
 
                 {/* Admin Routes */}
