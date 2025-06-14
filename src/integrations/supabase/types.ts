@@ -42,6 +42,39 @@ export type Database = {
         }
         Relationships: []
       }
+      sip_integration: {
+        Row: {
+          created_at: string
+          id: string
+          sip_password: string | null
+          sip_protocol: string
+          sip_server_domain: string
+          sip_server_port: number
+          sip_username: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          sip_password?: string | null
+          sip_protocol: string
+          sip_server_domain: string
+          sip_server_port: number
+          sip_username?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          sip_password?: string | null
+          sip_protocol?: string
+          sip_server_domain?: string
+          sip_server_port?: number
+          sip_username?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
