@@ -3,15 +3,47 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { ArrowLeft, DatabaseZap, CheckCircle, AlertTriangle } from 'lucide-react';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import {
+  ArrowLeft,
+  DatabaseZap,
+  CheckCircle,
+  AlertTriangle,
+  Server,
+  Voicemail,
+  FileText,
+  Network,
+  MemoryStick,
+  HardDrive,
+  Cpu,
+  GitFork,
+  Component,
+  Rss,
+  ShieldCheck,
+} from 'lucide-react';
 
 const SystemHealthPage: React.FC = () => {
   // Placeholder data
   const healthChecks = [
-    { name: 'Database Connection', status: 'ok', details: 'Connected to Supabase successfully.' },
-    { name: 'Vicidial API', status: 'ok', details: 'API endpoint is responsive.' },
-    { name: 'SIP Server', status: 'warning', details: 'Latency detected on primary trunk.' },
-    { name: 'Authentication Service', status: 'ok', details: 'Supabase Auth is operational.' },
+    { name: 'Database Connection', status: 'ok', details: 'Connected to Supabase successfully.', icon: <DatabaseZap className="h-5 w-5" /> },
+    { name: 'Vicidial API', status: 'ok', details: 'API endpoint is responsive.', icon: <Rss className="h-5 w-5" /> },
+    { name: 'Authentication Service', status: 'ok', details: 'Supabase Auth is operational.', icon: <ShieldCheck className="h-5 w-5" /> },
+    { name: 'Web Server', status: 'ok', details: 'Main web server is online.', icon: <Server className="h-5 w-5" /> },
+    { name: 'Asterisk Server', status: 'warning', details: 'High latency detected on SIP trunk.', icon: <Voicemail className="h-5 w-5" /> },
+    { name: 'Open Ports', status: 'ok', details: 'Standard ports (80, 443, 5060) are open.', icon: <Network className="h-5 w-5" /> },
+    { name: 'System Logs', status: 'ok', details: 'No critical errors in access/error logs.', icon: <FileText className="h-5 w-5" /> },
+    { name: 'RAM Usage', status: 'ok', details: '5.2 / 16.0 GB used.', icon: <MemoryStick className="h-5 w-5" /> },
+    { name: 'HDD Space', status: 'error', details: 'Disk nearly full: 480 / 500 GB used.', icon: <HardDrive className="h-5 w-5" /> },
+    { name: 'CPU Usage', status: 'ok', details: '15% usage, 3.2 GHz.', icon: <Cpu className="h-5 w-5" /> },
+    { name: 'Running Threads', status: 'ok', details: '256 active threads.', icon: <GitFork className="h-5 w-5" /> },
+    { name: 'Running Processes', status: 'ok', details: '128 active processes.', icon: <Component className="h-5 w-5" /> },
   ];
 
   const getStatusIcon = (status: string) => {
@@ -27,7 +59,7 @@ const SystemHealthPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 p-4 md:p-8 flex justify-center items-start">
-      <Card className="w-full max-w-2xl">
+      <Card className="w-full max-w-4xl">
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
@@ -42,17 +74,34 @@ const SystemHealthPage: React.FC = () => {
           </div>
         </CardHeader>
         <CardContent>
-          <ul className="space-y-4">
-            {healthChecks.map((check) => (
-              <li key={check.name} className="flex items-start p-4 border rounded-lg">
-                <div className="mr-4">{getStatusIcon(check.status)}</div>
-                <div>
-                  <p className="font-semibold">{check.name}</p>
-                  <p className="text-sm text-muted-foreground">{check.details}</p>
-                </div>
-              </li>
-            ))}
-          </ul>
+          <p className="text-sm text-muted-foreground mb-4">
+            Note: Some of these metrics are illustrative. Real-time monitoring for hardware and low-level services requires a dedicated backend agent which is outside the scope of this web application.
+          </p>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-[50px]"></TableHead>
+                <TableHead>Component</TableHead>
+                <TableHead className="w-[120px]">Status</TableHead>
+                <TableHead>Details</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {healthChecks.map((check) => (
+                <TableRow key={check.name}>
+                  <TableCell>{check.icon}</TableCell>
+                  <TableCell className="font-semibold">{check.name}</TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-2">
+                      {getStatusIcon(check.status)}
+                      <span className="capitalize">{check.status}</span>
+                    </div>
+                  </TableCell>
+                  <TableCell>{check.details}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         </CardContent>
       </Card>
     </div>
@@ -60,3 +109,4 @@ const SystemHealthPage: React.FC = () => {
 };
 
 export default SystemHealthPage;
+
