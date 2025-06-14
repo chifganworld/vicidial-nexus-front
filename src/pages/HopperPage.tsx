@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -71,7 +70,7 @@ const HopperPage: React.FC = () => {
           <div className="flex items-center gap-4 mb-4">
             <Select onValueChange={setSelectedCampaign} value={selectedCampaign} disabled={isLoadingCampaigns}>
               <SelectTrigger className="w-[280px]">
-                <SelectValue placeholder="Select a campaign..." />
+                <SelectValue placeholder={isLoadingCampaigns ? "Loading campaigns..." : "Select a campaign..."} />
               </SelectTrigger>
               <SelectContent>
                 {campaigns?.map((campaign) => (
@@ -102,14 +101,19 @@ const HopperPage: React.FC = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {isLoadingHopper && (
+                {!selectedCampaign ? (
+                  <TableRow>
+                    <TableCell colSpan={hopperTableHeaders.length || 5} className="text-center py-8">
+                      {isLoadingCampaigns ? 'Loading campaigns...' : 'Please select a campaign to view the hopper.'}
+                    </TableCell>
+                  </TableRow>
+                ) : isLoadingHopper ? (
                   <TableRow>
                     <TableCell colSpan={hopperTableHeaders.length || 5}>
                       <Skeleton className="h-20 w-full" />
                     </TableCell>
                   </TableRow>
-                )}
-                {isHopperError && (
+                ) : isHopperError ? (
                   <TableRow>
                     <TableCell colSpan={hopperTableHeaders.length || 5}>
                       <Alert variant="destructive">
@@ -119,28 +123,19 @@ const HopperPage: React.FC = () => {
                       </Alert>
                     </TableCell>
                   </TableRow>
-                )}
-                {!isLoadingHopper && !isHopperError && hopper && hopper.length > 0 && (
+                ) : hopper && hopper.length > 0 ? (
                   hopper.map((lead, index) => (
                     <TableRow key={index}>
                       {hopperTableHeaders.map(header => <TableCell key={header}>{lead[header]}</TableCell>)}
                     </TableRow>
                   ))
-                )}
-                {!isLoadingHopper && !isHopperError && (!hopper || hopper.length === 0) && selectedCampaign && (
+                ) : (
                   <TableRow>
                     <TableCell colSpan={hopperTableHeaders.length || 5} className="text-center py-8">
                       No leads in the hopper for this campaign.
                     </TableCell>
                   </TableRow>
                 )}
-                 {!selectedCampaign && !isLoadingCampaigns && (
-                    <TableRow>
-                        <TableCell colSpan={5} className="text-center py-8">
-                            Please select a campaign to view the hopper.
-                        </TableCell>
-                    </TableRow>
-                 )}
               </TableBody>
             </Table>
           </div>
