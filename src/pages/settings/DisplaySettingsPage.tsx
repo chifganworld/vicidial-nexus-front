@@ -20,6 +20,14 @@ const DisplaySettingsPage: React.FC = () => {
     setSettings(prev => ({ ...prev, showAvatars: checked }));
   };
 
+  const handleShowAgentPerformanceChange = (checked: boolean) => {
+    setSettings(prev => ({ ...prev, showAgentPerformance: checked }));
+  };
+
+  const handleShowCampaignPerformanceChange = (checked: boolean) => {
+    setSettings(prev => ({ ...prev, showCampaignPerformance: checked }));
+  };
+
   return (
     <div className="min-h-screen bg-background p-4 md:p-8 flex justify-center items-center">
       <Card className="w-full max-w-2xl">
@@ -100,24 +108,31 @@ const DisplaySettingsPage: React.FC = () => {
                 onCheckedChange={handleShowAvatarsChange}
               />
             </div>
-            {/* Placeholder for more settings */}
-            <div className="flex items-center justify-between rounded-lg border p-4 opacity-50">
+            <div className="flex items-center justify-between rounded-lg border p-4">
               <div className="space-y-0.5">
                 <Label htmlFor="show-agent-performance" className="text-base">Show Agent Performance</Label>
                  <p className="text-sm text-muted-foreground">
                   Display the performance stats widget on the Agent Console.
                 </p>
               </div>
-              <Switch id="show-agent-performance" disabled />
+              <Switch
+                id="show-agent-performance"
+                checked={settings.showAgentPerformance}
+                onCheckedChange={handleShowAgentPerformanceChange}
+              />
             </div>
-             <div className="flex items-center justify-between rounded-lg border p-4 opacity-50">
+             <div className="flex items-center justify-between rounded-lg border p-4">
               <div className="space-y-0.5">
                 <Label htmlFor="show-campaign-performance" className="text-base">Show Campaign Performance</Label>
                  <p className="text-sm text-muted-foreground">
                   Display campaign stats on the Supervisor Dashboard.
                 </p>
               </div>
-              <Switch id="show-campaign-performance" disabled />
+              <Switch
+                id="show-campaign-performance"
+                checked={settings.showCampaignPerformance}
+                onCheckedChange={handleShowCampaignPerformanceChange}
+              />
             </div>
           </div>
         </CardContent>

@@ -6,8 +6,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Eye } from 'lucide-react';
 import AgentStatusGrid from '@/components/supervisor/AgentStatusGrid';
 import CampaignPerformance from '@/components/supervisor/CampaignPerformance';
+import { useDisplaySettings } from '@/contexts/DisplaySettingsContext';
 
 const SupervisorDashboard: React.FC = () => {
+  const { settings } = useDisplaySettings();
+
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 p-4 md:p-8">
       <header className="mb-8">
@@ -25,7 +28,7 @@ const SupervisorDashboard: React.FC = () => {
         </div>
         
         <div className="space-y-6">
-            <CampaignPerformance />
+            {settings.showCampaignPerformance && <CampaignPerformance />}
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">

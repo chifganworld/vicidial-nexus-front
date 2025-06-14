@@ -18,6 +18,7 @@ import AgentPerformance from '@/components/agent/AgentPerformance';
 import { toast } from 'sonner';
 import AgentConsoleHeader from '@/components/agent/AgentConsoleHeader';
 import QuickActions from '@/components/agent/QuickActions';
+import { useDisplaySettings } from '@/contexts/DisplaySettingsContext';
 
 export type Lead = Database['public']['Tables']['leads']['Row'];
 
@@ -30,6 +31,7 @@ const AgentConsole: React.FC = () => {
   const audioRef = useRef<HTMLAudioElement>(null);
   const { setAudioElement } = useSip();
   const navigate = useNavigate();
+  const { settings } = useDisplaySettings();
 
   const { 
     isPaused, 
@@ -200,7 +202,7 @@ const AgentConsole: React.FC = () => {
           <LeadDetails lead={currentLead} isLoading={isLoadingLead} />
         </div>
         <div className="lg:col-span-1">
-          <AgentPerformance />
+          {settings.showAgentPerformance && <AgentPerformance />}
         </div>
         <div className="lg:col-span-1">
           <CallLogs />
