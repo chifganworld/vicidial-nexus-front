@@ -45,8 +45,23 @@ serve(async (req) => {
         });
     }
 
-    // The `handle_new_user` trigger should create the profile.
-    // We will assign roles now.
+    // Create the user profile
+    const { error: profileError } = await supabaseAdmin.from('profiles').insert({
+        id: user.id,
+        full_name: full_name,
+    });
+
+    if (profileError) {
+        console.error('Error creating user profile:', profileError.message);
+        // Clean up created auth user if profile creation fails
+        await supabaseAdmin.auth.admin.deleteUser(user.id);
+        return new Response(JSON.stringify({ error: `DB error creating profile: ${profileError.message}` }), {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+            status: 500,
+        });
+    }
+
+    // Assign roles to the new user
     if (roles && roles.length > 0) {
       const rolesToInsert = roles.map((role: string) => ({
         user_id: user.id,
