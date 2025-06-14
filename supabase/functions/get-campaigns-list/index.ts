@@ -34,12 +34,13 @@ Deno.serve(async (req) => {
       header: 'YES'
     });
 
-    const vicidialUrl = `https://${vicidial_domain}/vicidial/non_agent_api.php?${params.toString()}`;
+    const vicidialUrl = `https://${vicidial_domain}/goautodial/non_agent_api.php?${params.toString()}`;
 
     const response = await fetch(vicidialUrl);
     const textResponse = await response.text();
 
     if (!response.ok || textResponse.includes("ERROR:")) {
+      console.error("Vicidial API Error Response:", textResponse);
       throw new Error(`Vicidial API Error: ${textResponse}`);
     }
 
@@ -50,12 +51,12 @@ Deno.serve(async (req) => {
         status: 200,
       });
     }
-    const header = lines[0].split(',');
+    const header = lines[0].split(',').map(h => h.trim());
     const data = lines.slice(1).map(line => {
       const values = line.split(',');
       const row: { [key: string]: string } = {};
       header.forEach((h, i) => {
-        row[h.trim()] = values[i] ? values[i].trim() : '';
+        row[h] = values[i] ? values[i].trim() : '';
       });
       return row;
     });
