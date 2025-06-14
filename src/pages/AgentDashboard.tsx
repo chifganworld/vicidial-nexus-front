@@ -9,6 +9,7 @@ import AgentStatsDisplay from '@/components/AgentStatsDisplay';
 import AddLeadModal from '@/components/AddLeadModal';
 import UpdateLeadModal from '@/components/UpdateLeadModal';
 import SearchLeadModal from '@/components/SearchLeadModal';
+import ViewCallbacksModal from '@/components/ViewCallbacksModal';
 
 const AgentDashboard: React.FC = () => {
   return (
@@ -44,7 +45,7 @@ const AgentDashboard: React.FC = () => {
           <AddLeadModal />
           <UpdateLeadModal />
           <SearchLeadModal />
-          <Button>View Callbacks</Button>
+          <ViewCallbacksModal />
         </div>
       </div>
     </div>
