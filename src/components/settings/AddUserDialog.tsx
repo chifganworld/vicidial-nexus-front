@@ -32,6 +32,8 @@ const formSchema = z.object({
   fullName: z.string().min(2, { message: 'Full name must be at least 2 characters.' }),
   email: z.string().email({ message: 'Please enter a valid email.' }),
   password: z.string().min(8, { message: 'Password must be at least 8 characters.' }),
+  sipNumber: z.string().optional(),
+  webrtcNumber: z.string().optional(),
   roles: z.array(z.string()).refine((value) => value.some((item) => item), {
     message: 'You have to select at least one role.',
   }),
@@ -50,6 +52,8 @@ const createUser = async (values: z.infer<typeof formSchema>) => {
             password: values.password,
             full_name: values.fullName,
             roles: values.roles,
+            sip_number: values.sipNumber,
+            webrtc_number: values.webrtcNumber,
         },
     });
 
@@ -75,6 +79,8 @@ const AddUserDialog: React.FC = () => {
             fullName: '',
             email: '',
             password: '',
+            sipNumber: '',
+            webrtcNumber: '',
             roles: ['agent'],
         },
     });
@@ -147,6 +153,34 @@ const AddUserDialog: React.FC = () => {
                                     <FormLabel>Password</FormLabel>
                                     <FormControl>
                                         <Input type="password" placeholder="A secure password" {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name="sipNumber"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>SIP Number</FormLabel>
+                                    <FormControl>
+                                        <Input placeholder="e.g., 1001" {...field} value={field.value ?? ''} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name="webrtcNumber"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>WebRTC Number</FormLabel>
+                                    <FormControl>
+                                        <Input placeholder="e.g., 8001" {...field} value={field.value ?? ''} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>

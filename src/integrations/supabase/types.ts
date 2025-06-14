@@ -14,22 +14,28 @@ export type Database = {
           avatar_url: string | null
           full_name: string | null
           id: string
+          sip_number: string | null
           updated_at: string
           username: string | null
+          webrtc_number: string | null
         }
         Insert: {
           avatar_url?: string | null
           full_name?: string | null
           id: string
+          sip_number?: string | null
           updated_at?: string
           username?: string | null
+          webrtc_number?: string | null
         }
         Update: {
           avatar_url?: string | null
           full_name?: string | null
           id?: string
+          sip_number?: string | null
           updated_at?: string
           username?: string | null
+          webrtc_number?: string | null
         }
         Relationships: []
       }
@@ -96,6 +102,8 @@ export type Database = {
           email: string
           full_name: string
           roles: Database["public"]["Enums"]["app_role"][]
+          sip_number: string
+          webrtc_number: string
         }[]
       }
       is_user_supervisor_or_admin: {
