@@ -126,13 +126,17 @@ const DialPad: React.FC<DialPadProps> = ({ lead, simulatedDuration, onSimulatedH
         </Button>
       </div>
 
-      {isCallActive && (
+      {(isCallActive || isSimulatedCallActive) && (
         <div className="grid grid-cols-2 gap-2">
-            <Button variant="outline" onClick={toggleMute} className="h-12">
+            <Button variant="outline" onClick={toggleMute} className="h-12" disabled={!isCallActive}>
                 {isMuted ? <MicOff className="h-5 w-5 mr-2" /> : <Mic className="h-5 w-5 mr-2" />}
                 {isMuted ? 'Unmute' : 'Mute'}
             </Button>
-            <TransferModal disabled={!isCallActive} />
+            <TransferModal 
+              disabled={!isCallActive && !isSimulatedCallActive} 
+              isSimulated={isSimulatedCallActive}
+              onSimulatedHangUp={onSimulatedHangUp}
+            />
         </div>
       )}
 

@@ -14,18 +14,28 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useSip } from '@/providers/SipProvider';
 import { ArrowRightLeft } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface TransferModalProps {
   disabled: boolean;
+  isSimulated?: boolean;
+  onSimulatedHangUp?: () => void;
 }
 
-const TransferModal: React.FC<TransferModalProps> = ({ disabled }) => {
+const TransferModal: React.FC<TransferModalProps> = ({ disabled, isSimulated = false, onSimulatedHangUp }) => {
     const [open, setOpen] = useState(false);
     const [transferNumber, setTransferNumber] = useState('');
     const { transfer } = useSip();
 
     const handleTransfer = () => {
-        transfer(transferNumber);
+        if (isSimulated) {
+            toast.info(`Call transferred to ${transferNumber} (simulation).`);
+            if (onSimulatedHangUp) {
+                onSimulatedHangUp();
+            }
+        } else {
+            transfer(transferNumber);
+        }
         setOpen(false);
         setTransferNumber('');
     };
