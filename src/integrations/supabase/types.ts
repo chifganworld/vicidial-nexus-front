@@ -262,6 +262,30 @@ export type Database = {
         }
         Relationships: []
       }
+      system_health_logs: {
+        Row: {
+          component: string
+          created_at: string
+          details: string | null
+          id: number
+          status: Database["public"]["Enums"]["health_status"]
+        }
+        Insert: {
+          component: string
+          created_at?: string
+          details?: string | null
+          id?: number
+          status: Database["public"]["Enums"]["health_status"]
+        }
+        Update: {
+          component?: string
+          created_at?: string
+          details?: string | null
+          id?: number
+          status?: Database["public"]["Enums"]["health_status"]
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -391,6 +415,7 @@ export type Database = {
     Enums: {
       app_role: "agent" | "supervisor" | "admin"
       call_status: "ANSWERED" | "ABANDONED" | "MISSED" | "FAILED" | "IN_QUEUE"
+      health_status: "ok" | "warning" | "error"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -508,6 +533,7 @@ export const Constants = {
     Enums: {
       app_role: ["agent", "supervisor", "admin"],
       call_status: ["ANSWERED", "ABANDONED", "MISSED", "FAILED", "IN_QUEUE"],
+      health_status: ["ok", "warning", "error"],
     },
   },
 } as const
