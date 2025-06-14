@@ -6,7 +6,7 @@ import { Phone, PhoneOff, ArrowLeft, Mic, MicOff, Timer } from 'lucide-react';
 import { useSip } from '@/providers/SipProvider';
 import { SessionState } from 'sip.js';
 import TransferModal from '@/components/agent/TransferModal';
-import { Lead } from '@/pages/AgentConsole';
+import { Lead } from '@/hooks/useCurrentLead';
 import { toast } from 'sonner';
 
 interface DialPadProps {
