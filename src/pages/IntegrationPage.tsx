@@ -6,28 +6,44 @@ import * as z from 'zod';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Label } from '@/components/ui/label'; // Assuming Label might be used
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import {
+  Form,
+  FormControl,
+  FormDescription, // Added import
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
 import { toast } from 'sonner';
+import { Database } from '@/integrations/supabase/types'; // Assuming this was generated/exists
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Settings, Save } from 'lucide-react';
+import { ArrowLeft, Save } from 'lucide-react';
+
+type VicidialIntegrationFormData = z.infer<typeof vicidialIntegrationSchema>;
+type VicidialIntegrationTableRow = Database['public']['Tables']['vicidial_integration']['Row'];
 
 const vicidialIntegrationSchema = z.object({
-  vicidial_domain: z.string().min(1, 'Vicidial domain is required').url('Must be a valid URL (e.g., https://vicidial.example.com)'),
+  vicidial_domain: z.string().min(1, 'Vicidial domain is required').url('Must be a valid URL (e.g., https://example.com)'),
   api_user: z.string().min(1, 'API user is required'),
   api_password: z.string().min(1, 'API password is required'),
   ports: z.string().optional(),
 });
 
-type VicidialIntegrationFormValues = z.infer<typeof vicidialIntegrationSchema>;
-
 const IntegrationPage: React.FC = () => {
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [existingConfigId, setExistingConfigId] = useState<string | null>(null);
+  const [settingsId, setSettingsId] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const form = useForm<VicidialIntegrationFormValues>({
+  const form = useForm<VicidialIntegrationFormData>({
     resolver: zodResolver(vicidialIntegrationSchema),
     defaultValues: {
       vicidial_domain: '',
@@ -38,105 +54,88 @@ const IntegrationPage: React.FC = () => {
   });
 
   useEffect(() => {
-    const fetchConfiguration = async () => {
-      setLoading(true);
+    const fetchSettings = async () => {
+      setIsLoading(true);
       const { data, error } = await supabase
         .from('vicidial_integration')
         .select('*')
-        .limit(1) // Assuming we manage one primary configuration for now
-        .single(); // Use single to get one record or null
+        .limit(1) // Assuming one global setting or fetching the first one
+        .single(); // Use single if you expect one row or null
 
-      if (error && error.code !== 'PGRST116') { // PGRST116: no rows found
-        toast.error('Failed to load Vicidial configuration', { description: error.message });
+      if (error && error.code !== 'PGRST116') { // PGRST116: '0 rows' error for single()
+        toast.error('Failed to load Vicidial settings: ' + error.message);
       } else if (data) {
         form.reset({
           vicidial_domain: data.vicidial_domain,
           api_user: data.api_user,
-          api_password: data.api_password, // Be cautious displaying passwords
+          api_password: data.api_password, // Note: displaying password is not secure
           ports: data.ports || '',
         });
-        setExistingConfigId(data.id);
+        setSettingsId(data.id);
       }
-      setLoading(false);
+      setIsLoading(false);
     };
-
-    fetchConfiguration();
+    fetchSettings();
   }, [form]);
 
-  const onSubmit = async (values: VicidialIntegrationFormValues) => {
-    setSaving(true);
-    try {
-      let response;
-      const payload = {
-        vicidial_domain: values.vicidial_domain,
-        api_user: values.api_user,
-        api_password: values.api_password,
-        ports: values.ports,
-      };
+  const onSubmit = async (values: VicidialIntegrationFormData) => {
+    setIsLoading(true);
+    let responseError = null;
 
-      if (existingConfigId) {
-        // Update existing configuration
-        response = await supabase
-          .from('vicidial_integration')
-          .update(payload)
-          .eq('id', existingConfigId)
-          .select()
-          .single();
-      } else {
-        // Insert new configuration
-        response = await supabase
-          .from('vicidial_integration')
-          .insert(payload)
-          .select()
-          .single();
-      }
-
-      const { data, error } = response;
-
-      if (error) throw error;
-
+    if (settingsId) {
+      // Update existing settings
+      const { error } = await supabase
+        .from('vicidial_integration')
+        .update({
+          vicidial_domain: values.vicidial_domain,
+          api_user: values.api_user,
+          api_password: values.api_password, // Security concern: saving plain password
+          ports: values.ports,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', settingsId);
+      responseError = error;
+    } else {
+      // Insert new settings
+      const { data, error } = await supabase
+        .from('vicidial_integration')
+        .insert([{
+          vicidial_domain: values.vicidial_domain,
+          api_user: values.api_user,
+          api_password: values.api_password, // Security concern: saving plain password
+          ports: values.ports,
+        }])
+        .select()
+        .single();
+      responseError = error;
       if (data) {
-         setExistingConfigId(data.id); // Ensure we have the ID for subsequent saves
-         form.reset(values); // Reset with current values to clear dirty state
-         toast.success('Vicidial configuration saved successfully!');
+        setSettingsId(data.id);
       }
+    }
 
-    } catch (error: any) {
-      toast.error('Failed to save configuration', { description: error.message });
-    } finally {
-      setSaving(false);
+    setIsLoading(false);
+    if (responseError) {
+      toast.error('Failed to save settings: ' + responseError.message);
+    } else {
+      toast.success('Vicidial settings saved successfully!');
     }
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-100">
-        <p>Loading Vicidial Configuration...</p>
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen flex flex-col items-center bg-gradient-to-br from-slate-900 to-slate-700 p-4 md:p-8">
-       <Link to="/agent" className="absolute top-4 left-4 md:top-8 md:left-8">
-        <Button variant="outline" size="icon" className="bg-slate-700 hover:bg-slate-600 border-slate-600 text-white hover:text-white">
-          <ArrowLeft className="h-5 w-5" />
-          <span className="sr-only">Back to Dashboard</span>
-        </Button>
-      </Link>
-      <div className="text-center mb-8">
-        <Settings size={48} className="mx-auto text-blue-400 mb-4" />
-        <h1 className="text-4xl font-bold text-white">Vicidial Integration</h1>
-        <p className="text-lg text-slate-300">
-          Configure your Vicidial server connection details.
-        </p>
-      </div>
-      <Card className="w-full max-w-lg shadow-xl">
+    <div className="min-h-screen bg-gray-100 p-4 md:p-8 flex flex-col items-center">
+      <Card className="w-full max-w-2xl">
         <CardHeader>
-          <CardTitle className="text-2xl">Connection Settings</CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-2xl">Vicidial Integration Settings</CardTitle>
+            <Link to="/supervisor"> {/* Or appropriate back link */}
+              <Button variant="outline" size="icon">
+                <ArrowLeft className="h-4 w-4" />
+              </Button>
+            </Link>
+          </div>
           <CardDescription>
-            Enter the details required to connect to your Vicidial instance.
-            Be mindful that the API password will be stored.
+            Configure the connection details for your Vicidial server.
+            Be careful with API credentials.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -151,6 +150,9 @@ const IntegrationPage: React.FC = () => {
                     <FormControl>
                       <Input placeholder="https://vicidial.example.com" {...field} />
                     </FormControl>
+                    <FormDescription>
+                      The full URL of your Vicidial server.
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -162,8 +164,11 @@ const IntegrationPage: React.FC = () => {
                   <FormItem>
                     <FormLabel>API User</FormLabel>
                     <FormControl>
-                      <Input placeholder="api_user_name" {...field} />
+                      <Input placeholder="api_username" {...field} />
                     </FormControl>
+                    <FormDescription>
+                      The username for Vicidial API access.
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -175,10 +180,10 @@ const IntegrationPage: React.FC = () => {
                   <FormItem>
                     <FormLabel>API Password</FormLabel>
                     <FormControl>
-                      <Input type="password" placeholder="••••••••" {...field} />
+                      <Input type="password" placeholder="api_password" {...field} />
                     </FormControl>
                     <FormDescription>
-                      This password will be stored. Ensure it's an API-specific credential.
+                      The password for Vicidial API access. Stored as plain text, consider security implications.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -194,32 +199,28 @@ const IntegrationPage: React.FC = () => {
                       <Input placeholder="e.g., 80,443,10000-20000" {...field} />
                     </FormControl>
                     <FormDescription>
-                      Relevant ports for WebRTC or other connections, if needed.
+                      Specify any relevant ports, like WebRTC or API ports if non-standard.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="w-full" disabled={saving}>
-                {saving ? (
-                  <>
-                    <Save className="mr-2 h-4 w-4 animate-spin" /> Saving...
-                  </>
-                ) : (
-                  <>
-                    <Save className="mr-2 h-4 w-4" /> Save Configuration
-                  </>
-                )}
+              <Button type="submit" disabled={isLoading || form.formState.isSubmitting} className="w-full">
+                <Save className="mr-2 h-4 w-4" />
+                {isLoading ? 'Saving...' : 'Save Settings'}
               </Button>
             </form>
           </Form>
         </CardContent>
+        <CardFooter>
+          <p className="text-xs text-gray-500">
+            Changes will take effect immediately for new operations.
+          </p>
+        </CardFooter>
       </Card>
-      <footer className="mt-12 text-sm text-slate-500">
-        <p>&copy; {new Date().getFullYear()} Vicidial Nexus. All rights reserved.</p>
-      </footer>
     </div>
   );
 };
 
 export default IntegrationPage;
+

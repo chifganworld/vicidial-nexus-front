@@ -7,32 +7,37 @@ import AuthPage from './pages/AuthPage';
 import AgentDashboard from './pages/AgentDashboard';
 import SupervisorDashboard from './pages/SupervisorDashboard';
 import ReportsPage from './pages/ReportsPage';
-import IntegrationPage from './pages/IntegrationPage'; // Import the new page
+import IntegrationPage from './pages/IntegrationPage';
 import NotFound from './pages/NotFound';
-import { Toaster as SonnerToaster } from '@/components/ui/sonner'; // Using Sonner
-import { Toaster as ShadcnToaster } from "@/components/ui/toaster"; // Shadcn Toaster for useToast hook
-
+import { Toaster as SonnerToaster } from '@/components/ui/sonner';
+import { Toaster as ShadcnToaster } from "@/components/ui/toaster";
 
 function App() {
   return (
-    <AuthProvider>
-      <Router>
+    <Router> {/* Router now wraps AuthProvider */}
+      <AuthProvider>
         <Routes>
           <Route path="/" element={<IndexPage />} />
           <Route path="/auth" element={<AuthPage />} />
           
-          {/* Protected Routes */}
-          <Route path="/agent" element={<ProtectedRoute allowedRoles={['agent', 'supervisor', 'admin']}><AgentDashboard /></ProtectedRoute>} />
-          <Route path="/supervisor" element={<ProtectedRoute allowedRoles={['supervisor', 'admin']}><SupervisorDashboard /></ProtectedRoute>} />
-          <Route path="/reports" element={<ProtectedRoute allowedRoles={['supervisor', 'admin']}><ReportsPage /></ProtectedRoute>} />
-          <Route path="/integration" element={<ProtectedRoute allowedRoles={['admin', 'supervisor']}><IntegrationPage /></ProtectedRoute>} /> {/* Added Integration Page Route */}
+          {/* Protected Routes using layout structure */}
+          <Route element={<ProtectedRoute allowedRoles={['agent', 'supervisor', 'admin']} />}>
+            <Route path="/agent" element={<AgentDashboard />} />
+          </Route>
+          <Route element={<ProtectedRoute allowedRoles={['supervisor', 'admin']} />}>
+            <Route path="/supervisor" element={<SupervisorDashboard />} />
+            <Route path="/reports" element={<ReportsPage />} />
+          </Route>
+          <Route element={<ProtectedRoute allowedRoles={['admin', 'supervisor']} />}>
+            <Route path="/integration" element={<IntegrationPage />} />
+          </Route>
 
           <Route path="*" element={<NotFound />} />
         </Routes>
-      </Router>
-      <SonnerToaster richColors position="top-right" />
-      <ShadcnToaster /> {/* Ensure this is present if useToast from shadcn/ui is used anywhere */}
-    </AuthProvider>
+        <SonnerToaster richColors position="top-right" />
+        <ShadcnToaster />
+      </AuthProvider>
+    </Router>
   );
 }
 
