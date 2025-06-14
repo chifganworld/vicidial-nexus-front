@@ -6,8 +6,13 @@ import { Phone, PhoneOff, ArrowLeft, Mic, MicOff, ArrowRightLeft } from 'lucide-
 import { useSip } from '@/providers/SipProvider';
 import { SessionState } from 'sip.js';
 import TransferModal from '@/components/agent/TransferModal';
+import { Lead } from '@/pages/AgentConsole';
 
-const DialPad: React.FC = () => {
+interface DialPadProps {
+  lead: Lead | null;
+}
+
+const DialPad: React.FC<DialPadProps> = ({ lead }) => {
   const [dialedNumber, setDialedNumber] = useState('');
   const { makeCall, hangup, sessionState, isMuted, toggleMute } = useSip();
 
@@ -24,7 +29,7 @@ const DialPad: React.FC = () => {
   };
 
   const handleCall = () => {
-    makeCall(dialedNumber);
+    makeCall(dialedNumber, lead?.id ?? null);
   };
 
   const handleHangUp = () => {

@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -16,6 +17,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Database } from '@/integrations/supabase/types';
 import { useSip } from '@/providers/SipProvider';
+import DispositionModal from '@/components/agent/DispositionModal';
 
 export type Lead = Database['public']['Tables']['leads']['Row'];
 
@@ -96,6 +98,7 @@ const AgentConsole: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-100 p-4 md:p-8">
       <audio ref={audioRef} />
+      <DispositionModal />
       <header className="mb-8">
         <div className="flex justify-between items-center">
           <h1 className="text-3xl font-bold text-gray-800">Agent Console</h1>
@@ -117,7 +120,7 @@ const AgentConsole: React.FC = () => {
             <Phone className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <DialPad />
+            <DialPad lead={currentLead} />
           </CardContent>
         </Card>
 

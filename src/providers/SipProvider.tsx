@@ -7,12 +7,15 @@ import { toast } from '@/hooks/use-toast';
 type SipContextType = {
   connectionState: UserAgentState;
   sessionState: SessionState;
-  makeCall: (destination: string) => void;
+  makeCall: (destination: string, leadId?: string | null) => void;
   hangup: () => void;
   setAudioElement: (element: HTMLAudioElement | null) => void;
   isMuted: boolean;
   toggleMute: () => void;
   transfer: (destination: string) => void;
+  callContext: { leadId: string | null; phoneNumber: string; startTime: number | null } | null;
+  submitDisposition: (disposition: { status: string; notes: string }) => Promise<void>;
+  clearCallContext: () => void;
 };
 
 const SipContext = createContext<SipContextType | undefined>(undefined);
@@ -38,6 +41,11 @@ export const SipProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [connectionState, setConnectionState] = useState<UserAgentState>(UserAgentState.Stopped);
   const [sessionState, setSessionState] = useState<SessionState>(SessionState.Initial);
   const [isMuted, setIsMuted] = useState(false);
+  const [callContext, setCallContext] = useState<{
+    leadId: string | null;
+    phoneNumber: string;
+    startTime: number | null;
+  } | null>(null);
 
   const { data: sipSettings } = useQuery({
     queryKey: ['sipSettings'],
@@ -127,6 +135,7 @@ export const SipProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
           setSession(null);
         }
         if (newState === SessionState.Established) {
+          setCallContext(prev => prev ? { ...prev, startTime: Date.now() } : null);
           if (audioElement) {
             const sdh = session.sessionDescriptionHandler;
             // The type definitions for sessionDescriptionHandler are likely incomplete.
@@ -173,7 +182,7 @@ export const SipProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }
   }, [sessionState]);
 
-  const makeCall = useCallback(async (destination: string) => {
+  const makeCall = useCallback(async (destination: string, leadId?: string | null) => {
     if (!userAgent || !sipSettings) {
       toast({ title: "SIP client not ready", description: "Please check your SIP settings and connection.", variant: "destructive" });
       return;
@@ -188,6 +197,8 @@ export const SipProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       toast({ title: 'Invalid number', description: `Could not create a valid SIP URI for ${destination}`, variant: 'destructive' });
       return;
     }
+    
+    setCallContext({ leadId: leadId ?? null, phoneNumber: destination, startTime: null });
 
     const inviter = new Inviter(userAgent, target);
     setSession(inviter);
@@ -225,6 +236,38 @@ export const SipProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }
   }, [session]);
 
+  const submitDisposition = useCallback(async ({ status, notes }: { status: string; notes: string }) => {
+    if (!callContext) return;
+
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+        toast({ title: 'Error', description: 'User not authenticated.', variant: 'destructive' });
+        return;
+    }
+
+    const duration = callContext.startTime ? Math.round((Date.now() - callContext.startTime) / 1000) : null;
+
+    const { error } = await supabase.from('call_logs').insert({
+        agent_id: user.id,
+        lead_id: callContext.leadId,
+        phone_number: callContext.phoneNumber,
+        status: status as any, // Cast to any to bypass enum type check at compile time
+        notes: notes || null,
+        duration_seconds: duration,
+    });
+
+    if (error) {
+        toast({ title: 'Failed to save disposition', description: error.message, variant: 'destructive' });
+    } else {
+        toast({ title: 'Disposition saved' });
+        setCallContext(null); // Clear context after submission
+    }
+  }, [callContext]);
+
+  const clearCallContext = useCallback(() => {
+    setCallContext(null);
+  }, []);
+
   const value = {
     connectionState,
     sessionState,
@@ -234,6 +277,9 @@ export const SipProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     isMuted,
     toggleMute,
     transfer,
+    callContext,
+    submitDisposition,
+    clearCallContext,
   };
 
   return <SipContext.Provider value={value}>{children}</SipContext.Provider>;
