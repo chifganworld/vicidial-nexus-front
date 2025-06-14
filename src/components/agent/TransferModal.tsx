@@ -29,7 +29,7 @@ const TransferModal: React.FC<TransferModalProps> = ({ disabled, isSimulated = f
 
     const handleTransfer = () => {
         if (isSimulated) {
-            toast.info(`Call transferred to ${transferNumber} (simulation).`);
+            toast.info(`Call transferred to ${transferNumber} (simulation).`, { duration: 2000 });
             if (onSimulatedHangUp) {
                 onSimulatedHangUp();
             }

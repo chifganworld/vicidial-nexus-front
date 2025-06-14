@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -128,7 +129,6 @@ const AgentConsole: React.FC = () => {
     }
     setSimulatedCallDuration(undefined);
     if (simulatedCallToastId) {
-      toast.error("Call ended (simulation).");
       toast.dismiss(simulatedCallToastId);
       setSimulatedCallToastId(undefined);
     }
@@ -164,7 +164,7 @@ const AgentConsole: React.FC = () => {
                     );
                 }}>Answer</Button>
                 <Button size="sm" variant="destructive" onClick={() => {
-                    toast.error("Call declined (simulation).");
+                    toast.error("Call declined (simulation).", { duration: 2000 });
                     toast.dismiss(toastId);
                     setSimulatedCallToastId(undefined);
                 }}>Decline</Button>

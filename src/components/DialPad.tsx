@@ -7,6 +7,7 @@ import { useSip } from '@/providers/SipProvider';
 import { SessionState } from 'sip.js';
 import TransferModal from '@/components/agent/TransferModal';
 import { Lead } from '@/pages/AgentConsole';
+import { toast } from 'sonner';
 
 interface DialPadProps {
   lead: Lead | null;
@@ -65,6 +66,7 @@ const DialPad: React.FC<DialPadProps> = ({ lead, simulatedDuration, onSimulatedH
 
   const handleHangUp = () => {
     if (isSimulatedCallActive && onSimulatedHangUp) {
+      toast.error("Call ended (simulation).", { duration: 2000 });
       onSimulatedHangUp();
     } else {
       hangup();
