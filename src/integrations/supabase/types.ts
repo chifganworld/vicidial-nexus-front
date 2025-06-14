@@ -106,6 +106,10 @@ export type Database = {
           webrtc_number: string
         }[]
       }
+      grant_admin_to_self: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
       is_user_supervisor_or_admin: {
         Args: Record<PropertyKey, never>
         Returns: boolean

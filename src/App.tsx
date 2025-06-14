@@ -9,7 +9,7 @@ import ReportsPage from './pages/ReportsPage';
 import IntegrationPage from './pages/IntegrationPage';
 import SettingsPage from './pages/SettingsPage';
 import DisplaySettingsPage from './pages/settings/DisplaySettingsPage';
-import UserManagementPage from './pages/settings/UserManagementPage';
+import UserManagementPage from './pages/UserManagementPage';
 import NotFound from './pages/NotFound';
 import { Toaster as SonnerToaster } from '@/components/ui/sonner';
 import { Toaster as ShadcnToaster } from "@/components/ui/toaster";
