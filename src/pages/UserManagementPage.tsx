@@ -1,16 +1,15 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
-import { ArrowLeft, MoreHorizontal, AlertCircle, ShieldCheck } from 'lucide-react';
+import { ArrowLeft, MoreHorizontal, AlertCircle } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import AddUserDialog from '@/components/settings/AddUserDialog';
-import { toast } from 'sonner';
 
 type User = {
   id: string;
@@ -30,34 +29,11 @@ const fetchUsers = async () => {
   return data as User[];
 };
 
-const grantAdmin = async () => {
-  const { error } = await supabase.rpc('grant_admin_to_self');
-  if (error) {
-    throw new Error(error.message);
-  }
-};
-
 const UserManagementPage: React.FC = () => {
-  const queryClient = useQueryClient();
   const { data: users, isLoading, isError, error } = useQuery({
     queryKey: ['usersForManagement'],
     queryFn: fetchUsers,
   });
-
-  const grantAdminMutation = useMutation({
-    mutationFn: grantAdmin,
-    onSuccess: () => {
-      toast.success("You've been granted admin privileges! The user list should now be visible.");
-      queryClient.invalidateQueries({ queryKey: ['usersForManagement'] });
-    },
-    onError: (error: Error) => {
-      toast.error(`Failed to grant admin role: ${error.message}`);
-    },
-  });
-
-  const handleGrantAdmin = () => {
-    grantAdminMutation.mutate();
-  };
 
   const renderTableBody = () => {
     if (isLoading) {
@@ -138,14 +114,6 @@ const UserManagementPage: React.FC = () => {
               <CardDescription>View, add, or manage user accounts and roles.</CardDescription>
             </div>
             <div className="flex items-center gap-2">
-              <Button
-                variant="destructive"
-                onClick={handleGrantAdmin}
-                disabled={grantAdminMutation.isPending}
-              >
-                <ShieldCheck className="mr-2 h-4 w-4" />
-                {grantAdminMutation.isPending ? 'Granting...' : 'Become Admin'}
-              </Button>
               <AddUserDialog />
               <Link to="/settings">
                 <Button variant="outline" size="icon">
