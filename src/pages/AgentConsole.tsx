@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -139,9 +140,11 @@ const AgentConsole: React.FC = () => {
 
       <StatsBar />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <LeadInfoDisplay lead={currentLead} isLoading={isLoadingLead} />
-        <Card className="bg-green-950/20 backdrop-blur-sm border-green-400/20">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="md:col-span-2">
+          <LeadInfoDisplay lead={currentLead} isLoading={isLoadingLead} />
+        </div>
+        <Card className="h-full bg-green-950/20 backdrop-blur-sm border-green-400/20">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Dialer</CardTitle>
             <Phone className="h-4 w-4 text-muted-foreground" />
@@ -151,7 +154,9 @@ const AgentConsole: React.FC = () => {
           </CardContent>
         </Card>
         <AgentStatsDisplay />
-        <CallLogs />
+        <div className="md:col-span-2">
+          <CallLogs />
+        </div>
       </div>
 
       <div className="mt-8">
