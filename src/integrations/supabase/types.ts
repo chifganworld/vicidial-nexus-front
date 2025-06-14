@@ -15,6 +15,7 @@ export type Database = {
           full_name: string | null
           id: string
           sip_number: string | null
+          sip_password: string | null
           updated_at: string
           username: string | null
           webrtc_number: string | null
@@ -24,6 +25,7 @@ export type Database = {
           full_name?: string | null
           id: string
           sip_number?: string | null
+          sip_password?: string | null
           updated_at?: string
           username?: string | null
           webrtc_number?: string | null
@@ -33,6 +35,7 @@ export type Database = {
           full_name?: string | null
           id?: string
           sip_number?: string | null
+          sip_password?: string | null
           updated_at?: string
           username?: string | null
           webrtc_number?: string | null
@@ -104,6 +107,7 @@ export type Database = {
           roles: Database["public"]["Enums"]["app_role"][]
           sip_number: string
           webrtc_number: string
+          sip_password: string
         }[]
       }
       grant_admin_to_self: {
@@ -120,6 +124,7 @@ export type Database = {
           p_full_name: string
           p_sip_number: string
           p_webrtc_number: string
+          p_sip_password: string
         }
         Returns: undefined
       }

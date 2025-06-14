@@ -20,6 +20,7 @@ type User = {
   roles: string[];
   sip_number: string | null;
   webrtc_number: string | null;
+  sip_password: string | null;
 };
 
 const fetchUsers = async () => {
@@ -46,6 +47,7 @@ const UserManagementPage: React.FC = () => {
           <TableCell><Skeleton className="h-4 w-24" /></TableCell>
           <TableCell><Skeleton className="h-4 w-24" /></TableCell>
           <TableCell><Skeleton className="h-4 w-24" /></TableCell>
+          <TableCell><Skeleton className="h-4 w-24" /></TableCell>
           <TableCell><Skeleton className="h-8 w-8" /></TableCell>
         </TableRow>
       ));
@@ -54,7 +56,7 @@ const UserManagementPage: React.FC = () => {
     if (isError) {
       return (
         <TableRow>
-          <TableCell colSpan={6} className="text-center text-red-500">
+          <TableCell colSpan={7} className="text-center text-red-500">
             <div className="flex items-center justify-center gap-2">
               <AlertCircle className="h-5 w-5" />
               <span>Error loading users: {error.message}</span>
@@ -67,7 +69,7 @@ const UserManagementPage: React.FC = () => {
     if (!users || users.length === 0) {
         return (
             <TableRow>
-                <TableCell colSpan={6} className="text-center text-muted-foreground">
+                <TableCell colSpan={7} className="text-center text-muted-foreground">
                     No users found.
                 </TableCell>
             </TableRow>
@@ -89,6 +91,7 @@ const UserManagementPage: React.FC = () => {
         </TableCell>
         <TableCell>{user.sip_number || 'N/A'}</TableCell>
         <TableCell>{user.webrtc_number || 'N/A'}</TableCell>
+        <TableCell className="font-mono">{user.sip_password ? '********' : 'N/A'}</TableCell>
         <TableCell>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -112,7 +115,7 @@ const UserManagementPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background p-4 md:p-8 flex justify-center items-start">
-      <Card className="w-full max-w-5xl">
+      <Card className="w-full max-w-6xl">
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
@@ -138,6 +141,7 @@ const UserManagementPage: React.FC = () => {
                     <TableHead>Roles</TableHead>
                     <TableHead>SIP Number</TableHead>
                     <TableHead>WebRTC Number</TableHead>
+                    <TableHead>SIP Password</TableHead>
                     <TableHead>Actions</TableHead>
                     </TableRow>
                 </TableHeader>

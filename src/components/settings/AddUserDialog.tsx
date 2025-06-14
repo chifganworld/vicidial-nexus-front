@@ -1,4 +1,3 @@
-
 import React from 'react';
 import {
   Dialog,
@@ -33,6 +32,7 @@ const formSchema = z.object({
   email: z.string().email({ message: 'Please enter a valid email.' }),
   password: z.string().min(8, { message: 'Password must be at least 8 characters.' }),
   sipNumber: z.string().optional(),
+  sipPassword: z.string().optional(),
   webrtcNumber: z.string().optional(),
   roles: z.array(z.string()).refine((value) => value.some((item) => item), {
     message: 'You have to select at least one role.',
@@ -54,6 +54,7 @@ const createUser = async (values: z.infer<typeof formSchema>) => {
             roles: values.roles,
             sip_number: values.sipNumber,
             webrtc_number: values.webrtcNumber,
+            sip_password: values.sipPassword,
         },
     });
 
@@ -81,6 +82,7 @@ const AddUserDialog: React.FC = () => {
             password: '',
             sipNumber: '',
             webrtcNumber: '',
+            sipPassword: '',
             roles: ['agent'],
         },
     });
@@ -167,6 +169,20 @@ const AddUserDialog: React.FC = () => {
                                     <FormLabel>SIP Number</FormLabel>
                                     <FormControl>
                                         <Input placeholder="e.g., 1001" {...field} value={field.value ?? ''} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name="sipPassword"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>SIP Password</FormLabel>
+                                    <FormControl>
+                                        <Input type="password" placeholder="A secure SIP password" {...field} value={field.value ?? ''} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -27,12 +26,14 @@ type User = {
   roles: string[];
   sip_number: string | null;
   webrtc_number: string | null;
+  sip_password: string | null;
 };
 
 const formSchema = z.object({
   full_name: z.string().min(2, { message: 'Full name must be at least 2 characters.' }),
   sip_number: z.string().optional(),
   webrtc_number: z.string().optional(),
+  sip_password: z.string().optional(),
 });
 
 interface EditUserDialogProps {
@@ -51,6 +52,7 @@ const EditUserDialog: React.FC<EditUserDialogProps> = ({ user, children }) => {
       full_name: user.full_name || '',
       sip_number: user.sip_number || '',
       webrtc_number: user.webrtc_number || '',
+      sip_password: user.sip_password || '',
     },
   });
 
@@ -61,6 +63,7 @@ const EditUserDialog: React.FC<EditUserDialogProps> = ({ user, children }) => {
         p_full_name: values.full_name,
         p_sip_number: values.sip_number || null,
         p_webrtc_number: values.webrtc_number || null,
+        p_sip_password: values.sip_password || null,
       });
 
       if (error) {
@@ -139,6 +142,19 @@ const EditUserDialog: React.FC<EditUserDialogProps> = ({ user, children }) => {
                 </FormItem>
               )}
             />
+            <FormField
+              control={form.control}
+              name="sip_password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>SIP Password</FormLabel>
+                  <FormControl>
+                    <Input type="password" placeholder="Leave blank to keep current" {...field} value={field.value ?? ''} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <DialogFooter>
               <DialogClose asChild>
                 <Button type="button" variant="secondary">Cancel</Button>
@@ -155,4 +171,3 @@ const EditUserDialog: React.FC<EditUserDialogProps> = ({ user, children }) => {
 };
 
 export default EditUserDialog;
-
