@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -16,7 +17,8 @@ import { Database } from '@/integrations/supabase/types';
 import { useSip } from '@/providers/SipProvider';
 import DispositionModal from '@/components/agent/DispositionModal';
 import { useSessionTracker } from '@/hooks/useSessionTracker';
-import LeadDetailsAndStats from '@/components/agent/LeadDetailsAndStats';
+import LeadDetails from '@/components/agent/LeadDetails';
+import AgentPerformance from '@/components/agent/AgentPerformance';
 
 export type Lead = Database['public']['Tables']['leads']['Row'];
 
@@ -138,13 +140,17 @@ const AgentConsole: React.FC = () => {
 
       <StatsBar />
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="md:col-span-2 space-y-6">
-          <LeadDetailsAndStats lead={currentLead} isLoading={isLoadingLead} />
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <div className="lg:col-span-1">
+          <LeadDetails lead={currentLead} isLoading={isLoadingLead} />
+        </div>
+        <div className="lg:col-span-1">
+          <AgentPerformance />
+        </div>
+        <div className="lg:col-span-1">
           <CallLogs />
         </div>
-
-        <div className="md:col-span-1">
+        <div className="lg:col-span-1">
           <Card className="h-full bg-green-950/20 backdrop-blur-sm border-green-400/20">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Dialer</CardTitle>
