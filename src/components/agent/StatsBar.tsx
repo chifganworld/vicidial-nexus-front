@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -6,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Phone, PhoneMissed, PhoneOff, PhoneIncoming, PhoneForwarded } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
+import StatDetailsSheet from './StatDetailsSheet';
 
 const fetchAgentCallStats = async () => {
   const { data, error } = await supabase.rpc('get_agent_call_stats');
@@ -87,27 +87,38 @@ const StatsBar: React.FC = () => {
     );
   }
 
-  const stats = statsData?.map((stat) => ({
+  const order = ['ANSWERED', 'ABANDONED', 'IN_QUEUE', 'MISSED', 'FAILED'];
+  
+  const sortedStatsData = statsData ? [...statsData].sort((a, b) => {
+    const aIndex = order.indexOf(a.status_name);
+    const bIndex = order.indexOf(b.status_name);
+    // Put unknown statuses at the end
+    if (aIndex === -1) return 1;
+    if (bIndex === -1) return -1;
+    return aIndex - bIndex;
+  }) : [];
+
+  const stats = sortedStatsData.map((stat) => ({
     title: titleMap[stat.status_name] || stat.status_name,
     value: stat.status_count.toString(),
     icon: iconMap[stat.status_name] || <Phone className="h-6 w-6 text-gray-500" />,
-  })).sort((a, b) => {
-      const order = Object.keys(titleMap);
-      return order.indexOf(a.title.replace(' Calls', '').toUpperCase()) - order.indexOf(b.title.replace(' Calls', '').toUpperCase());
-  });
+    statusName: stat.status_name,
+  }));
 
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5 mb-8">
-      {stats?.map((stat) => (
-        <Card key={stat.title}>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
-            {stat.icon}
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stat.value}</div>
-          </CardContent>
-        </Card>
+      {stats.map((stat) => (
+        <StatDetailsSheet key={stat.title} statusName={stat.statusName} statusTitle={stat.title}>
+          <Card className="cursor-pointer hover:bg-muted/50 transition-colors">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
+              {stat.icon}
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{stat.value}</div>
+            </CardContent>
+          </Card>
+        </StatDetailsSheet>
       ))}
     </div>
   );
