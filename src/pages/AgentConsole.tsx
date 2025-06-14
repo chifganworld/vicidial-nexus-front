@@ -1,13 +1,10 @@
+
 import React, { useState, useEffect, useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Phone, Pause, PhoneOff } from 'lucide-react';
+import { Phone } from 'lucide-react';
 import DialPad from '@/components/DialPad';
-import AddLeadModal from '@/components/AddLeadModal';
-import UpdateLeadModal from '@/components/UpdateLeadModal';
-import SearchLeadModal from '@/components/SearchLeadModal';
-import ViewCallbacksModal from '@/components/ViewCallbacksModal';
 import StatsBar from '@/components/agent/StatsBar';
 import CallLogs from '@/components/agent/CallLogs';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -19,6 +16,8 @@ import { useSessionTracker } from '@/hooks/useSessionTracker';
 import LeadDetails from '@/components/agent/LeadDetails';
 import AgentPerformance from '@/components/agent/AgentPerformance';
 import { toast } from 'sonner';
+import AgentConsoleHeader from '@/components/agent/AgentConsoleHeader';
+import QuickActions from '@/components/agent/QuickActions';
 
 export type Lead = Database['public']['Tables']['leads']['Row'];
 
@@ -195,27 +194,14 @@ const AgentConsole: React.FC = () => {
     <div className="min-h-screen bg-gray-100 p-4 md:p-8">
       <audio ref={audioRef} />
       <DispositionModal />
-      <header className="mb-8">
-        <div className="flex justify-between items-center">
-          <h1 className="text-3xl font-bold text-gray-800">Agent Console</h1>
-          <div className="flex items-center gap-4">
-            <div className="text-sm text-gray-600 flex items-center gap-4 border-r pr-4">
-              <span>Session: {formattedCurrentSessionTime}</span>
-              <span>Break: {formattedTotalBreakTime}</span>
-              <span>Total Today: {formattedTotalSessionTime}</span>
-            </div>
-            <Button variant="destructive" onClick={handleEndSession}>
-              <PhoneOff className="mr-2 h-4 w-4" /> End Session
-            </Button>
-            <Button variant={isPaused ? "default" : "outline"} onClick={togglePause}>
-              <Pause className="mr-2 h-4 w-4" /> {isPaused ? 'Resume' : 'Pause'}
-            </Button>
-            <Link to="/">
-              <Button variant="outline">Back to Home</Button>
-            </Link>
-          </div>
-        </div>
-      </header>
+      <AgentConsoleHeader
+        formattedCurrentSessionTime={formattedCurrentSessionTime}
+        formattedTotalBreakTime={formattedTotalBreakTime}
+        formattedTotalSessionTime={formattedTotalSessionTime}
+        isPaused={isPaused}
+        onEndSession={handleEndSession}
+        onTogglePause={togglePause}
+      />
 
       <StatsBar />
 
@@ -242,18 +228,12 @@ const AgentConsole: React.FC = () => {
         </div>
       </div>
 
-      <div className="mt-8">
-        <h2 className="text-2xl font-semibold text-gray-700 mb-4">Quick Actions</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-          <AddLeadModal onLeadAdded={handleLeadAction} />
-          <UpdateLeadModal lead={currentLead} onLeadUpdated={handleLeadAction} />
-          <SearchLeadModal onLeadSelect={setCurrentLead} />
-          <ViewCallbacksModal />
-          <Button variant="secondary" className="w-full" onClick={simulateIncomingCall}>
-            Simulate Incoming Call
-          </Button>
-        </div>
-      </div>
+      <QuickActions
+        currentLead={currentLead}
+        onLeadAction={handleLeadAction}
+        onSetCurrentLead={setCurrentLead}
+        onSimulateIncomingCall={simulateIncomingCall}
+      />
     </div>
   );
 };
