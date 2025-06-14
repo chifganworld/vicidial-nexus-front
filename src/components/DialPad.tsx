@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Phone, PhoneOff, Backpack } from 'lucide-react'; // Changed Backspace to Backpack
+import { Phone, PhoneOff, ArrowLeft } from 'lucide-react'; // Changed Backpack to ArrowLeft
 
 const DialPad: React.FC = () => {
   const [dialedNumber, setDialedNumber] = useState('');
@@ -61,7 +61,7 @@ const DialPad: React.FC = () => {
       </div>
       <div className="grid grid-cols-3 gap-2">
         <Button variant="ghost" onClick={handleBackspace} className="h-12">
-          <Backpack className="h-6 w-6" /> {/* Changed Backspace to Backpack */}
+          <ArrowLeft className="h-6 w-6" /> {/* Changed Backpack to ArrowLeft */}
         </Button>
         <Button variant="destructive" onClick={handleClear} className="h-12 col-span-1">
           Clear
