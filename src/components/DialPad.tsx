@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -69,7 +68,7 @@ const DialPad: React.FC<DialPadProps> = ({ lead }) => {
         {buttons.map((btn) => (
           <Button
             key={btn}
-            className="text-xl h-14 rounded-lg bg-slate-200/50 dark:bg-slate-800/50 border-slate-300 dark:border-slate-700 border-b-4 active:border-b-0 hover:bg-slate-200/70 dark:hover:bg-slate-700/70 active:translate-y-1 transition-all duration-150 text-sky-400 [text-shadow:0_0_10px_theme(colors.sky.400),0_0_2px_theme(colors.sky.300)] font-bold shadow-md"
+            className="text-xl h-14 rounded-lg bg-gray-800 dark:bg-black/50 border-gray-900 dark:border-black/50 border-b-4 active:border-b-0 hover:bg-gray-700 dark:hover:bg-black/40 active:translate-y-1 transition-all duration-150 text-green-400 [text-shadow:0_0_10px_theme(colors.green.400)] font-bold shadow-lg"
             onClick={() => handleKeyPress(btn)}
           >
             {btn}
@@ -77,7 +76,7 @@ const DialPad: React.FC<DialPadProps> = ({ lead }) => {
         ))}
       </div>
       <div className="grid grid-cols-2 gap-2">
-        <Button onClick={handleBackspace} className="h-12 rounded-lg bg-slate-200/50 dark:bg-slate-800/50 border-slate-300 dark:border-slate-700 border-b-4 active:border-b-0 hover:bg-slate-200/70 dark:hover:bg-slate-700/70 active:translate-y-1 transition-all duration-150 shadow-md text-slate-600 dark:text-slate-300" disabled={isCallInProgress}>
+        <Button onClick={handleBackspace} className="h-12 rounded-lg bg-gray-800/50 dark:bg-black/50 border-gray-900 dark:border-black/50 border-b-4 active:border-b-0 hover:bg-gray-800/70 dark:hover:bg-black/70 active:translate-y-1 transition-all duration-150 shadow-md text-gray-600 dark:text-gray-300" disabled={isCallInProgress}>
           <ArrowLeft className="h-6 w-6" />
         </Button>
         <Button onClick={handleClear} className="h-12 col-span-1 rounded-lg bg-red-200/50 dark:bg-red-800/50 border-red-300 dark:border-red-700 border-b-4 active:border-b-0 hover:bg-red-200/70 dark:hover:bg-red-700/70 active:translate-y-1 transition-all duration-150 shadow-md text-red-600 dark:text-red-300 font-semibold" disabled={isCallInProgress}>
@@ -118,4 +117,3 @@ const DialPad: React.FC<DialPadProps> = ({ lead }) => {
 };
 
 export default DialPad;
-

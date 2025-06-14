@@ -70,7 +70,7 @@ const AgentStatsDisplay: React.FC = () => {
 
   if (isLoadingLeadStats || isLoadingWeeklyCallStats) {
     return (
-      <Card className="h-full bg-card/50 backdrop-blur-sm">
+      <Card className="h-full bg-green-950/20 backdrop-blur-sm border-green-400/20">
         <CardHeader>
           <CardTitle className="text-sm font-medium">Lead Stats</CardTitle>
         </CardHeader>
@@ -94,7 +94,7 @@ const AgentStatsDisplay: React.FC = () => {
   }
 
   return (
-    <Card className="h-full bg-card/50 backdrop-blur-sm">
+    <Card className="h-full bg-green-950/20 backdrop-blur-sm border-green-400/20">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-sm font-medium">Lead Stats</CardTitle>
         {/* Icon can be added here if desired, e.g., <BarChart2 className="h-4 w-4 text-muted-foreground" /> */}

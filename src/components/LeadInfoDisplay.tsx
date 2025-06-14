@@ -18,7 +18,7 @@ interface LeadInfoDisplayProps {
 const LeadInfoDisplay: React.FC<LeadInfoDisplayProps> = ({ lead, isLoading }) => {
   if (isLoading) {
     return (
-      <Card className="h-full bg-card/50 backdrop-blur-sm">
+      <Card className="h-full bg-green-950/20 backdrop-blur-sm border-green-400/20">
         <CardHeader>
           <CardTitle className="text-base font-semibold">Lead Details</CardTitle>
         </CardHeader>
@@ -36,7 +36,7 @@ const LeadInfoDisplay: React.FC<LeadInfoDisplayProps> = ({ lead, isLoading }) =>
 
   if (!lead) {
     return (
-      <Card className="h-full flex items-center justify-center bg-card/50 backdrop-blur-sm">
+      <Card className="h-full flex items-center justify-center bg-green-950/20 backdrop-blur-sm border-green-400/20">
         <CardContent>
           <p className="text-muted-foreground">No active lead.</p>
         </CardContent>
@@ -45,7 +45,7 @@ const LeadInfoDisplay: React.FC<LeadInfoDisplayProps> = ({ lead, isLoading }) =>
   }
 
   return (
-    <Card className="h-full bg-card/50 backdrop-blur-sm">
+    <Card className="h-full bg-green-950/20 backdrop-blur-sm border-green-400/20">
       <CardHeader>
         <CardTitle className="text-base font-semibold">Lead Details</CardTitle>
       </CardHeader>
