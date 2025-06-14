@@ -19,7 +19,8 @@ const SipTrunkDialog: React.FC<SipTrunkDialogProps> = ({ trunk, children }) => {
 
   const { mutate: manageTrunk, isPending } = useMutation({
     mutationFn: async (values: SipTrunk) => {
-      const { data, error } = await supabase.from('sip_trunks').upsert(values).select().single();
+      // Using `as any` to resolve a type mismatch between Zod and Supabase-generated types.
+      const { data, error } = await supabase.from('sip_trunks').upsert(values as any).select().single();
       if (error) throw new Error(error.message);
       return data;
     },

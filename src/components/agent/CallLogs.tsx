@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/table';
 import { format } from 'date-fns';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useToast } from '@/hooks/use-toast';
+import { useToast } from '@/components/ui/use-toast';
 
 const fetchCallLogs = async () => {
   const { data: { user } } = await supabase.auth.getUser();

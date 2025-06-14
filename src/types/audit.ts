@@ -5,5 +5,5 @@ export type AuditLog = {
   user_id: string | null;
   user_email: string | null;
   action: string;
-  details: Record<string, any> | null;
+  details: any | null;
 };
