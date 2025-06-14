@@ -41,14 +41,17 @@ const CallLogs: React.FC = () => {
   const { data: callLogs, isLoading, isError, error } = useQuery({
     queryKey: ['callLogs'],
     queryFn: fetchCallLogs,
-    onError: (err: Error) => {
-        toast({
-            title: "Error fetching call logs",
-            description: err.message,
-            variant: "destructive"
-        })
-    }
   });
+
+  React.useEffect(() => {
+    if (isError) {
+      toast({
+        title: "Error fetching call logs",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  }, [isError, error, toast]);
 
   return (
     <Card className="lg:col-span-3">
