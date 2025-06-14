@@ -1,3 +1,4 @@
+
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -15,6 +16,7 @@ import { Toaster as SonnerToaster } from '@/components/ui/sonner';
 import { Toaster as ShadcnToaster } from "@/components/ui/toaster";
 import { ThemeProvider } from './components/ThemeProvider';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import AdministrationPage from './pages/AdministrationPage';
 
 const queryClient = new QueryClient();
 
@@ -28,23 +30,23 @@ function App() {
               <Route path="/" element={<IndexPage />} />
               <Route path="/auth" element={<AuthPage />} />
               
-              {/* Protected Routes using layout structure */}
+              {/* Agent Route */}
               <Route element={<ProtectedRoute allowedRoles={['agent', 'supervisor', 'admin']} />}>
                 <Route path="/agent" element={<AgentDashboard />} />
               </Route>
 
+              {/* Supervisor Routes */}
               <Route element={<ProtectedRoute allowedRoles={['supervisor', 'admin']} />}>
                 <Route path="/supervisor" element={<SupervisorDashboard />} />
                 <Route path="/reports" element={<ReportsPage />} />
-                {/* Settings routes are grouped with supervisor/admin access */}
+              </Route>
+
+              {/* Admin Routes */}
+              <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
+                <Route path="/admin" element={<AdministrationPage />} />
                 <Route path="/settings" element={<SettingsPage />} />
                 <Route path="/settings/display" element={<DisplaySettingsPage />} />
                 <Route path="/settings/users" element={<UserManagementPage />} />
-              </Route>
-
-              <Route element={<ProtectedRoute allowedRoles={['admin', 'supervisor']} />}>
-                {/* Integration page moved here to group with other settings, if access matches */}
-                {/* Or keep it separate if its role requirements are distinct and simpler */}
                 <Route path="/integration" element={<IntegrationPage />} />
               </Route>
 

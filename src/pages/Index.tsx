@@ -1,6 +1,7 @@
+
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { LayoutDashboard, UserCheck, FileText, LogIn, LogOut } from "lucide-react";
+import { LayoutDashboard, UserCheck, FileText, LogIn, LogOut, Shield } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext"; // Import useAuth
 import { toast } from "@/components/ui/use-toast";
 
@@ -31,9 +32,9 @@ const Index = () => {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl w-full mb-12">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl w-full mb-12">
         <Link to="/agent" className="hover-scale-custom">
-          <div className="bg-slate-800 p-6 rounded-lg shadow-xl hover:bg-slate-700 transition-all duration-300 animate-scale-in animation-delay-500">
+          <div className="bg-slate-800 p-6 rounded-lg shadow-xl hover:bg-slate-700 transition-all duration-300 animate-scale-in animation-delay-500 h-full">
             <div className="flex items-center justify-center mb-4 text-blue-400">
               <UserCheck size={48} />
             </div>
@@ -43,7 +44,7 @@ const Index = () => {
         </Link>
 
         <Link to="/supervisor" className="hover-scale-custom">
-          <div className="bg-slate-800 p-6 rounded-lg shadow-xl hover:bg-slate-700 transition-all duration-300 animate-scale-in animation-delay-700">
+          <div className="bg-slate-800 p-6 rounded-lg shadow-xl hover:bg-slate-700 transition-all duration-300 animate-scale-in animation-delay-700 h-full">
             <div className="flex items-center justify-center mb-4 text-green-400">
               <LayoutDashboard size={48} />
             </div>
@@ -53,12 +54,22 @@ const Index = () => {
         </Link>
 
         <Link to="/reports" className="hover-scale-custom">
-          <div className="bg-slate-800 p-6 rounded-lg shadow-xl hover:bg-slate-700 transition-all duration-300 animate-scale-in animation-delay-900">
+          <div className="bg-slate-800 p-6 rounded-lg shadow-xl hover:bg-slate-700 transition-all duration-300 animate-scale-in animation-delay-900 h-full">
             <div className="flex items-center justify-center mb-4 text-purple-400">
               <FileText size={48} />
             </div>
             <h2 className="text-2xl font-semibold mb-2 text-center">Reports Center</h2>
             <p className="text-slate-400 text-center">Generate and view detailed reports on all call center activities.</p>
+          </div>
+        </Link>
+        
+        <Link to="/admin" className="hover-scale-custom">
+          <div className="bg-slate-800 p-6 rounded-lg shadow-xl hover:bg-slate-700 transition-all duration-300 animate-scale-in animation-delay-1100 h-full">
+            <div className="flex items-center justify-center mb-4 text-red-400">
+              <Shield size={48} />
+            </div>
+            <h2 className="text-2xl font-semibold mb-2 text-center">Administration</h2>
+            <p className="text-slate-400 text-center">Manage system settings, users, and integrations.</p>
           </div>
         </Link>
       </div>

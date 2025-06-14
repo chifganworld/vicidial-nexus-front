@@ -73,12 +73,6 @@ const SupervisorDashboard: React.FC = () => {
           <Button>Manage Users</Button>
           <Button>Campaign Settings</Button>
           <Button>View Hopper</Button>
-          <Link to="/settings" className="md:col-span-1">
-            <Button variant="outline" className="w-full">
-              <SettingsIcon className="mr-2 h-4 w-4" />
-              Application Settings
-            </Button>
-          </Link>
         </div>
       </div>
     </div>

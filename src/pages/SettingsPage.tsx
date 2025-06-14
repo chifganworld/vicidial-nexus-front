@@ -36,8 +36,8 @@ const SettingsPage: React.FC = () => {
             <SettingsIcon className="mr-3 h-8 w-8" />
             Application Settings
           </h1>
-          <Link to="/supervisor">
-            <Button variant="outline">Back to Supervisor Dashboard</Button>
+          <Link to="/admin">
+            <Button variant="outline">Back to Administration</Button>
           </Link>
         </div>
         <p className="text-gray-600 mt-2">
