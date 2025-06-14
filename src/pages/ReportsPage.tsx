@@ -3,7 +3,9 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { BarChartBig, FileText, PhoneIncoming } from 'lucide-react';
+import { BarChartBig, FileText, Users } from 'lucide-react';
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import CallDispositionReport from '@/components/reports/CallDispositionReport';
 
 const ReportsPage: React.FC = () => {
   return (
@@ -27,7 +29,7 @@ const ReportsPage: React.FC = () => {
             <p className="text-xs text-muted-foreground">
               Detailed statistics for agent activity and performance.
             </p>
-            <Button className="mt-4 w-full">View Agent Stats Export</Button>
+            <Button className="mt-4 w-full" disabled>View Agent Stats Export</Button>
           </CardContent>
         </Card>
 
@@ -40,9 +42,22 @@ const ReportsPage: React.FC = () => {
             <p className="text-xs text-muted-foreground">
               Access logs for DIDs, phone numbers, and call dispositions.
             </p>
-            <Button className="mt-2 w-full">DID Log Export</Button>
-            <Button className="mt-2 w-full">Phone Number Log</Button>
-            <Button className="mt-2 w-full">Call Dispo Report</Button>
+            <Button className="mt-2 w-full" disabled>DID Log Export</Button>
+            <Button className="mt-2 w-full" disabled>Phone Number Log</Button>
+            <Sheet>
+                <SheetTrigger asChild>
+                    <Button className="mt-2 w-full">Call Dispo Report</Button>
+                </SheetTrigger>
+                <SheetContent className="w-full sm:max-w-full md:w-3/4 lg:w-2/3 xl:w-1/2 p-0">
+                  <SheetHeader className="p-6">
+                    <SheetTitle>Call Disposition Report</SheetTitle>
+                    <SheetDescription>
+                      Generate a call disposition breakdown report from Vicidial.
+                    </SheetDescription>
+                  </SheetHeader>
+                  <CallDispositionReport />
+                </SheetContent>
+            </Sheet>
           </CardContent>
         </Card>
 
@@ -55,7 +70,7 @@ const ReportsPage: React.FC = () => {
             <p className="text-xs text-muted-foreground">
               Statistics on campaign calls and status breakdowns.
             </p>
-            <Button className="mt-4 w-full">Call Status Stats</Button>
+            <Button className="mt-4 w-full" disabled>Call Status Stats</Button>
           </CardContent>
         </Card>
       </div>
@@ -64,16 +79,13 @@ const ReportsPage: React.FC = () => {
         <h2 className="text-2xl font-semibold text-gray-700 mb-4">Other Reports</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {/* Placeholder for other report links */}
-          <Button variant="outline">Recording Lookup</Button>
-          <Button variant="outline">List Info</Button>
-          <Button variant="outline">Custom Reports (TBD)</Button>
+          <Button variant="outline" disabled>Recording Lookup</Button>
+          <Button variant="outline" disabled>List Info</Button>
+          <Button variant="outline" disabled>Custom Reports (TBD)</Button>
         </div>
       </div>
     </div>
   );
 };
-
-// Need to import Users icon
-import { Users } from 'lucide-react';
 
 export default ReportsPage;
