@@ -54,7 +54,7 @@ const CallLogs: React.FC = () => {
   }, [isError, error, toast]);
 
   return (
-    <Card className="bg-green-950/20 backdrop-blur-sm border-green-400/20">
+    <Card className="h-full bg-green-950/20 backdrop-blur-sm border-green-400/20">
       <CardHeader>
         <CardTitle className="text-lg">Recent Call Logs</CardTitle>
       </CardHeader>
