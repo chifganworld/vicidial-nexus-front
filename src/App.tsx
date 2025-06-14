@@ -17,6 +17,7 @@ import { Toaster as ShadcnToaster } from "@/components/ui/toaster";
 import { ThemeProvider } from './components/ThemeProvider';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import AdministrationPage from './pages/AdministrationPage';
+import { SipProvider } from '@/providers/SipProvider';
 
 const queryClient = new QueryClient();
 
@@ -32,7 +33,7 @@ function App() {
               
               {/* Agent Route */}
               <Route element={<ProtectedRoute allowedRoles={['agent', 'supervisor', 'admin']} />}>
-                <Route path="/agent" element={<AgentConsole />} />
+                <Route path="/agent" element={<SipProvider><AgentConsole /></SipProvider>} />
               </Route>
 
               {/* Supervisor Routes */}

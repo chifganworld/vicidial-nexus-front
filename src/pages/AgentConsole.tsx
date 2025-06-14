@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -16,12 +16,21 @@ import CallLogs from '@/components/agent/CallLogs';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Database } from '@/integrations/supabase/types';
+import { useSip } from '@/providers/SipProvider';
 
 export type Lead = Database['public']['Tables']['leads']['Row'];
 
 const AgentConsole: React.FC = () => {
   const [currentLead, setCurrentLead] = useState<Lead | null>(null);
   const queryClient = useQueryClient();
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const { setAudioElement } = useSip();
+
+  useEffect(() => {
+    if (audioRef.current) {
+      setAudioElement(audioRef.current);
+    }
+  }, [setAudioElement]);
 
   const { data: lead, isLoading: isLoadingLead } = useQuery({
     queryKey: ['currentLead'],
@@ -87,6 +96,7 @@ const AgentConsole: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 p-4 md:p-8">
+      <audio ref={audioRef} />
       <header className="mb-8">
         <div className="flex justify-between items-center">
           <h1 className="text-3xl font-bold text-gray-800">Agent Console</h1>
