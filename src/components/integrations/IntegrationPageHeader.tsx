@@ -17,7 +17,7 @@ const IntegrationPageHeader: React.FC<IntegrationPageHeaderProps> = ({ backLink 
   return (
     <CardHeader>
       <div className="flex items-center justify-between">
-        <CardTitle className="text-2xl">Vicidial Integration Settings</CardTitle>
+        <CardTitle className="text-2xl">Integrations</CardTitle>
         <Link to={backLink}>
           <Button variant="outline" size="icon">
             <ArrowLeft className="h-4 w-4" />
@@ -25,8 +25,8 @@ const IntegrationPageHeader: React.FC<IntegrationPageHeaderProps> = ({ backLink 
         </Link>
       </div>
       <CardDescription>
-        Configure the connection details for your Vicidial server.
-        Be careful with API credentials.
+        Configure connection details for external services like Vicidial or a SIP Server.
+        Be careful with API credentials and connection settings.
       </CardDescription>
     </CardHeader>
   );

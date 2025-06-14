@@ -8,26 +8,37 @@ import {
   CardContent,
   CardFooter,
 } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from 'sonner';
 import { Database } from '@/integrations/supabase/types';
 import IntegrationPageHeader from '@/components/integrations/IntegrationPageHeader';
 import IntegrationForm from '@/components/integrations/IntegrationForm';
 import { vicidialIntegrationSchema, VicidialIntegrationFormData } from '@/features/integrations/vicidialSchemas';
+import { sipIntegrationSchema, SipIntegrationFormData } from '@/features/integrations/sipSchemas';
+import SipIntegrationForm from '@/components/integrations/SipIntegrationForm';
 
-// This type remains here as it's specific to the data structure in Supabase table
 type VicidialIntegrationTableRow = Database['public']['Tables']['vicidial_integration']['Row'];
 
 const IntegrationPage: React.FC = () => {
   const [settingsId, setSettingsId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const form = useForm<VicidialIntegrationFormData>({
+  const vicidialForm = useForm<VicidialIntegrationFormData>({
     resolver: zodResolver(vicidialIntegrationSchema),
     defaultValues: {
       vicidial_domain: '',
       api_user: '',
       api_password: '',
       ports: '',
+    },
+  });
+
+  const sipForm = useForm<SipIntegrationFormData>({
+    resolver: zodResolver(sipIntegrationSchema),
+    defaultValues: {
+      sip_server_domain: '',
+      sip_protocol: 'wss',
+      sip_server_port: '',
     },
   });
 
@@ -43,8 +54,8 @@ const IntegrationPage: React.FC = () => {
       if (error && error.code !== 'PGRST116') {
         toast.error('Failed to load Vicidial settings: ' + error.message);
       } else if (data) {
-        const rowData = data as VicidialIntegrationTableRow; // Explicit cast if needed
-        form.reset({
+        const rowData = data as VicidialIntegrationTableRow;
+        vicidialForm.reset({
           vicidial_domain: rowData.vicidial_domain,
           api_user: rowData.api_user,
           api_password: rowData.api_password,
@@ -52,12 +63,15 @@ const IntegrationPage: React.FC = () => {
         });
         setSettingsId(rowData.id);
       }
+      
+      // TODO: Fetch SIP settings when the table is available
+      
       setIsLoading(false);
     };
     fetchSettings();
-  }, [form]);
+  }, [vicidialForm]);
 
-  const onSubmit = async (values: VicidialIntegrationFormData) => {
+  const onVicidialSubmit = async (values: VicidialIntegrationFormData) => {
     setIsLoading(true);
     let responseError = null;
 
@@ -86,29 +100,54 @@ const IntegrationPage: React.FC = () => {
         .single();
       responseError = error;
       if (data) {
-        const rowData = data as VicidialIntegrationTableRow; // Explicit cast
+        const rowData = data as VicidialIntegrationTableRow;
         setSettingsId(rowData.id);
       }
     }
 
     setIsLoading(false);
     if (responseError) {
-      toast.error('Failed to save settings: ' + responseError.message);
+      toast.error('Failed to save Vicidial settings: ' + responseError.message);
     } else {
       toast.success('Vicidial settings saved successfully!');
     }
   };
 
+  const onSipSubmit = async (values: SipIntegrationFormData) => {
+    setIsLoading(true);
+    console.log('Submitting SIP settings:', values);
+    // In a future step, this will save to a `sip_integrations` table in Supabase.
+    await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate network request
+    toast.info('SIP settings form submitted. Database connection coming next!');
+    setIsLoading(false);
+  };
+
+
   return (
     <div className="min-h-screen bg-gray-100 p-4 md:p-8 flex flex-col items-center">
       <Card className="w-full max-w-2xl">
-        <IntegrationPageHeader backLink="/settings" /> {/* Updated backlink to /settings */}
+        <IntegrationPageHeader backLink="/settings" />
         <CardContent>
-          <IntegrationForm
-            form={form}
-            onSubmit={onSubmit}
-            isLoading={isLoading}
-          />
+          <Tabs defaultValue="vicidial" className="w-full">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="vicidial">Vicidial API</TabsTrigger>
+              <TabsTrigger value="sip">SIP Server</TabsTrigger>
+            </TabsList>
+            <TabsContent value="vicidial">
+              <IntegrationForm
+                form={vicidialForm}
+                onSubmit={onVicidialSubmit}
+                isLoading={isLoading}
+              />
+            </TabsContent>
+            <TabsContent value="sip">
+              <SipIntegrationForm
+                form={sipForm}
+                onSubmit={onSipSubmit}
+                isLoading={isLoading}
+              />
+            </TabsContent>
+          </Tabs>
         </CardContent>
         <CardFooter>
           <p className="text-xs text-gray-500">
