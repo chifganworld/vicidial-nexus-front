@@ -9,6 +9,47 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      call_logs: {
+        Row: {
+          agent_id: string | null
+          created_at: string
+          duration_seconds: number | null
+          id: string
+          lead_id: number | null
+          notes: string | null
+          phone_number: string | null
+          status: Database["public"]["Enums"]["call_status"]
+        }
+        Insert: {
+          agent_id?: string | null
+          created_at?: string
+          duration_seconds?: number | null
+          id?: string
+          lead_id?: number | null
+          notes?: string | null
+          phone_number?: string | null
+          status: Database["public"]["Enums"]["call_status"]
+        }
+        Update: {
+          agent_id?: string | null
+          created_at?: string
+          duration_seconds?: number | null
+          id?: string
+          lead_id?: number | null
+          notes?: string | null
+          phone_number?: string | null
+          status?: Database["public"]["Enums"]["call_status"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "call_logs_agent_id_fkey"
+            columns: ["agent_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -164,6 +205,7 @@ export type Database = {
     }
     Enums: {
       app_role: "agent" | "supervisor" | "admin"
+      call_status: "ANSWERED" | "ABANDONED" | "MISSED" | "FAILED" | "IN_QUEUE"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -280,6 +322,7 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["agent", "supervisor", "admin"],
+      call_status: ["ANSWERED", "ABANDONED", "MISSED", "FAILED", "IN_QUEUE"],
     },
   },
 } as const

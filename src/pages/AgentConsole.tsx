@@ -12,6 +12,7 @@ import UpdateLeadModal from '@/components/UpdateLeadModal';
 import SearchLeadModal from '@/components/SearchLeadModal';
 import ViewCallbacksModal from '@/components/ViewCallbacksModal';
 import StatsBar from '@/components/agent/StatsBar';
+import CallLogs from '@/components/agent/CallLogs';
 
 const AgentConsole: React.FC = () => {
   return (
@@ -41,6 +42,8 @@ const AgentConsole: React.FC = () => {
         <LeadInfoDisplay />
 
         <AgentStatsDisplay />
+
+        <CallLogs />
       </div>
 
       <div className="mt-8">
