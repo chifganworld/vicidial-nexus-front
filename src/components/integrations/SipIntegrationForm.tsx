@@ -53,14 +53,14 @@ const SipIntegrationForm: React.FC<SipIntegrationFormProps> = ({ form, onSubmit,
                 <RadioGroup
                   onValueChange={field.onChange}
                   defaultValue={field.value}
-                  className="flex items-center space-x-4"
+                  className="flex flex-wrap items-center gap-x-4 gap-y-2"
                 >
                   <FormItem className="flex items-center space-x-2 space-y-0">
                     <FormControl>
                       <RadioGroupItem value="wss" id="wss"/>
                     </FormControl>
                     <Label htmlFor="wss" className="font-normal">
-                      WSS (Secure)
+                      WSS (WebSocket Secure)
                     </Label>
                   </FormItem>
                   <FormItem className="flex items-center space-x-2 space-y-0">
@@ -68,13 +68,29 @@ const SipIntegrationForm: React.FC<SipIntegrationFormProps> = ({ form, onSubmit,
                       <RadioGroupItem value="ws" id="ws"/>
                     </FormControl>
                     <Label htmlFor="ws" className="font-normal">
-                      WS
+                      WS (WebSocket)
+                    </Label>
+                  </FormItem>
+                  <FormItem className="flex items-center space-x-2 space-y-0">
+                    <FormControl>
+                      <RadioGroupItem value="sip" id="sip"/>
+                    </FormControl>
+                    <Label htmlFor="sip" className="font-normal">
+                      SIP (UDP/TCP)
+                    </Label>
+                  </FormItem>
+                  <FormItem className="flex items-center space-x-2 space-y-0">
+                    <FormControl>
+                      <RadioGroupItem value="pjsip" id="pjsip"/>
+                    </FormControl>
+                    <Label htmlFor="pjsip" className="font-normal">
+                      PJSIP
                     </Label>
                   </FormItem>
                 </RadioGroup>
               </FormControl>
               <FormDescription>
-                The protocol for your SIP over WebSocket connection.
+                Select the protocol for your SIP connection. Note: Web browsers can typically only use WSS or WS for direct connections.
               </FormDescription>
               <FormMessage />
             </FormItem>
