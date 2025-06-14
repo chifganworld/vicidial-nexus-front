@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -40,7 +41,7 @@ const formSchema = z.object({
   }),
 });
 
-const ROLES = [
+const ROLES: { id: 'agent' | 'supervisor' | 'admin'; label: string }[] = [
   { id: 'agent', label: 'Agent' },
   { id: 'supervisor', label: 'Supervisor' },
   { id: 'admin', label: 'Admin' },
