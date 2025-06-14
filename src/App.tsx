@@ -4,7 +4,7 @@ import { AuthProvider } from './contexts/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import IndexPage from './pages/Index';
 import AuthPage from './pages/AuthPage';
-import AgentDashboard from './pages/AgentDashboard';
+import AgentConsole from './pages/AgentConsole';
 import SupervisorDashboard from './pages/SupervisorDashboard';
 import ReportsPage from './pages/ReportsPage';
 import IntegrationPage from './pages/IntegrationPage';
@@ -32,7 +32,7 @@ function App() {
               
               {/* Agent Route */}
               <Route element={<ProtectedRoute allowedRoles={['agent', 'supervisor', 'admin']} />}>
-                <Route path="/agent" element={<AgentDashboard />} />
+                <Route path="/agent" element={<AgentConsole />} />
               </Route>
 
               {/* Supervisor Routes */}

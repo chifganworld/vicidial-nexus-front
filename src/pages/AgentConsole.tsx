@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -10,18 +11,21 @@ import AddLeadModal from '@/components/AddLeadModal';
 import UpdateLeadModal from '@/components/UpdateLeadModal';
 import SearchLeadModal from '@/components/SearchLeadModal';
 import ViewCallbacksModal from '@/components/ViewCallbacksModal';
+import StatsBar from '@/components/agent/StatsBar';
 
-const AgentDashboard: React.FC = () => {
+const AgentConsole: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-100 p-4 md:p-8">
       <header className="mb-8">
         <div className="flex justify-between items-center">
-          <h1 className="text-3xl font-bold text-gray-800">Agent Dashboard</h1>
+          <h1 className="text-3xl font-bold text-gray-800">Agent Console</h1>
           <Link to="/">
             <Button variant="outline">Back to Home</Button>
           </Link>
         </div>
       </header>
+
+      <StatsBar />
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <Card>
@@ -52,4 +56,4 @@ const AgentDashboard: React.FC = () => {
   );
 };
 
-export default AgentDashboard;
+export default AgentConsole;
