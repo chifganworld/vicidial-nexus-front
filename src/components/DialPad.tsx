@@ -69,8 +69,7 @@ const DialPad: React.FC<DialPadProps> = ({ lead }) => {
         {buttons.map((btn) => (
           <Button
             key={btn}
-            variant="outline"
-            className="text-xl h-14"
+            className="text-xl h-14 rounded-lg bg-slate-200/50 dark:bg-slate-800/50 border-slate-300 dark:border-slate-700 border-b-4 active:border-b-0 hover:bg-slate-200/70 dark:hover:bg-slate-700/70 active:translate-y-1 transition-all duration-150 text-sky-400 [text-shadow:0_0_10px_theme(colors.sky.400),0_0_2px_theme(colors.sky.300)] font-bold shadow-md"
             onClick={() => handleKeyPress(btn)}
           >
             {btn}
@@ -78,10 +77,10 @@ const DialPad: React.FC<DialPadProps> = ({ lead }) => {
         ))}
       </div>
       <div className="grid grid-cols-2 gap-2">
-        <Button variant="ghost" onClick={handleBackspace} className="h-12" disabled={isCallInProgress}>
+        <Button onClick={handleBackspace} className="h-12 rounded-lg bg-slate-200/50 dark:bg-slate-800/50 border-slate-300 dark:border-slate-700 border-b-4 active:border-b-0 hover:bg-slate-200/70 dark:hover:bg-slate-700/70 active:translate-y-1 transition-all duration-150 shadow-md text-slate-600 dark:text-slate-300" disabled={isCallInProgress}>
           <ArrowLeft className="h-6 w-6" />
         </Button>
-        <Button variant="destructive" onClick={handleClear} className="h-12 col-span-1" disabled={isCallInProgress}>
+        <Button onClick={handleClear} className="h-12 col-span-1 rounded-lg bg-red-200/50 dark:bg-red-800/50 border-red-300 dark:border-red-700 border-b-4 active:border-b-0 hover:bg-red-200/70 dark:hover:bg-red-700/70 active:translate-y-1 transition-all duration-150 shadow-md text-red-600 dark:text-red-300 font-semibold" disabled={isCallInProgress}>
           Clear
         </Button>
       </div>
@@ -119,3 +118,4 @@ const DialPad: React.FC<DialPadProps> = ({ lead }) => {
 };
 
 export default DialPad;
+
