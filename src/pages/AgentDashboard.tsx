@@ -1,11 +1,13 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Phone, BarChart2 } from 'lucide-react';
+import { Phone } from 'lucide-react'; // Removed BarChart2 as it's used within AgentStatsDisplay
 import DialPad from '@/components/DialPad';
 import LeadInfoDisplay from '@/components/LeadInfoDisplay';
 import AgentStatsDisplay from '@/components/AgentStatsDisplay';
+import AddLeadModal from '@/components/AddLeadModal'; // Import the new modal
 
 const AgentDashboard: React.FC = () => {
   return (
@@ -39,7 +41,7 @@ const AgentDashboard: React.FC = () => {
       <div className="mt-8">
         <h2 className="text-2xl font-semibold text-gray-700 mb-4">Quick Actions</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <Button>Add Lead</Button>
+          <AddLeadModal /> {/* Replace the old button with the modal component */}
           <Button>Update Lead</Button>
           <Button>Search Lead</Button>
           <Button>View Callbacks</Button>
@@ -50,3 +52,4 @@ const AgentDashboard: React.FC = () => {
 };
 
 export default AgentDashboard;
+
