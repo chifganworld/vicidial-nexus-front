@@ -14,7 +14,7 @@ const Index = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl w-full mb-12">
-        <Link to="/agent" className="hover-scale">
+        <Link to="/agent" className="hover-scale-custom">
           <div className="bg-slate-800 p-6 rounded-lg shadow-xl hover:bg-slate-700 transition-all duration-300 animate-scale-in animation-delay-500">
             <div className="flex items-center justify-center mb-4 text-blue-400">
               <UserCheck size={48} />
@@ -24,7 +24,7 @@ const Index = () => {
           </div>
         </Link>
 
-        <Link to="/supervisor" className="hover-scale">
+        <Link to="/supervisor" className="hover-scale-custom">
           <div className="bg-slate-800 p-6 rounded-lg shadow-xl hover:bg-slate-700 transition-all duration-300 animate-scale-in animation-delay-700">
             <div className="flex items-center justify-center mb-4 text-green-400">
               <LayoutDashboard size={48} />
@@ -34,7 +34,7 @@ const Index = () => {
           </div>
         </Link>
 
-        <Link to="/reports" className="hover-scale">
+        <Link to="/reports" className="hover-scale-custom">
           <div className="bg-slate-800 p-6 rounded-lg shadow-xl hover:bg-slate-700 transition-all duration-300 animate-scale-in animation-delay-900">
             <div className="flex items-center justify-center mb-4 text-purple-400">
               <FileText size={48} />
@@ -55,44 +55,16 @@ const Index = () => {
         <p>Powered by Lovable AI</p>
       </footer>
 
-      <style jsx>{`
-        .animation-delay-300 { animation-delay: 0.3s; }
-        .animation-delay-500 { animation-delay: 0.5s; }
-        .animation-delay-700 { animation-delay: 0.7s; }
-        .animation-delay-900 { animation-delay: 0.9s; }
-        .animation-delay-1200 { animation-delay: 1.2s; }
-        .animation-delay-1500 { animation-delay: 1.5s; }
-
-        .animate-fade-in {
-          animation: fadeIn 1s ease-out forwards;
-          opacity: 0;
-        }
-        .animate-scale-in {
-          animation: scaleIn 0.5s ease-out forwards;
-          opacity: 0;
-          transform: scale(0.95);
-        }
-        @keyframes fadeIn {
-          to {
-            opacity: 1;
-          }
-        }
-        @keyframes scaleIn {
-          to {
-            opacity: 1;
-            transform: scale(1);
-          }
-        }
-        .hover-scale {
-          transition: transform 0.2s ease-in-out;
-        }
-        .hover-scale:hover {
-          transform: translateY(-5px) scale(1.03);
-        }
-      `}</style>
+      {/* 
+        Removed <style jsx> block that was causing build errors.
+        The animations defined here (animate-fade-in, animate-scale-in, animation-delay-*) 
+        are defined using Tailwind's animation capabilities or custom CSS if needed.
+        The hover effect class 'hover-scale' was changed to 'hover-scale-custom'
+        to avoid conflict if Tailwind has a similar utility.
+        We can add these animations back using Tailwind or a separate CSS file.
+      */}
     </div>
   );
 };
 
 export default Index;
-
