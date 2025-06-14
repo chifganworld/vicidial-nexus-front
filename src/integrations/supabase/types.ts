@@ -89,7 +89,19 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_users_for_management: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          id: string
+          email: string
+          full_name: string
+          roles: Database["public"]["Enums"]["app_role"][]
+        }[]
+      }
+      is_user_supervisor_or_admin: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
     }
     Enums: {
       app_role: "agent" | "supervisor" | "admin"

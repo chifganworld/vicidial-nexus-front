@@ -11,7 +11,7 @@ const SettingsPage: React.FC = () => {
       description: 'Customize the look and feel of the application.',
       link: '/settings/display',
       icon: <MonitorPlay className="h-6 w-6" />,
-      comingSoon: false, // Changed from true
+      comingSoon: false,
     },
     {
       title: 'Integrations',
@@ -24,7 +24,7 @@ const SettingsPage: React.FC = () => {
       description: 'Add, remove, or modify user accounts and roles.',
       link: '/settings/users',
       icon: <Users className="h-6 w-6" />,
-      comingSoon: true,
+      comingSoon: false,
     },
   ];
 
