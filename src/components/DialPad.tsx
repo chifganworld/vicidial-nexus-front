@@ -10,9 +10,10 @@ import { Lead } from '@/pages/AgentConsole';
 
 interface DialPadProps {
   lead: Lead | null;
+  simulatedDuration?: number;
 }
 
-const DialPad: React.FC<DialPadProps> = ({ lead }) => {
+const DialPad: React.FC<DialPadProps> = ({ lead, simulatedDuration }) => {
   const [dialedNumber, setDialedNumber] = useState('');
   const { makeCall, hangup, sessionState, isMuted, toggleMute, callContext } = useSip();
   const [callDuration, setCallDuration] = useState(0);
@@ -74,6 +75,7 @@ const DialPad: React.FC<DialPadProps> = ({ lead }) => {
 
   const isCallActive = sessionState === SessionState.Established;
   const isCallInProgress = sessionState !== SessionState.Initial && sessionState !== SessionState.Terminated;
+  const isSimulatedCallActive = simulatedDuration !== undefined;
 
   return (
     <div className="w-full max-w-xs mx-auto p-4 space-y-4 bg-transparent rounded-lg shadow-none">
@@ -84,14 +86,15 @@ const DialPad: React.FC<DialPadProps> = ({ lead }) => {
           onChange={(e) => setDialedNumber(e.target.value)}
           placeholder="Enter number"
           className="text-center text-xl h-12"
+          disabled={isCallInProgress || isSimulatedCallActive}
         />
       </div>
 
       <div className="text-center text-sm font-medium h-6">
-        {isCallActive ? (
+        {isCallActive || isSimulatedCallActive ? (
             <div className="flex items-center justify-center gap-2 text-green-400">
                 <Timer className="h-4 w-4 animate-pulse" />
-                <span>{formatDuration(callDuration)}</span>
+                <span>{formatDuration(isSimulatedCallActive ? simulatedDuration : callDuration)}</span>
             </div>
         ) : (
             <span className="text-gray-500">{sessionState}</span>
@@ -104,16 +107,17 @@ const DialPad: React.FC<DialPadProps> = ({ lead }) => {
             key={btn}
             className="text-xl h-14 rounded-lg bg-gray-800 dark:bg-black/50 border-gray-900 dark:border-black/50 border-b-4 active:border-b-0 hover:bg-gray-700 dark:hover:bg-black/40 active:translate-y-1 transition-all duration-150 text-green-400 [text-shadow:0_0_10px_theme(colors.green.400)] font-bold shadow-lg"
             onClick={() => handleKeyPress(btn)}
+            disabled={isCallInProgress || isSimulatedCallActive}
           >
             {btn}
           </Button>
         ))}
       </div>
       <div className="grid grid-cols-2 gap-2">
-        <Button onClick={handleBackspace} className="h-12 rounded-lg bg-gray-800/50 dark:bg-black/50 border-gray-900 dark:border-black/50 border-b-4 active:border-b-0 hover:bg-gray-800/70 dark:hover:bg-black/70 active:translate-y-1 transition-all duration-150 shadow-md text-gray-600 dark:text-gray-300" disabled={isCallInProgress}>
+        <Button onClick={handleBackspace} className="h-12 rounded-lg bg-gray-800/50 dark:bg-black/50 border-gray-900 dark:border-black/50 border-b-4 active:border-b-0 hover:bg-gray-800/70 dark:hover:bg-black/70 active:translate-y-1 transition-all duration-150 shadow-md text-gray-600 dark:text-gray-300" disabled={isCallInProgress || isSimulatedCallActive}>
           <ArrowLeft className="h-6 w-6" />
         </Button>
-        <Button onClick={handleClear} className="h-12 col-span-1 rounded-lg bg-red-200/50 dark:bg-red-800/50 border-red-300 dark:border-red-700 border-b-4 active:border-b-0 hover:bg-red-200/70 dark:hover:bg-red-700/70 active:translate-y-1 transition-all duration-150 shadow-md text-red-600 dark:text-red-300 font-semibold" disabled={isCallInProgress}>
+        <Button onClick={handleClear} className="h-12 col-span-1 rounded-lg bg-red-200/50 dark:bg-red-800/50 border-red-300 dark:border-red-700 border-b-4 active:border-b-0 hover:bg-red-200/70 dark:hover:bg-red-700/70 active:translate-y-1 transition-all duration-150 shadow-md text-red-600 dark:text-red-300 font-semibold" disabled={isCallInProgress || isSimulatedCallActive}>
           Clear
         </Button>
       </div>
@@ -128,11 +132,12 @@ const DialPad: React.FC<DialPadProps> = ({ lead }) => {
         </div>
       )}
 
-      {isCallInProgress ? (
+      {isCallInProgress || isSimulatedCallActive ? (
         <Button
             variant="destructive"
             className="w-full h-14"
             onClick={handleHangUp}
+            disabled={isSimulatedCallActive}
         >
             <PhoneOff className="mr-2 h-5 w-5" /> Hang Up
         </Button>
