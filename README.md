@@ -1,5 +1,5 @@
 
-# Welcome to your Lovable project - Agent Call Center Dashboard
+# Welcome to your Vicidial Nexus project - Agent Call Center Dashboard
 
 This project is a web application designed to serve as a dashboard for call center agents. It provides tools for managing leads, making calls, and tracking performance.
 
