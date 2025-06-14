@@ -29,7 +29,7 @@ const DialPad: React.FC<DialPadProps> = ({ lead }) => {
   };
 
   const handleCall = () => {
-    makeCall(dialedNumber, lead?.id ?? null);
+    makeCall(dialedNumber, lead ? Number(lead.id) : null);
   };
 
   const handleHangUp = () => {

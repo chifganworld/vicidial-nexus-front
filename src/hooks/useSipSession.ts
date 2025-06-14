@@ -1,6 +1,5 @@
-
 import { useState, useEffect, useCallback } from 'react';
-import { UserAgent, Inviter, SessionState, Session, Invitation, RTCRtpReceiver, RTCRtpSender } from 'sip.js';
+import { UserAgent, Inviter, SessionState, Session, Invitation,  } from 'sip.js';
 import { toast } from '@/hooks/use-toast';
 
 type SipSettings = {
