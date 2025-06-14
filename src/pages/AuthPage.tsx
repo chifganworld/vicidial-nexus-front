@@ -3,9 +3,10 @@ import React, { useState, useEffect } from 'react';
 import LoginForm from '@/components/auth/LoginForm';
 import SignUpForm from '@/components/auth/SignUpForm';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Button } from '@/components/ui/button'; // Import Button
 import { useAuth } from '@/contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
-import { LogIn } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom'; // Import Link
+import { LogIn, ArrowLeft } from 'lucide-react'; // Import ArrowLeft
 
 const AuthPage: React.FC = () => {
   const [isLoginView, setIsLoginView] = useState(true);
@@ -29,7 +30,13 @@ const AuthPage: React.FC = () => {
   // If already logged in (e.g. direct navigation to /auth), redirect handled by useEffect
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-slate-900 to-slate-700 p-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-slate-900 to-slate-700 p-4 relative">
+      <Link to="/" className="absolute top-4 left-4 md:top-8 md:left-8">
+        <Button variant="outline" size="icon" className="bg-slate-700 hover:bg-slate-600 border-slate-600 text-white hover:text-white">
+          <ArrowLeft className="h-5 w-5" />
+          <span className="sr-only">Back to Home</span>
+        </Button>
+      </Link>
       <div className="text-center mb-8">
         <LogIn size={48} className="mx-auto text-blue-400 mb-4" />
         <h1 className="text-4xl font-bold text-white">Vicidial Nexus</h1>
