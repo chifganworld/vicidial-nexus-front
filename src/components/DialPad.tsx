@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -11,9 +10,10 @@ import { Lead } from '@/pages/AgentConsole';
 interface DialPadProps {
   lead: Lead | null;
   simulatedDuration?: number;
+  onSimulatedHangUp?: () => void;
 }
 
-const DialPad: React.FC<DialPadProps> = ({ lead, simulatedDuration }) => {
+const DialPad: React.FC<DialPadProps> = ({ lead, simulatedDuration, onSimulatedHangUp }) => {
   const [dialedNumber, setDialedNumber] = useState('');
   const { makeCall, hangup, sessionState, isMuted, toggleMute, callContext } = useSip();
   const [callDuration, setCallDuration] = useState(0);
@@ -63,7 +63,11 @@ const DialPad: React.FC<DialPadProps> = ({ lead, simulatedDuration }) => {
   };
 
   const handleHangUp = () => {
-    hangup();
+    if (isSimulatedCallActive && onSimulatedHangUp) {
+      onSimulatedHangUp();
+    } else {
+      hangup();
+    }
   };
 
   const buttons = [
@@ -92,7 +96,7 @@ const DialPad: React.FC<DialPadProps> = ({ lead, simulatedDuration }) => {
 
       <div className="text-center text-sm font-medium h-6">
         {isCallActive || isSimulatedCallActive ? (
-            <div className="flex items-center justify-center gap-2 text-green-400">
+            <div className="flex items-center justify-center gap-2 text-red-500">
                 <Timer className="h-4 w-4 animate-pulse" />
                 <span>{formatDuration(isSimulatedCallActive ? simulatedDuration : callDuration)}</span>
             </div>
@@ -137,7 +141,6 @@ const DialPad: React.FC<DialPadProps> = ({ lead, simulatedDuration }) => {
             variant="destructive"
             className="w-full h-14"
             onClick={handleHangUp}
-            disabled={isSimulatedCallActive}
         >
             <PhoneOff className="mr-2 h-5 w-5" /> Hang Up
         </Button>

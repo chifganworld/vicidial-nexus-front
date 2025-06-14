@@ -18,13 +18,14 @@ import DispositionModal from '@/components/agent/DispositionModal';
 import { useSessionTracker } from '@/hooks/useSessionTracker';
 import LeadDetails from '@/components/agent/LeadDetails';
 import AgentPerformance from '@/components/agent/AgentPerformance';
-import { toast } from '@/components/ui/sonner';
+import { toast } from 'sonner';
 
 export type Lead = Database['public']['Tables']['leads']['Row'];
 
 const AgentConsole: React.FC = () => {
   const [currentLead, setCurrentLead] = useState<Lead | null>(null);
   const [simulatedCallDuration, setSimulatedCallDuration] = useState<number | undefined>(undefined);
+  const [simulatedCallToastId, setSimulatedCallToastId] = useState<string | number | undefined>();
   const simCallTimerRef = useRef<NodeJS.Timeout | null>(null);
   const queryClient = useQueryClient();
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -122,6 +123,19 @@ const AgentConsole: React.FC = () => {
     navigate('/auth');
   };
 
+  const handleSimulatedHangUp = () => {
+    if (simCallTimerRef.current) {
+      clearInterval(simCallTimerRef.current);
+      simCallTimerRef.current = null;
+    }
+    setSimulatedCallDuration(undefined);
+    if (simulatedCallToastId) {
+      toast.error("Call ended (simulation).");
+      toast.dismiss(simulatedCallToastId);
+      setSimulatedCallToastId(undefined);
+    }
+  };
+
   const simulateIncomingCall = () => {
     const toastId = toast(
         <div className="flex w-full items-center justify-between">
@@ -149,16 +163,12 @@ const AgentConsole: React.FC = () => {
                         description: "You are now connected.",
                         action: {
                             label: "Hang Up",
-                            onClick: () => {
-                                if (simCallTimerRef.current) clearInterval(simCallTimerRef.current);
-                                setSimulatedCallDuration(undefined);
-                                toast.error("Call ended (simulation).");
-                                toast.dismiss(toastId);
-                            }
+                            onClick: handleSimulatedHangUp,
                         },
                         onDismiss: () => { // Also clear on manual dismiss
-                          if (simCallTimerRef.current) clearInterval(simCallTimerRef.current);
-                          setSimulatedCallDuration(undefined);
+                          if (simulatedCallDuration !== undefined) {
+                            handleSimulatedHangUp();
+                          }
                         },
                         duration: Infinity, // Keep it open until dismissed
                       }
@@ -167,11 +177,18 @@ const AgentConsole: React.FC = () => {
                 <Button size="sm" variant="destructive" onClick={() => {
                     toast.error("Call declined (simulation).");
                     toast.dismiss(toastId);
+                    setSimulatedCallToastId(undefined);
                 }}>Decline</Button>
             </div>
         </div>, {
         duration: 15000,
+        onDismiss: () => {
+          if (simulatedCallToastId === toastId) {
+              setSimulatedCallToastId(undefined);
+          }
+        },
     });
+    setSimulatedCallToastId(toastId);
   };
 
   return (
@@ -219,7 +236,7 @@ const AgentConsole: React.FC = () => {
               <Phone className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <DialPad lead={currentLead} simulatedDuration={simulatedCallDuration} />
+              <DialPad lead={currentLead} simulatedDuration={simulatedCallDuration} onSimulatedHangUp={handleSimulatedHangUp} />
             </CardContent>
           </Card>
         </div>
