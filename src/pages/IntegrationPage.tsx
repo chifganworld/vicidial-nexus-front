@@ -84,7 +84,7 @@ const IntegrationPage: React.FC = () => {
         const rowData = sipData as SipIntegrationTableRow;
         sipForm.reset({
           sip_server_domain: rowData.sip_server_domain,
-          sip_protocol: rowData.sip_protocol,
+          sip_protocol: rowData.sip_protocol as SipIntegrationFormData['sip_protocol'],
           sip_server_port: String(rowData.sip_server_port),
           sip_username: rowData.sip_username ?? '',
           sip_password: rowData.sip_password ?? '',
