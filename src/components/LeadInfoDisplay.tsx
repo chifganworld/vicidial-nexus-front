@@ -20,7 +20,7 @@ const LeadInfoDisplay: React.FC<LeadInfoDisplayProps> = ({ lead, isLoading }) =>
     return (
       <Card className="h-full">
         <CardHeader>
-          <CardTitle className="text-lg">Lead Details</CardTitle>
+          <CardTitle className="text-base font-semibold">Lead Details</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           {[...Array(5)].map((_, i) => (
@@ -47,7 +47,7 @@ const LeadInfoDisplay: React.FC<LeadInfoDisplayProps> = ({ lead, isLoading }) =>
   return (
     <Card className="h-full">
       <CardHeader>
-        <CardTitle className="text-lg">Lead Details</CardTitle>
+        <CardTitle className="text-base font-semibold">Lead Details</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <div>

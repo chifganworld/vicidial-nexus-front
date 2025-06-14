@@ -54,9 +54,9 @@ const CallLogs: React.FC = () => {
   }, [isError, error, toast]);
 
   return (
-    <Card className="lg:col-span-3">
+    <Card>
       <CardHeader>
-        <CardTitle>Recent Call Logs</CardTitle>
+        <CardTitle className="text-lg">Recent Call Logs</CardTitle>
       </CardHeader>
       <CardContent>
         {isLoading && (

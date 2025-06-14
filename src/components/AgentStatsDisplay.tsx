@@ -100,7 +100,7 @@ const AgentStatsDisplay: React.FC = () => {
         {/* Icon can be added here if desired, e.g., <BarChart2 className="h-4 w-4 text-muted-foreground" /> */}
       </CardHeader>
       <CardContent>
-        <div className="text-2xl font-bold mb-1">Lead Performance</div>
+        <div className="text-xl font-bold mb-1">Lead Performance</div>
         <p className="text-xs text-muted-foreground mb-4">
           Your current lead statistics.
         </p>
@@ -108,7 +108,7 @@ const AgentStatsDisplay: React.FC = () => {
           {agentStatsData.map((stat) => (
             <div key={stat.name} className="p-3 bg-gray-50 rounded-md shadow-sm">
               <p className="text-xs text-muted-foreground">{stat.name}</p>
-              <p className="text-lg font-semibold">{stat.value}</p>
+              <p className="text-base font-semibold">{stat.value}</p>
             </div>
           ))}
         </div>
