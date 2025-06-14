@@ -28,30 +28,96 @@ There are several ways of editing your application.
 
 Simply visit the [Lovable Project](https://lovable.dev/projects/a23f20e2-ed8d-4c52-a5b8-4cde003b87db) and start prompting.
 
-Changes made via Lovable will be committed automatically to this repo.
+Changes made via Lovable will be committed automatically to this repo if GitHub integration is enabled.
 
-**Use your preferred IDE**
+**Use your preferred IDE (Ubuntu Setup Guide for Beginners)**
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+If you want to work locally using your own IDE on an Ubuntu system, this guide will walk you through the setup. For other operating systems, the general steps for installing Node.js, npm, and Git will be similar, but specific commands may vary.
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+**Prerequisites for Ubuntu:**
 
-Follow these steps:
+Before you begin, you'll need:
+*   `git`: To clone the repository (copy the project files to your computer).
+*   `curl`: A tool to transfer data, which we'll use to download the nvm installer.
+*   `nvm` (Node Version Manager): This is the recommended way to install Node.js and npm (Node Package Manager). Node.js is the environment where your application runs, and npm is used to manage project dependencies (libraries and tools the project needs). `nvm` allows you to easily switch between different Node.js versions.
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-# You can find this URL in your Lovable project settings under GitHub integration.
-git clone <YOUR_GIT_URL>
+**Step-by-step Installation on Ubuntu:**
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+1.  **Open your terminal.**
+    You can usually find it by searching for "Terminal" in your applications or by pressing `Ctrl+Alt+T`.
 
-# Step 3: Install the necessary dependencies.
-npm i
+2.  **Update your package list:**
+    This command refreshes the list of available software packages.
+    ```sh
+    sudo apt update
+    ```
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+3.  **Install Git:**
+    If you don't have Git installed already. The `-y` flag automatically confirms the installation.
+    ```sh
+    sudo apt install git -y
+    ```
+
+4.  **Install cURL:**
+    cURL is needed to download the nvm installation script.
+    ```sh
+    sudo apt install curl -y
+    ```
+
+5.  **Install nvm (Node Version Manager):**
+    This command downloads and runs the nvm installation script. For the very latest version and command, you can always check the [official nvm GitHub page](https://github.com/nvm-sh/nvm#installing-and-updating).
+    ```sh
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+    ```
+    After the script finishes, you'll likely need to close and reopen your terminal, or run a command like `source ~/.bashrc` (or `source ~/.zshrc` if you use Zsh) for the `nvm` command to become available. The script usually tells you what to do.
+
+6.  **Install Node.js and npm using nvm:**
+    Now, use nvm to install the latest Long-Term Support (LTS) version of Node.js. LTS versions are stable and recommended for most users. This will also install npm.
+    ```sh
+    nvm install --lts
+    ```
+    Then, tell nvm to use this version:
+    ```sh
+    nvm use --lts
+    ```
+    Verify that Node.js and npm are installed correctly by checking their versions:
+    ```sh
+    node -v
+    npm -v
+    ```
+    You should see version numbers printed for both.
+
+7.  **Clone the Repository:**
+    Now, you'll copy the project files to your computer. You'll need the project's Git URL. If you've connected your Lovable project to GitHub, you can find this URL in your Lovable project settings under "GitHub integration".
+    ```sh
+    git clone <YOUR_GIT_URL>
+    ```
+    Replace `<YOUR_GIT_URL>` with the actual URL (e.g., `https://github.com/your-username/your-project-name.git`).
+
+8.  **Navigate to the Project Directory:**
+    After cloning, a new folder will be created. Change your terminal's current location into this new folder.
+    Replace `<YOUR_PROJECT_NAME>` with the name of the folder that was created (it's usually the same as the repository name).
+    ```sh
+    cd <YOUR_PROJECT_NAME>
+    ```
+
+9.  **Install Project Dependencies:**
+    This project uses several external libraries and tools. This command reads the `package.json` file in the project and downloads/installs everything listed there.
+    ```sh
+    npm install
+    ```
+    (You can also use the shorthand: `npm i`)
+
+10. **Start the Development Server:**
+    This command starts the local web server, builds your application, and watches for any file changes to automatically rebuild and refresh your browser.
+    ```sh
+    npm run dev
+    ```
+
+11. **View Your Application:**
+    Once the server starts (you'll see some output in the terminal, often mentioning a URL), open your web browser (like Firefox or Chrome) and go to:
+    `http://localhost:8080`
+    This is the default address where your application will be running. You should now see the Agent Call Center Dashboard!
 
 **Edit a file directly in GitHub**
 
