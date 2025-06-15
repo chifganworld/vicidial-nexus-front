@@ -28,14 +28,14 @@ Deno.serve(async (req) => {
 
     // 2. Construct and call Vicidial API
     let domain = vicidial_domain.trim();
-    if (domain.startsWith('http//')) domain = domain.replace('http//', 'http://');
-    if (domain.startsWith('https//')) domain = domain.replace('https//', 'https://');
-
-    if (!domain.startsWith('http://') && !domain.startsWith('https://')) {
-      domain = `http://${domain}`;
+    if (domain.endsWith('/')) {
+      domain = domain.slice(0, -1);
+    }
+    if (!domain.startsWith('http')) {
+      domain = `https://${domain}`;
     }
     
-    const apiUrl = `${domain}/non_agent_api.php`
+    const apiUrl = `${domain}/vicidial/non_agent_api.php`
     const params = new URLSearchParams({
       source: 'lovable_supervisor',
       user: api_user,

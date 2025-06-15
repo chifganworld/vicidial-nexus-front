@@ -46,12 +46,13 @@ Deno.serve(async (req) => {
     const { vicidial_domain, api_user, api_password } = vicidialIntegration;
 
     let domain = vicidial_domain.trim();
-    if (domain.startsWith('http//')) domain = domain.replace('http//', 'http://');
-    if (domain.startsWith('https//')) domain = domain.replace('https//', 'https://');
-    if (!domain.startsWith('http://') && !domain.startsWith('https://')) {
-      domain = `http://${domain}`;
+    if (domain.endsWith('/')) {
+      domain = domain.slice(0, -1);
     }
-    const apiUrl = `${domain}/non_agent_api.php`
+    if (!domain.startsWith('http')) {
+      domain = `https://${domain}`;
+    }
+    const apiUrl = `${domain}/vicidial/non_agent_api.php`;
 
     // 1. Get agent status to find session_id and server_ip
     const agentStatusParams = new URLSearchParams({
