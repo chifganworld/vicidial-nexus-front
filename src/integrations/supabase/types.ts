@@ -479,6 +479,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      create_group: {
+        Args: { p_name: string; p_description: string }
+        Returns: string
+      }
+      delete_group: {
+        Args: { p_group_id: string }
+        Returns: undefined
+      }
       get_agent_call_stats: {
         Args: Record<PropertyKey, never>
         Returns: {
@@ -529,6 +537,10 @@ export type Database = {
       is_user_supervisor_or_admin: {
         Args: Record<PropertyKey, never>
         Returns: boolean
+      }
+      update_group: {
+        Args: { p_group_id: string; p_name: string; p_description: string }
+        Returns: undefined
       }
       update_user_details: {
         Args: {

@@ -1,135 +1,24 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
-import { Skeleton } from '@/components/ui/skeleton';
-import { ArrowLeft, MoreHorizontal, AlertCircle } from 'lucide-react';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import AddUserDialog from '@/components/settings/AddUserDialog';
-import EditUserDialog from '@/components/settings/EditUserDialog';
-import DeleteUserDialog from '@/components/settings/DeleteUserDialog';
-import { User } from '@/types/user';
-
-const fetchUsers = async () => {
-  const { data, error } = await supabase.rpc('get_users_for_management');
-  if (error) {
-    console.error('Error fetching users:', error);
-    throw new Error(error.message);
-  }
-  return data as User[];
-};
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ArrowLeft } from 'lucide-react';
+import UsersTab from '@/components/settings/UsersTab';
+import GroupsTab from '@/components/settings/GroupsTab';
 
 const UserManagementPage: React.FC = () => {
-  const { data: users, isLoading, isError, error } = useQuery({
-    queryKey: ['usersForManagement'],
-    queryFn: fetchUsers,
-  });
-
-  const renderTableBody = () => {
-    if (isLoading) {
-      return Array.from({ length: 5 }).map((_, i) => (
-        <TableRow key={i}>
-          <TableCell><Skeleton className="h-4 w-40" /></TableCell>
-          <TableCell><Skeleton className="h-4 w-52" /></TableCell>
-          <TableCell><Skeleton className="h-4 w-24" /></TableCell>
-          <TableCell><Skeleton className="h-4 w-40" /></TableCell>
-          <TableCell><Skeleton className="h-4 w-24" /></TableCell>
-          <TableCell><Skeleton className="h-4 w-24" /></TableCell>
-          <TableCell><Skeleton className="h-4 w-24" /></TableCell>
-          <TableCell><Skeleton className="h-8 w-8" /></TableCell>
-        </TableRow>
-      ));
-    }
-
-    if (isError) {
-      return (
-        <TableRow>
-          <TableCell colSpan={8} className="text-center text-red-500">
-            <div className="flex items-center justify-center gap-2">
-              <AlertCircle className="h-5 w-5" />
-              <span>Error loading users: {error.message}</span>
-            </div>
-          </TableCell>
-        </TableRow>
-      );
-    }
-    
-    if (!users || users.length === 0) {
-        return (
-            <TableRow>
-                <TableCell colSpan={8} className="text-center text-muted-foreground">
-                    No users found.
-                </TableCell>
-            </TableRow>
-        );
-    }
-
-    return users.map((user) => (
-      <TableRow key={user.id}>
-        <TableCell className="font-medium">{user.full_name || 'N/A'}</TableCell>
-        <TableCell>{user.email}</TableCell>
-        <TableCell>
-          <div className="flex flex-wrap gap-1">
-            {user.roles && user.roles.length > 0 ? (
-                user.roles.map((role) => <Badge key={role} variant="secondary">{role}</Badge>)
-            ) : (
-                <Badge variant="outline">No Role</Badge>
-            )}
-          </div>
-        </TableCell>
-        <TableCell>
-            <div className="flex flex-wrap gap-1">
-                {user.groups && user.groups.length > 0 ? (
-                    user.groups.map((group) => <Badge key={group} variant="outline">{group}</Badge>)
-                ) : (
-                    <span className="text-xs text-muted-foreground">No Groups</span>
-                )}
-            </div>
-        </TableCell>
-        <TableCell>{user.sip_number || 'N/A'}</TableCell>
-        <TableCell>{user.webrtc_number || 'N/A'}</TableCell>
-        <TableCell className="font-mono">{user.sip_password ? '********' : 'N/A'}</TableCell>
-        <TableCell>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <EditUserDialog user={user}>
-                <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                  Edit User
-                </DropdownMenuItem>
-              </EditUserDialog>
-              <DeleteUserDialog userId={user.id} userName={user.full_name || user.email || 'this user'}>
-                <DropdownMenuItem onSelect={(e) => e.preventDefault()} className="text-destructive focus:bg-destructive/10 focus:text-destructive">
-                  Delete User
-                </DropdownMenuItem>
-              </DeleteUserDialog>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </TableCell>
-      </TableRow>
-    ));
-  };
-
   return (
     <div className="min-h-screen bg-background p-4 md:p-8 flex justify-center items-start">
       <Card className="w-full max-w-7xl">
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle className="text-2xl">User Management</CardTitle>
-              <CardDescription>View, add, or manage user accounts and roles.</CardDescription>
+              <CardTitle className="text-2xl">User & Group Management</CardTitle>
+              <CardDescription>View, add, or manage user accounts, roles, and groups.</CardDescription>
             </div>
             <div className="flex items-center gap-2">
-              <AddUserDialog />
               <Link to="/settings">
                 <Button variant="outline" size="icon">
                   <ArrowLeft className="h-4 w-4" />
@@ -139,23 +28,18 @@ const UserManagementPage: React.FC = () => {
           </div>
         </CardHeader>
         <CardContent>
-            <Table>
-                <TableHeader>
-                    <TableRow>
-                    <TableHead>Full Name</TableHead>
-                    <TableHead>Email</TableHead>
-                    <TableHead>Roles</TableHead>
-                    <TableHead>Groups</TableHead>
-                    <TableHead>SIP Number</TableHead>
-                    <TableHead>WebRTC Number</TableHead>
-                    <TableHead>SIP Password</TableHead>
-                    <TableHead>Actions</TableHead>
-                    </TableRow>
-                </TableHeader>
-                <TableBody>
-                    {renderTableBody()}
-                </TableBody>
-            </Table>
+          <Tabs defaultValue="users" className="w-full">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="users">Users</TabsTrigger>
+              <TabsTrigger value="groups">Groups</TabsTrigger>
+            </TabsList>
+            <TabsContent value="users" className="py-4">
+              <UsersTab />
+            </TabsContent>
+            <TabsContent value="groups" className="py-4">
+              <GroupsTab />
+            </TabsContent>
+          </Tabs>
         </CardContent>
       </Card>
     </div>
