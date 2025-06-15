@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -10,9 +9,10 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '../ui/skeleton';
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
-import { AlertCircle, PlayCircle } from 'lucide-react';
+import { AlertCircle, Play, Pause, Loader2 } from 'lucide-react';
 import { ScrollArea } from '../ui/scroll-area';
 import { Switch } from '../ui/switch';
+import { useToast } from '../ui/use-toast';
 
 const fetchRecordingLookup = async (params: any) => {
     const { data, error } = await supabase.functions.invoke('get-recording-lookup', {
@@ -34,23 +34,79 @@ const RecordingLookupReport: React.FC = () => {
         extension: '',
         duration: false,
     });
-    const [enabled, setEnabled] = useState(false);
+
+    const [audioSrc, setAudioSrc] = useState<string | null>(null);
+    const [currentPlayingUrl, setCurrentPlayingUrl] = useState<string | null>(null);
+    const [isAudioLoading, setIsAudioLoading] = useState<string | null>(null);
+    const [isAudioPlaying, setIsAudioPlaying] = useState(false);
+    const audioRef = useRef<HTMLAudioElement>(null);
+    const { toast } = useToast();
 
     const { data, isLoading, isError, error, refetch, isFetched } = useQuery({
         queryKey: ['recordingLookup', query],
         queryFn: () => fetchRecordingLookup(query),
-        enabled: enabled,
+        enabled: false,
     });
 
     const handleFetchReport = () => {
-        setEnabled(true);
-        setTimeout(() => refetch(), 0);
+        refetch();
     };
     
-    const playAudio = (url: string) => {
-        const audio = new Audio(url);
-        audio.play();
+    const togglePlayPause = () => {
+        if (audioRef.current) {
+            if (audioRef.current.paused) {
+                audioRef.current.play();
+            } else {
+                audioRef.current.pause();
+            }
+        }
     };
+
+    const playAudio = async (url: string) => {
+        if (currentPlayingUrl === url) {
+            togglePlayPause();
+            return;
+        }
+
+        setIsAudioLoading(url);
+        setCurrentPlayingUrl(url);
+        setAudioSrc(null);
+        setIsAudioPlaying(false);
+
+        try {
+            const { data, error } = await supabase.functions.invoke('get-recording-audio', {
+                body: { url }
+            });
+
+            if (error) {
+                throw new Error(error.message);
+            }
+            
+            if (data instanceof Blob) {
+                 if (data.type === 'application/json') {
+                    const errorJson = await data.text();
+                    const parsedError = JSON.parse(errorJson);
+                    throw new Error(parsedError.error || 'Failed to fetch audio');
+                }
+                const audioUrl = URL.createObjectURL(data);
+                setAudioSrc(audioUrl);
+            } else {
+                throw new Error("Invalid audio data received");
+            }
+
+        } catch (err) {
+            console.error("Error fetching audio", err);
+            toast({
+              title: "Error playing audio",
+              description: (err as Error).message,
+              variant: "destructive",
+            });
+            setCurrentPlayingUrl(null);
+        } finally {
+            setIsAudioLoading(null);
+        }
+    };
+
 
     return (
         <ScrollArea className="h-[calc(100vh-8rem)]">
@@ -109,22 +165,20 @@ const RecordingLookupReport: React.FC = () => {
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {data.map((row: any, index: number) => (
-                                        <TableRow key={index}>
-                                            {Object.values(row).map((value: any, i) => {
-                                                const key = Object.keys(row)[i];
-                                                if (key === 'location') {
-                                                    return <TableCell key={i}><a href={value} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">Link</a></TableCell>
-                                                }
-                                                return <TableCell key={i}>{value}</TableCell>
-                                            })}
-                                            <TableCell>
-                                                <Button variant="ghost" size="icon" onClick={() => playAudio(row.location)}>
-                                                    <PlayCircle className="h-5 w-5" />
-                                                </Button>
-                                            </TableCell>
-                                        </TableRow>
-                                    ))}
+                                    {data.map((row: any, index: number) => {
+                                        const isCurrent = currentPlayingUrl === row.location;
+                                        const isLoadingAudio = isAudioLoading === row.location;
+                                        return (
+                                            <TableRow key={index}>
+                                                {Object.values(row).map((value: any, i) => <TableCell key={i}>{value}</TableCell>)}
+                                                <TableCell>
+                                                    <Button variant="ghost" size="icon" onClick={() => playAudio(row.location)} disabled={isLoadingAudio}>
+                                                        {isLoadingAudio ? <Loader2 className="h-5 w-5 animate-spin" /> : (isCurrent && isAudioPlaying) ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}
+                                                    </Button>
+                                                </TableCell>
+                                            </TableRow>
+                                        )
+                                    })}
                                 </TableBody>
                             </Table>
                          </CardContent>
@@ -134,6 +188,28 @@ const RecordingLookupReport: React.FC = () => {
                     <p className="p-4 text-center text-muted-foreground">No recordings found for the selected criteria.</p>
                 )}
             </div>
+             {audioSrc && (
+                <audio 
+                    ref={audioRef}
+                    src={audioSrc} 
+                    autoPlay 
+                    onPlay={() => setIsAudioPlaying(true)}
+                    onPause={() => setIsAudioPlaying(false)}
+                    onEnded={() => {
+                        setIsAudioPlaying(false);
+                        setCurrentPlayingUrl(null);
+                    }}
+                    onError={() => {
+                        toast({
+                          title: "Audio Playback Error",
+                          description: "Could not play the audio file.",
+                          variant: "destructive",
+                        });
+                        setIsAudioPlaying(false);
+                        setCurrentPlayingUrl(null);
+                    }}
+                />
+            )}
         </ScrollArea>
     );
 }
