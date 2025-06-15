@@ -10,6 +10,7 @@ import AgentStatsExportReport from '@/components/reports/AgentStatsExportReport'
 import CallStatusStatsReport from '@/components/reports/CallStatusStatsReport';
 import RecordingLookupReport from '@/components/reports/RecordingLookupReport';
 import DidLogExportReport from '@/components/reports/DidLogExportReport';
+import PhoneNumberLogReport from '@/components/reports/PhoneNumberLogReport';
 
 const ReportsPage: React.FC = () => {
   return (
@@ -73,7 +74,20 @@ const ReportsPage: React.FC = () => {
                   <DidLogExportReport />
                 </SheetContent>
             </Sheet>
-            <Button className="mt-2 w-full" disabled>Phone Number Log</Button>
+            <Sheet>
+                <SheetTrigger asChild>
+                    <Button className="mt-2 w-full">Phone Number Log</Button>
+                </SheetTrigger>
+                <SheetContent className="w-full sm:max-w-full md:w-3/4 lg:w-2/3 xl:w-1/2 p-0">
+                  <SheetHeader className="p-6">
+                    <SheetTitle>Phone Number Log</SheetTitle>
+                    <SheetDescription>
+                      Exports list of calls placed to one or more phone numbers.
+                    </SheetDescription>
+                  </SheetHeader>
+                  <PhoneNumberLogReport />
+                </SheetContent>
+            </Sheet>
             <Sheet>
                 <SheetTrigger asChild>
                     <Button className="mt-2 w-full">Call Dispo Report</Button>
