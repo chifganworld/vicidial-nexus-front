@@ -6,3 +6,6 @@ project_id = "vwalfohkwbufyxvmyuqw"
 
 [functions.initialize-remote-db]
   verify_jwt = true
+
+[functions.log-error]
+  verify_jwt = false

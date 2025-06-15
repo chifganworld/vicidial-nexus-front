@@ -77,6 +77,36 @@ export type Database = {
           },
         ]
       }
+      error_logs: {
+        Row: {
+          component: string | null
+          created_at: string
+          error_message: string | null
+          id: number
+          stack_trace: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          component?: string | null
+          created_at?: string
+          error_message?: string | null
+          id?: number
+          stack_trace?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          component?: string | null
+          created_at?: string
+          error_message?: string | null
+          id?: number
+          stack_trace?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       group_permissions: {
         Row: {
           created_at: string
