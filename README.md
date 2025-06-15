@@ -143,15 +143,15 @@ Open your web browser and go to `http://localhost:8080`. You should now see the 
 
 ## What technologies are used for this project?
 
-This project is built with:
+This project is built with a modern JavaScript stack. All the libraries and tools listed below are automatically downloaded and installed when you run the `npm install` command, as they are defined in the project's `package.json` file.
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-- Recharts (for charts)
-- Lucide React (for icons)
+- **Vite:** A fast build tool that serves your code during development and bundles it for production.
+- **TypeScript:** A superset of JavaScript that adds type safety to your code.
+- **React:** A JavaScript library for building user interfaces.
+- **shadcn-ui:** A collection of beautifully designed, reusable UI components.
+- **Tailwind CSS:** A utility-first CSS framework for rapid and custom styling.
+- **Recharts:** A composable charting library for creating data visualizations.
+- **Lucide React:** A library of clean and consistent icons.
 
 ## Project Documentation
 
