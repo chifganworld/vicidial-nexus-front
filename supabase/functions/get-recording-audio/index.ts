@@ -1,8 +1,8 @@
 
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import { corsHeaders } from '../_shared/cors.ts'
 
 Deno.serve(async (req) => {
+  // This is needed for CORS preflight requests.
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
   }
@@ -22,16 +22,19 @@ Deno.serve(async (req) => {
       throw new Error(`Failed to fetch recording: ${recordingResponse.statusText}`)
     }
 
-    const audioData = await recordingResponse.arrayBuffer()
-    
-    const headers = { ...corsHeaders };
-    const contentType = recordingResponse.headers.get('Content-Type');
-    if (contentType) {
-      headers['Content-Type'] = contentType;
+    // Get the original content type and length to pass them along
+    const contentType = recordingResponse.headers.get('Content-Type') || 'application/octet-stream';
+    const contentLength = recordingResponse.headers.get('Content-Length');
+
+    const headers: Record<string, string> = { ...corsHeaders, 'Content-Type': contentType };
+    if (contentLength) {
+        headers['Content-Length'] = contentLength;
     }
 
-    return new Response(audioData, {
-      headers: headers,
+    // Pass the readable stream from the fetch response directly to the new response.
+    // This avoids buffering the entire file in memory and streams it instead.
+    return new Response(recordingResponse.body, {
+      headers,
       status: 200,
     });
 
