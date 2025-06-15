@@ -1,18 +1,12 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { BarChartBig, FileText, Users, Coffee, Clock } from 'lucide-react';
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import CallDispositionReport from '@/components/reports/CallDispositionReport';
-import AgentStatsExportReport from '@/components/reports/AgentStatsExportReport';
-import CallStatusStatsReport from '@/components/reports/CallStatusStatsReport';
-import RecordingLookupReport from '@/components/reports/RecordingLookupReport';
-import DidLogExportReport from '@/components/reports/DidLogExportReport';
-import PhoneNumberLogReport from '@/components/reports/PhoneNumberLogReport';
-import PausesReport from '@/components/reports/PausesReport';
-import LoginSessionReport from '@/components/reports/LoginSessionReport';
-import ListInfoReport from '@/components/reports/ListInfoReport';
+import AgentPerformanceReportsCard from '@/components/reports/layout/AgentPerformanceReportsCard';
+import CallDetailRecordsCard from '@/components/reports/layout/CallDetailRecordsCard';
+import CampaignReportsCard from '@/components/reports/layout/CampaignReportsCard';
+import AgentActivityReportsCard from '@/components/reports/layout/AgentActivityReportsCard';
+import OtherReportsSection from '@/components/reports/layout/OtherReportsSection';
 
 const ReportsPage: React.FC = () => {
   return (
@@ -27,187 +21,13 @@ const ReportsPage: React.FC = () => {
       </header>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Agent Performance Reports</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <p className="text-xs text-muted-foreground">
-              Detailed statistics for agent activity and performance.
-            </p>
-            <Sheet>
-                <SheetTrigger asChild>
-                    <Button className="mt-4 w-full">View Agent Stats Export</Button>
-                </SheetTrigger>
-                <SheetContent className="w-full sm:max-w-full md:w-3/4 lg:w-2/3 xl:w-1/2 p-0">
-                  <SheetHeader className="p-6">
-                    <SheetTitle>Agent Stats Export</SheetTitle>
-                    <SheetDescription>
-                      Generate an agent statistics report from Vicidial.
-                    </SheetDescription>
-                  </SheetHeader>
-                  <AgentStatsExportReport />
-                </SheetContent>
-            </Sheet>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Call Detail Records (CDR)</CardTitle>
-            <FileText className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <p className="text-xs text-muted-foreground">
-              Access logs for DIDs, phone numbers, and call dispositions.
-            </p>
-            <Sheet>
-                <SheetTrigger asChild>
-                    <Button className="mt-2 w-full">DID Log Export</Button>
-                </SheetTrigger>
-                <SheetContent className="w-full sm:max-w-full md:w-3/4 lg:w-2/3 xl:w-1/2 p-0">
-                  <SheetHeader className="p-6">
-                    <SheetTitle>DID Log Export</SheetTitle>
-                    <SheetDescription>
-                      Exports all calls inbound to a DID for one day.
-                    </SheetDescription>
-                  </SheetHeader>
-                  <DidLogExportReport />
-                </SheetContent>
-            </Sheet>
-            <Sheet>
-                <SheetTrigger asChild>
-                    <Button className="mt-2 w-full">Phone Number Log</Button>
-                </SheetTrigger>
-                <SheetContent className="w-full sm:max-w-full md:w-3/4 lg:w-2/3 xl:w-1/2 p-0">
-                  <SheetHeader className="p-6">
-                    <SheetTitle>Phone Number Log</SheetTitle>
-                    <SheetDescription>
-                      Exports list of calls placed to one or more phone numbers.
-                    </SheetDescription>
-                  </SheetHeader>
-                  <PhoneNumberLogReport />
-                </SheetContent>
-            </Sheet>
-            <Sheet>
-                <SheetTrigger asChild>
-                    <Button className="mt-2 w-full">Call Dispo Report</Button>
-                </SheetTrigger>
-                <SheetContent className="w-full sm:max-w-full md:w-3/4 lg:w-2/3 xl:w-1/2 p-0">
-                  <SheetHeader className="p-6">
-                    <SheetTitle>Call Disposition Report</SheetTitle>
-                    <SheetDescription>
-                      Generate a call disposition breakdown report from Vicidial.
-                    </SheetDescription>
-                  </SheetHeader>
-                  <CallDispositionReport />
-                </SheetContent>
-            </Sheet>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Campaign & In-Group Reports</CardTitle>
-            <BarChartBig className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <p className="text-xs text-muted-foreground">
-              Statistics on campaign calls and status breakdowns.
-            </p>
-            <Sheet>
-                <SheetTrigger asChild>
-                    <Button className="mt-4 w-full">Call Status Stats</Button>
-                </SheetTrigger>
-                <SheetContent className="w-full sm:max-w-full md:w-3/4 lg:w-2/3 xl:w-1/2 p-0">
-                  <SheetHeader className="p-6">
-                    <SheetTitle>Call Status Stats</SheetTitle>
-                    <SheetDescription>
-                      Report on number of calls made by campaign and ingroup, with hourly and status breakdowns.
-                    </SheetDescription>
-                  </SheetHeader>
-                  <CallStatusStatsReport />
-                </SheetContent>
-            </Sheet>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Agent Activity Reports</CardTitle>
-            <Clock className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <p className="text-xs text-muted-foreground">
-              Monitor agent pauses, logins, and session durations.
-            </p>
-            <Sheet>
-                <SheetTrigger asChild>
-                    <Button className="mt-4 w-full">View Pauses Report</Button>
-                </SheetTrigger>
-                <SheetContent className="w-full sm:max-w-full md:w-3/4 lg:w-2/3 xl:w-1/2 p-0">
-                  <SheetHeader className="p-6">
-                    <SheetTitle>Pauses Report</SheetTitle>
-                    <SheetDescription>
-                      This report shows agent pause statistics for a selected time period.
-                    </SheetDescription>
-                  </SheetHeader>
-                  <PausesReport />
-                </SheetContent>
-            </Sheet>
-            <Sheet>
-                <SheetTrigger asChild>
-                    <Button className="mt-2 w-full">View Login & Session Report</Button>
-                </SheetTrigger>
-                <SheetContent className="w-full sm:max-w-full md:w-3/4 lg:w-2/3 xl:w-1/2 p-0">
-                  <SheetHeader className="p-6">
-                    <SheetTitle>Login & Session Report</SheetTitle>
-                    <SheetDescription>
-                      This report shows agent login and session duration statistics for a selected time period.
-                    </SheetDescription>
-                  </SheetHeader>
-                  <LoginSessionReport />
-                </SheetContent>
-            </Sheet>
-          </CardContent>
-        </Card>
+        <AgentPerformanceReportsCard />
+        <CallDetailRecordsCard />
+        <CampaignReportsCard />
+        <AgentActivityReportsCard />
       </div>
-      {/* More report types can be added here */}
-       <div className="mt-8">
-        <h2 className="text-2xl font-semibold text-gray-700 mb-4">Other Reports</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Sheet>
-              <SheetTrigger asChild>
-                  <Button variant="outline">Recording Lookup</Button>
-              </SheetTrigger>
-              <SheetContent className="w-full sm:max-w-full md:w-3/4 lg:w-2/3 xl:w-1/2 p-0">
-                <SheetHeader className="p-6">
-                  <SheetTitle>Recording Lookup</SheetTitle>
-                  <SheetDescription>
-                    Look up recordings based on various criteria.
-                  </SheetDescription>
-                </SheetHeader>
-                <RecordingLookupReport />
-              </SheetContent>
-          </Sheet>
-          <Sheet>
-              <SheetTrigger asChild>
-                  <Button variant="outline">List Info</Button>
-              </SheetTrigger>
-              <SheetContent className="w-full sm:max-w-full md:w-3/4 lg:w-2/3 xl:w-1/2 p-0">
-                <SheetHeader className="p-6">
-                  <SheetTitle>List Info</SheetTitle>
-                  <SheetDescription>
-                    Summary information about a list.
-                  </SheetDescription>
-                </SheetHeader>
-                <ListInfoReport />
-              </SheetContent>
-          </Sheet>
-          <Button variant="outline" disabled>Custom Reports (TBD)</Button>
-        </div>
-      </div>
+      
+      <OtherReportsSection />
     </div>
   );
 };
