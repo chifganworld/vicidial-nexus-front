@@ -1,3 +1,4 @@
+
 import React, { useState, useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -9,7 +10,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '../ui/skeleton';
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
-import { AlertCircle, Play, Pause, Loader2 } from 'lucide-react';
+import { AlertCircle, Play, Pause, Loader2, Download } from 'lucide-react';
 import { ScrollArea } from '../ui/scroll-area';
 import { Switch } from '../ui/switch';
 import { useToast } from '../ui/use-toast';
@@ -38,6 +39,7 @@ const RecordingLookupReport: React.FC = () => {
     const [audioSrc, setAudioSrc] = useState<string | null>(null);
     const [currentPlayingUrl, setCurrentPlayingUrl] = useState<string | null>(null);
     const [isAudioLoading, setIsAudioLoading] = useState<string | null>(null);
+    const [isDownloading, setIsDownloading] = useState<string | null>(null);
     const [isAudioPlaying, setIsAudioPlaying] = useState(false);
     const audioRef = useRef<HTMLAudioElement>(null);
     const { toast } = useToast();
@@ -107,6 +109,56 @@ const RecordingLookupReport: React.FC = () => {
         }
     };
 
+    const downloadAudio = async (url: string) => {
+        const filename = url.split('/').pop();
+        if (!filename) {
+            toast({
+                title: "Could not determine filename",
+                variant: "destructive"
+            });
+            return;
+        }
+        
+        setIsDownloading(url);
+
+        try {
+            const { data: blob, error } = await supabase.functions.invoke('get-recording-audio', {
+                body: { url }
+            });
+
+            if (error) {
+                throw new Error(error.message);
+            }
+            
+            if (blob instanceof Blob) {
+                if (blob.type === 'application/json') {
+                    const errorJson = await blob.text();
+                    const parsedError = JSON.parse(errorJson);
+                    throw new Error(parsedError.error || 'Failed to fetch audio for download');
+                }
+                const blobUrl = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = blobUrl;
+                link.download = filename;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(blobUrl);
+            } else {
+                throw new Error("Invalid audio data received for download");
+            }
+        } catch (err) {
+            console.error("Error downloading audio", err);
+            toast({
+              title: "Error downloading audio",
+              description: (err as Error).message,
+              variant: "destructive",
+            });
+        } finally {
+            setIsDownloading(null);
+        }
+    };
+
 
     return (
         <ScrollArea className="h-[calc(100vh-8rem)]">
@@ -161,20 +213,26 @@ const RecordingLookupReport: React.FC = () => {
                                 <TableHeader>
                                     <TableRow>
                                         {Object.keys(data[0]).map(key => <TableHead key={key}>{key.replace(/_/g, ' ').toUpperCase()}</TableHead>)}
-                                        <TableHead>PLAY</TableHead>
+                                        <TableHead>ACTIONS</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
                                     {data.map((row: any, index: number) => {
                                         const isCurrent = currentPlayingUrl === row.location;
                                         const isLoadingAudio = isAudioLoading === row.location;
+                                        const isCurrentDownloading = isDownloading === row.location;
                                         return (
                                             <TableRow key={index}>
                                                 {Object.values(row).map((value: any, i) => <TableCell key={i}>{value}</TableCell>)}
                                                 <TableCell>
-                                                    <Button variant="ghost" size="icon" onClick={() => playAudio(row.location)} disabled={isLoadingAudio}>
-                                                        {isLoadingAudio ? <Loader2 className="h-5 w-5 animate-spin" /> : (isCurrent && isAudioPlaying) ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}
-                                                    </Button>
+                                                    <div className="flex items-center gap-2">
+                                                        <Button variant="ghost" size="icon" onClick={() => playAudio(row.location)} disabled={isLoadingAudio}>
+                                                            {isLoadingAudio ? <Loader2 className="h-5 w-5 animate-spin" /> : (isCurrent && isAudioPlaying) ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}
+                                                        </Button>
+                                                        <Button variant="ghost" size="icon" onClick={() => downloadAudio(row.location)} disabled={isCurrentDownloading}>
+                                                            {isCurrentDownloading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Download className="h-5 w-5" />}
+                                                        </Button>
+                                                    </div>
                                                 </TableCell>
                                             </TableRow>
                                         )
@@ -189,26 +247,32 @@ const RecordingLookupReport: React.FC = () => {
                 )}
             </div>
              {audioSrc && (
-                <audio 
-                    ref={audioRef}
-                    src={audioSrc} 
-                    autoPlay 
-                    onPlay={() => setIsAudioPlaying(true)}
-                    onPause={() => setIsAudioPlaying(false)}
-                    onEnded={() => {
-                        setIsAudioPlaying(false);
-                        setCurrentPlayingUrl(null);
-                    }}
-                    onError={() => {
-                        toast({
-                          title: "Audio Playback Error",
-                          description: "Could not play the audio file.",
-                          variant: "destructive",
-                        });
-                        setIsAudioPlaying(false);
-                        setCurrentPlayingUrl(null);
-                    }}
-                />
+                <div className="fixed bottom-0 left-0 right-0 bg-background border-t shadow-lg z-50 p-2">
+                    <audio 
+                        ref={audioRef}
+                        src={audioSrc} 
+                        autoPlay
+                        controls
+                        className="w-full"
+                        onPlay={() => setIsAudioPlaying(true)}
+                        onPause={() => setIsAudioPlaying(false)}
+                        onEnded={() => {
+                            setIsAudioPlaying(false);
+                            setCurrentPlayingUrl(null);
+                            setAudioSrc(null);
+                        }}
+                        onError={() => {
+                            toast({
+                              title: "Audio Playback Error",
+                              description: "Could not play the audio file.",
+                              variant: "destructive",
+                            });
+                            setIsAudioPlaying(false);
+                            setCurrentPlayingUrl(null);
+                            setAudioSrc(null);
+                        }}
+                    />
+                </div>
             )}
         </ScrollArea>
     );
