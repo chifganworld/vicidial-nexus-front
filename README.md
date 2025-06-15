@@ -9,16 +9,31 @@ This project is a web application designed to serve as a dashboard for call cent
 
 ## Project Features
 
-The Agent Call Center Dashboard includes the following key features:
+The Agent Call Center Dashboard is packed with features to enhance agent productivity and streamline call center operations. Here’s a closer look at what it offers:
 
-*   **Agent Dashboard:** Central hub displaying dialer, current lead information, and agent statistics.
-*   **Dial Pad:** Interface for manually dialing numbers.
-*   **Lead Information Display:** Shows details of the currently active or selected lead.
-*   **Agent Statistics:** Real-time and historical performance metrics for the agent.
-*   **Add Lead:** Modal to manually add new leads into the system.
-*   **Update Lead:** (Placeholder) Modal to update existing lead information.
-*   **Search Lead:** Modal to search for specific leads within the system.
-*   **View Callbacks:** Modal to display a list of scheduled callbacks.
+### Agent Dashboard
+The central hub for agents. It provides an integrated view of the dialer, current lead information, and key performance statistics for the day. Everything an agent needs is right at their fingertips.
+
+### Dial Pad
+A fully functional dial pad that allows agents to manually dial numbers. It supports standard call controls like initiating calls, transferring, and hanging up.
+
+### Lead Information Display
+This component shows comprehensive details of the currently active lead, including name, phone number, email, status, and historical notes, ensuring the agent is always well-informed.
+
+### Agent Statistics
+Agents can view their performance metrics in real-time. This includes total calls, average talk time, break duration, and other key indicators to help them track their productivity throughout the day.
+
+### Add Lead
+A convenient modal allows agents to quickly add new leads into the system without leaving their dashboard. It captures all necessary information to create a new lead record instantly.
+
+### Update Lead
+*(Placeholder)* This feature will allow agents to update existing lead information directly from the dashboard, ensuring data accuracy.
+
+### Search Lead
+Agents can search for specific leads using various criteria like name or phone number. The search results allow for quick selection to make a lead active.
+
+### View Callbacks
+A dedicated modal displays a list of all scheduled callbacks, helping agents stay organized and follow up with leads at the agreed-upon time.
 
 ## How can I edit this code?
 
