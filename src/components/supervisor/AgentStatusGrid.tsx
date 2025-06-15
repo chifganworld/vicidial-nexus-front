@@ -1,3 +1,4 @@
+
 import React from 'react'
 import { useQuery, useMutation } from '@tanstack/react-query'
 import { supabase } from '@/integrations/supabase/client'
@@ -11,7 +12,7 @@ import {
 } from '@/components/ui/table'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { AlertCircle, Users, Headphones, Zap } from 'lucide-react'
+import { AlertCircle, Users, Headphones, Zap, Mic } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -91,7 +92,7 @@ const AgentStatusGrid: React.FC = () => {
     }
   })
 
-  const handleMonitor = (agentUser: string, stage: 'MONITOR' | 'BARGE') => {
+  const handleMonitor = (agentUser: string, stage: 'MONITOR' | 'BARGE' | 'WHISPER') => {
     blindMonitorMutation.mutate({ agent_user: agentUser, stage })
   }
 
@@ -175,6 +176,14 @@ const AgentStatusGrid: React.FC = () => {
                             disabled={blindMonitorMutation.isPending}
                           >
                             <Zap className="h-4 w-4 mr-1" /> Barge
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleMonitor(agent.user, 'WHISPER')}
+                            disabled={blindMonitorMutation.isPending}
+                          >
+                            <Mic className="h-4 w-4 mr-1" /> Whisper
                           </Button>
                         </div>
                       ) : null}

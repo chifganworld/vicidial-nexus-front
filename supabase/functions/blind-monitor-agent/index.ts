@@ -45,6 +45,14 @@ Deno.serve(async (req) => {
     }
     const { vicidial_domain, api_user, api_password } = vicidialIntegration;
 
+    let domain = vicidial_domain.trim();
+    if (domain.startsWith('http//')) domain = domain.replace('http//', 'http://');
+    if (domain.startsWith('https//')) domain = domain.replace('https//', 'https://');
+    if (!domain.startsWith('http://') && !domain.startsWith('https://')) {
+      domain = `http://${domain}`;
+    }
+    const apiUrl = `${domain}/non_agent_api.php`
+
     // 1. Get agent status to find session_id and server_ip
     const agentStatusParams = new URLSearchParams({
       source: 'lovable-blind-monitor',
@@ -57,8 +65,7 @@ Deno.serve(async (req) => {
       header: 'YES'
     });
 
-    const agentStatusUrl = `https://${vicidial_domain}/vicidial/non_agent_api.php?${agentStatusParams.toString()}`;
-    const agentStatusResponse = await fetch(agentStatusUrl);
+    const agentStatusResponse = await fetch(`${apiUrl}?${agentStatusParams.toString()}`);
     const agentStatusText = await agentStatusResponse.text();
 
     if (!agentStatusResponse.ok || agentStatusText.includes("ERROR:")) {
@@ -95,8 +102,7 @@ Deno.serve(async (req) => {
       stage,
     });
 
-    const blindMonitorUrl = `https://${vicidial_domain}/vicidial/non_agent_api.php?${blindMonitorParams.toString()}`;
-    const blindMonitorResponse = await fetch(blindMonitorUrl);
+    const blindMonitorResponse = await fetch(`${apiUrl}?${blindMonitorParams.toString()}`);
     const blindMonitorText = await blindMonitorResponse.text();
 
     if (!blindMonitorResponse.ok || blindMonitorText.includes("ERROR:")) {
