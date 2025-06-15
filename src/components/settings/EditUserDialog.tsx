@@ -34,6 +34,7 @@ const EditUserDialog: React.FC<EditUserDialogProps> = ({ user, children }) => {
         p_webrtc_number: values.webrtc_number || null,
         p_sip_password: values.sip_password || '',
         p_roles: values.roles,
+        p_group_ids: values.group_ids || [],
       });
 
       if (error) {
@@ -47,6 +48,7 @@ const EditUserDialog: React.FC<EditUserDialogProps> = ({ user, children }) => {
       });
       queryClient.invalidateQueries({ queryKey: ['usersForManagement'] });
       queryClient.invalidateQueries({ queryKey: ['userRoles', user.id] }); // Invalidate roles cache
+      queryClient.invalidateQueries({ queryKey: ['userGroups', user.id] }); // Invalidate groups cache
       setOpen(false);
     },
     onError: (error) => {
@@ -69,7 +71,7 @@ const EditUserDialog: React.FC<EditUserDialogProps> = ({ user, children }) => {
         <DialogHeader>
           <DialogTitle>Edit User: {user.full_name || user.email}</DialogTitle>
           <DialogDescription>
-            Make changes to the user's profile and roles. Click save when you're done.
+            Make changes to the user's profile, roles, and groups. Click save when you're done.
           </DialogDescription>
         </DialogHeader>
         <UserForm user={user} onSubmit={onSubmit} isPending={isPending} />

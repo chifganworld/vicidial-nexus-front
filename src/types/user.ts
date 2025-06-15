@@ -6,6 +6,7 @@ export type User = {
   full_name: string | null;
   email: string | null;
   roles: UserRole[];
+  groups: string[] | null;
   sip_number: string | null;
   webrtc_number: string | null;
   sip_password: string | null;

@@ -531,22 +531,15 @@ export type Database = {
         Returns: boolean
       }
       update_user_details: {
-        Args:
-          | {
-              p_user_id: string
-              p_full_name: string
-              p_sip_number: string
-              p_webrtc_number: string
-              p_sip_password: string
-            }
-          | {
-              p_user_id: string
-              p_full_name: string
-              p_sip_number: string
-              p_webrtc_number: string
-              p_sip_password: string
-              p_roles: Database["public"]["Enums"]["app_role"][]
-            }
+        Args: {
+          p_user_id: string
+          p_full_name: string
+          p_sip_number: string
+          p_webrtc_number: string
+          p_sip_password: string
+          p_roles: Database["public"]["Enums"]["app_role"][]
+          p_group_ids: string[]
+        }
         Returns: undefined
       }
     }

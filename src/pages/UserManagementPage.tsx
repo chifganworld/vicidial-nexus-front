@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -36,6 +37,7 @@ const UserManagementPage: React.FC = () => {
           <TableCell><Skeleton className="h-4 w-40" /></TableCell>
           <TableCell><Skeleton className="h-4 w-52" /></TableCell>
           <TableCell><Skeleton className="h-4 w-24" /></TableCell>
+          <TableCell><Skeleton className="h-4 w-40" /></TableCell>
           <TableCell><Skeleton className="h-4 w-24" /></TableCell>
           <TableCell><Skeleton className="h-4 w-24" /></TableCell>
           <TableCell><Skeleton className="h-4 w-24" /></TableCell>
@@ -47,7 +49,7 @@ const UserManagementPage: React.FC = () => {
     if (isError) {
       return (
         <TableRow>
-          <TableCell colSpan={7} className="text-center text-red-500">
+          <TableCell colSpan={8} className="text-center text-red-500">
             <div className="flex items-center justify-center gap-2">
               <AlertCircle className="h-5 w-5" />
               <span>Error loading users: {error.message}</span>
@@ -60,7 +62,7 @@ const UserManagementPage: React.FC = () => {
     if (!users || users.length === 0) {
         return (
             <TableRow>
-                <TableCell colSpan={7} className="text-center text-muted-foreground">
+                <TableCell colSpan={8} className="text-center text-muted-foreground">
                     No users found.
                 </TableCell>
             </TableRow>
@@ -72,13 +74,22 @@ const UserManagementPage: React.FC = () => {
         <TableCell className="font-medium">{user.full_name || 'N/A'}</TableCell>
         <TableCell>{user.email}</TableCell>
         <TableCell>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-1">
             {user.roles && user.roles.length > 0 ? (
                 user.roles.map((role) => <Badge key={role} variant="secondary">{role}</Badge>)
             ) : (
                 <Badge variant="outline">No Role</Badge>
             )}
           </div>
+        </TableCell>
+        <TableCell>
+            <div className="flex flex-wrap gap-1">
+                {user.groups && user.groups.length > 0 ? (
+                    user.groups.map((group) => <Badge key={group} variant="outline">{group}</Badge>)
+                ) : (
+                    <span className="text-xs text-muted-foreground">No Groups</span>
+                )}
+            </div>
         </TableCell>
         <TableCell>{user.sip_number || 'N/A'}</TableCell>
         <TableCell>{user.webrtc_number || 'N/A'}</TableCell>
@@ -110,7 +121,7 @@ const UserManagementPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background p-4 md:p-8 flex justify-center items-start">
-      <Card className="w-full max-w-6xl">
+      <Card className="w-full max-w-7xl">
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
@@ -134,6 +145,7 @@ const UserManagementPage: React.FC = () => {
                     <TableHead>Full Name</TableHead>
                     <TableHead>Email</TableHead>
                     <TableHead>Roles</TableHead>
+                    <TableHead>Groups</TableHead>
                     <TableHead>SIP Number</TableHead>
                     <TableHead>WebRTC Number</TableHead>
                     <TableHead>SIP Password</TableHead>
