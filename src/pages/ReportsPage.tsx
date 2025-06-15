@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -8,6 +9,7 @@ import CallDispositionReport from '@/components/reports/CallDispositionReport';
 import AgentStatsExportReport from '@/components/reports/AgentStatsExportReport';
 import CallStatusStatsReport from '@/components/reports/CallStatusStatsReport';
 import RecordingLookupReport from '@/components/reports/RecordingLookupReport';
+import DidLogExportReport from '@/components/reports/DidLogExportReport';
 
 const ReportsPage: React.FC = () => {
   return (
@@ -57,7 +59,20 @@ const ReportsPage: React.FC = () => {
             <p className="text-xs text-muted-foreground">
               Access logs for DIDs, phone numbers, and call dispositions.
             </p>
-            <Button className="mt-2 w-full" disabled>DID Log Export</Button>
+            <Sheet>
+                <SheetTrigger asChild>
+                    <Button className="mt-2 w-full">DID Log Export</Button>
+                </SheetTrigger>
+                <SheetContent className="w-full sm:max-w-full md:w-3/4 lg:w-2/3 xl:w-1/2 p-0">
+                  <SheetHeader className="p-6">
+                    <SheetTitle>DID Log Export</SheetTitle>
+                    <SheetDescription>
+                      Exports all calls inbound to a DID for one day.
+                    </SheetDescription>
+                  </SheetHeader>
+                  <DidLogExportReport />
+                </SheetContent>
+            </Sheet>
             <Button className="mt-2 w-full" disabled>Phone Number Log</Button>
             <Sheet>
                 <SheetTrigger asChild>
