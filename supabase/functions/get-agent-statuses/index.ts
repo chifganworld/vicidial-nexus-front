@@ -35,7 +35,7 @@ Deno.serve(async (req) => {
       domain = `http://${domain}`;
     }
     
-    const apiUrl = `${domain}/vicidial/non_agent_api.php`
+    const apiUrl = `${domain}/non_agent_api.php`
     const params = new URLSearchParams({
       source: 'lovable_supervisor',
       user: api_user,

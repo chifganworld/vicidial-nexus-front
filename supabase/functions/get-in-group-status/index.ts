@@ -1,4 +1,3 @@
-
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import { corsHeaders } from '../_shared/cors.ts'
 
@@ -36,7 +35,7 @@ Deno.serve(async (req) => {
     if (!domain.startsWith('http://') && !domain.startsWith('https://')) {
       domain = `http://${domain}`;
     }
-    const apiUrl = `${domain}/vicidial/non_agent_api.php`
+    const apiUrl = `${domain}/non_agent_api.php`
 
     const params = new URLSearchParams({
       source: 'lovable_supervisor',
