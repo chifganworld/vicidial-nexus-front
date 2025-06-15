@@ -1,17 +1,16 @@
+
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { User, UserRole } from '@/types/user';
+import { User } from '@/types/user';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Checkbox } from '@/components/ui/checkbox';
 import { DialogFooter, DialogClose } from '@/components/ui/dialog';
-import { useGroups } from '@/hooks/useGroups';
 import { useUserGroups } from '@/hooks/useUserGroups';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Skeleton } from '@/components/ui/skeleton';
+import UserRolesField from './UserRolesField';
+import UserGroupsField from './UserGroupsField';
 
 export const userFormSchema = z.object({
   full_name: z.string().min(2, { message: 'Full name must be at least 2 characters.' }),
@@ -24,12 +23,6 @@ export const userFormSchema = z.object({
   group_ids: z.array(z.string()).optional(),
 });
 
-const ROLES: { id: UserRole; label: string }[] = [
-  { id: 'agent', label: 'Agent' },
-  { id: 'supervisor', label: 'Supervisor' },
-  { id: 'admin', label: 'Admin' },
-];
-
 interface UserFormProps {
   user: User;
   onSubmit: (values: z.infer<typeof userFormSchema>) => void;
@@ -37,7 +30,6 @@ interface UserFormProps {
 }
 
 const UserForm: React.FC<UserFormProps> = ({ user, onSubmit, isPending }) => {
-  const { data: availableGroups, isLoading: isLoadingGroups } = useGroups();
   const { data: userGroupIds, isLoading: isLoadingUserGroups } = useUserGroups(user.id);
 
   const form = useForm<z.infer<typeof userFormSchema>>({
@@ -113,109 +105,10 @@ const UserForm: React.FC<UserFormProps> = ({ user, onSubmit, isPending }) => {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="roles"
-          render={() => (
-              <FormItem>
-                  <div className="mb-2">
-                      <FormLabel>Roles</FormLabel>
-                  </div>
-                  <div className="space-y-2">
-                  {ROLES.map((item) => (
-                      <FormField
-                          key={item.id}
-                          control={form.control}
-                          name="roles"
-                          render={({ field }) => {
-                              return (
-                                  <FormItem
-                                      key={item.id}
-                                      className="flex flex-row items-center space-x-3 space-y-0"
-                                  >
-                                      <FormControl>
-                                          <Checkbox
-                                              checked={field.value?.includes(item.id)}
-                                              onCheckedChange={(checked) => {
-                                                  const updatedRoles = checked
-                                                      ? [...field.value, item.id]
-                                                      : field.value?.filter(
-                                                          (value) => value !== item.id
-                                                        );
-                                                  field.onChange(updatedRoles);
-                                              }}
-                                          />
-                                      </FormControl>
-                                      <FormLabel className="font-normal">
-                                          {item.label}
-                                      </FormLabel>
-                                  </FormItem>
-                              );
-                          }}
-                      />
-                  ))}
-                  </div>
-                  <FormMessage />
-              </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="group_ids"
-          render={() => (
-              <FormItem>
-                  <div className="mb-2">
-                      <FormLabel>Groups</FormLabel>
-                  </div>
-                  {isLoadingGroups || isLoadingUserGroups ? (
-                    <div className="space-y-2 rounded-md border p-4">
-                      <Skeleton className="h-5 w-28" />
-                      <Skeleton className="h-5 w-32" />
-                      <Skeleton className="h-5 w-24" />
-                    </div>
-                  ) : (
-                  <ScrollArea className="h-32 rounded-md border">
-                    <div className="p-4 space-y-2">
-                    {availableGroups?.map((item) => (
-                        <FormField
-                            key={item.id}
-                            control={form.control}
-                            name="group_ids"
-                            render={({ field }) => {
-                                return (
-                                    <FormItem
-                                        key={item.id}
-                                        className="flex flex-row items-center space-x-3 space-y-0"
-                                    >
-                                        <FormControl>
-                                            <Checkbox
-                                                checked={field.value?.includes(item.id)}
-                                                onCheckedChange={(checked) => {
-                                                    const updatedGroups = checked
-                                                        ? [...(field.value || []), item.id]
-                                                        : field.value?.filter(
-                                                            (value) => value !== item.id
-                                                          );
-                                                    field.onChange(updatedGroups);
-                                                }}
-                                            />
-                                        </FormControl>
-                                        <FormLabel className="font-normal">
-                                            {item.name}
-                                        </FormLabel>
-                                    </FormItem>
-                                );
-                            }}
-                        />
-                    ))}
-                    {availableGroups?.length === 0 && <p className="text-sm text-muted-foreground">No groups available.</p>}
-                    </div>
-                  </ScrollArea>
-                  )}
-                  <FormMessage />
-              </FormItem>
-          )}
-        />
+        
+        <UserRolesField />
+
+        <UserGroupsField isLoading={isLoadingUserGroups} />
         
         <DialogFooter>
           <DialogClose asChild>
