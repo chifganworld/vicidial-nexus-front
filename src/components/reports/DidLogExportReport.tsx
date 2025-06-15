@@ -36,7 +36,9 @@ const DidLogExportReport = () => {
     });
 
     const handleFetchReport = () => {
-        refetch();
+        if (query.phone_number) {
+            refetch();
+        }
     };
 
     return (
@@ -57,7 +59,7 @@ const DidLogExportReport = () => {
                                 <Input type="date" id="date" value={query.date} onChange={e => setQuery({ ...query, date: e.target.value })} />
                             </div>
                         </div>
-                        <Button onClick={handleFetchReport} disabled={isLoading}>
+                        <Button onClick={handleFetchReport} disabled={isLoading || !query.phone_number}>
                             {isLoading ? 'Loading...' : 'Get Report'}
                         </Button>
                     </CardContent>

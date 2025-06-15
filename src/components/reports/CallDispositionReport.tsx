@@ -50,7 +50,9 @@ const CallDispositionReport = () => {
     });
 
     const handleFetchReport = () => {
-        refetch();
+        if (query.campaigns || query.ingroups || query.dids) {
+            refetch();
+        }
     };
 
     const chartData = data?.slice(0, -1).map((row: any) => {
@@ -95,7 +97,7 @@ const CallDispositionReport = () => {
                             <Input id="dids" value={query.dids} onChange={e => setQuery({...query, dids: e.target.value})} placeholder="7275551212-3125551212" />
                         </div>
                     </div>
-                    <Button onClick={handleFetchReport} disabled={isLoading}>
+                    <Button onClick={handleFetchReport} disabled={isLoading || (!query.campaigns && !query.ingroups && !query.dids)}>
                         {isLoading ? 'Loading...' : 'Get Report'}
                     </Button>
                 </CardContent>

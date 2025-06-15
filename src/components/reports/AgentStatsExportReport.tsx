@@ -55,7 +55,9 @@ const AgentStatsExportReport = () => {
     });
 
     const handleFetchReport = () => {
-        refetch();
+        if (dateRange?.from && dateRange?.to) {
+            refetch();
+        }
     };
 
     return (
@@ -98,7 +100,7 @@ const AgentStatsExportReport = () => {
                              <Label htmlFor="group_by_campaign">Group by Campaign</Label>
                         </div>
                     </div>
-                    <Button onClick={handleFetchReport} disabled={isLoading}>
+                    <Button onClick={handleFetchReport} disabled={isLoading || !dateRange?.from || !dateRange?.to}>
                         {isLoading ? 'Loading...' : 'Get Report'}
                     </Button>
                 </CardContent>

@@ -44,7 +44,9 @@ const PhoneNumberLogReport = () => {
     });
 
     const handleFetchReport = () => {
-        refetch();
+        if (query.phone_number) {
+            refetch();
+        }
     };
 
     return (
@@ -90,7 +92,7 @@ const PhoneNumberLogReport = () => {
                                  <Label htmlFor="archived_lead">Search in Archived Leads</Label>
                             </div>
                         </div>
-                        <Button onClick={handleFetchReport} disabled={isLoading}>
+                        <Button onClick={handleFetchReport} disabled={isLoading || !query.phone_number}>
                             {isLoading ? 'Loading...' : 'Get Report'}
                         </Button>
                     </CardContent>
