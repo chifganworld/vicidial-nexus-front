@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -91,7 +90,7 @@ const PhoneNumberLogReport = () => {
                                  <Label htmlFor="archived_lead">Search in Archived Leads</Label>
                             </div>
                         </div>
-                        <Button onClick={handleFetchReport} disabled={isLoading || !query.phone_number}>
+                        <Button onClick={handleFetchReport} disabled={isLoading}>
                             {isLoading ? 'Loading...' : 'Get Report'}
                         </Button>
                     </CardContent>
