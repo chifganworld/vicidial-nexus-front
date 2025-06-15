@@ -12,6 +12,7 @@ import DidLogExportReport from '@/components/reports/DidLogExportReport';
 import PhoneNumberLogReport from '@/components/reports/PhoneNumberLogReport';
 import PausesReport from '@/components/reports/PausesReport';
 import LoginSessionReport from '@/components/reports/LoginSessionReport';
+import ListInfoReport from '@/components/reports/ListInfoReport';
 
 const ReportsPage: React.FC = () => {
   return (
@@ -190,7 +191,20 @@ const ReportsPage: React.FC = () => {
                 <RecordingLookupReport />
               </SheetContent>
           </Sheet>
-          <Button variant="outline" disabled>List Info</Button>
+          <Sheet>
+              <SheetTrigger asChild>
+                  <Button variant="outline">List Info</Button>
+              </SheetTrigger>
+              <SheetContent className="w-full sm:max-w-full md:w-3/4 lg:w-2/3 xl:w-1/2 p-0">
+                <SheetHeader className="p-6">
+                  <SheetTitle>List Info</SheetTitle>
+                  <SheetDescription>
+                    Summary information about a list.
+                  </SheetDescription>
+                </SheetHeader>
+                <ListInfoReport />
+              </SheetContent>
+          </Sheet>
           <Button variant="outline" disabled>Custom Reports (TBD)</Button>
         </div>
       </div>
