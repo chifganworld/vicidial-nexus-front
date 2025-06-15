@@ -7,6 +7,7 @@ import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTr
 import CallDispositionReport from '@/components/reports/CallDispositionReport';
 import AgentStatsExportReport from '@/components/reports/AgentStatsExportReport';
 import CallStatusStatsReport from '@/components/reports/CallStatusStatsReport';
+import RecordingLookupReport from '@/components/reports/RecordingLookupReport';
 
 const ReportsPage: React.FC = () => {
   return (
@@ -105,8 +106,20 @@ const ReportsPage: React.FC = () => {
        <div className="mt-8">
         <h2 className="text-2xl font-semibold text-gray-700 mb-4">Other Reports</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {/* Placeholder for other report links */}
-          <Button variant="outline" disabled>Recording Lookup</Button>
+          <Sheet>
+              <SheetTrigger asChild>
+                  <Button variant="outline">Recording Lookup</Button>
+              </SheetTrigger>
+              <SheetContent className="w-full sm:max-w-full md:w-3/4 lg:w-2/3 xl:w-1/2 p-0">
+                <SheetHeader className="p-6">
+                  <SheetTitle>Recording Lookup</SheetTitle>
+                  <SheetDescription>
+                    Look up recordings based on various criteria.
+                  </SheetDescription>
+                </SheetHeader>
+                <RecordingLookupReport />
+              </SheetContent>
+          </Sheet>
           <Button variant="outline" disabled>List Info</Button>
           <Button variant="outline" disabled>Custom Reports (TBD)</Button>
         </div>
