@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { BarChartBig, FileText, Users, Coffee } from 'lucide-react';
+import { BarChartBig, FileText, Users, Coffee, Clock } from 'lucide-react';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import CallDispositionReport from '@/components/reports/CallDispositionReport';
 import AgentStatsExportReport from '@/components/reports/AgentStatsExportReport';
@@ -10,7 +10,8 @@ import CallStatusStatsReport from '@/components/reports/CallStatusStatsReport';
 import RecordingLookupReport from '@/components/reports/RecordingLookupReport';
 import DidLogExportReport from '@/components/reports/DidLogExportReport';
 import PhoneNumberLogReport from '@/components/reports/PhoneNumberLogReport';
-import BreaksAndPausesReport from '@/components/reports/BreaksAndPausesReport';
+import PausesReport from '@/components/reports/PausesReport';
+import LoginSessionReport from '@/components/reports/LoginSessionReport';
 
 const ReportsPage: React.FC = () => {
   return (
@@ -133,25 +134,39 @@ const ReportsPage: React.FC = () => {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Breaks & Pauses Report</CardTitle>
-            <Coffee className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium">Agent Activity Reports</CardTitle>
+            <Clock className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <p className="text-xs text-muted-foreground">
-              Monitor agent break and pause times.
+              Monitor agent pauses, logins, and session durations.
             </p>
             <Sheet>
                 <SheetTrigger asChild>
-                    <Button className="mt-4 w-full">View Report</Button>
+                    <Button className="mt-4 w-full">View Pauses Report</Button>
                 </SheetTrigger>
                 <SheetContent className="w-full sm:max-w-full md:w-3/4 lg:w-2/3 xl:w-1/2 p-0">
                   <SheetHeader className="p-6">
-                    <SheetTitle>Breaks and Pauses Report</SheetTitle>
+                    <SheetTitle>Pauses Report</SheetTitle>
                     <SheetDescription>
                       This report shows agent pause statistics for a selected time period.
                     </SheetDescription>
                   </SheetHeader>
-                  <BreaksAndPausesReport />
+                  <PausesReport />
+                </SheetContent>
+            </Sheet>
+            <Sheet>
+                <SheetTrigger asChild>
+                    <Button className="mt-2 w-full">View Login & Session Report</Button>
+                </SheetTrigger>
+                <SheetContent className="w-full sm:max-w-full md:w-3/4 lg:w-2/3 xl:w-1/2 p-0">
+                  <SheetHeader className="p-6">
+                    <SheetTitle>Login & Session Report</SheetTitle>
+                    <SheetDescription>
+                      This report shows agent login and session duration statistics for a selected time period.
+                    </SheetDescription>
+                  </SheetHeader>
+                  <LoginSessionReport />
                 </SheetContent>
             </Sheet>
           </CardContent>

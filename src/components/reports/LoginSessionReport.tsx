@@ -24,7 +24,7 @@ const fetchAgentStats = async (params: any) => {
     return data;
 }
 
-const BreaksAndPausesReport: React.FC = () => {
+const LoginSessionReport: React.FC = () => {
     const [dateRange, setDateRange] = useState<DateRange | undefined>({
         from: subDays(new Date(), 7),
         to: new Date(),
@@ -37,7 +37,7 @@ const BreaksAndPausesReport: React.FC = () => {
     };
 
     const { data, isLoading, isError, error, refetch, isFetched } = useQuery({
-        queryKey: ['agentStatsBreaks', reportParams],
+        queryKey: ['agentStatsLoginSession', reportParams],
         queryFn: () => fetchAgentStats(reportParams),
         enabled: false,
     });
@@ -56,7 +56,7 @@ const BreaksAndPausesReport: React.FC = () => {
         return `${h}:${m}:${s}`;
     }
 
-    const pauseColumns = ['user', 'full_name', 'pause_time', 'pauses', 'avg_pause_time', 'pause_pct'];
+    const reportColumns = ['user', 'full_name', 'login_time', 'sessions', 'avg_session'];
 
     return (
         <ScrollArea className="h-[calc(100vh-8rem)]">
@@ -104,15 +104,15 @@ const BreaksAndPausesReport: React.FC = () => {
                             <Table>
                                 <TableHeader>
                                     <TableRow>
-                                        {pauseColumns.map(key => <TableHead key={key}>{key.replace(/_/g, ' ').toUpperCase()}</TableHead>)}
+                                        {reportColumns.map(key => <TableHead key={key}>{key.replace(/_/g, ' ').toUpperCase()}</TableHead>)}
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
                                     {data.map((row: any, index: number) => (
                                         <TableRow key={index}>
-                                            {pauseColumns.map((key) => (
+                                            {reportColumns.map((key) => (
                                                 <TableCell key={key}>
-                                                    {key.includes('_time') ? formatSeconds(Number(row[key])) : row[key]}
+                                                    {key.includes('_time') || key.includes('avg_session') ? formatSeconds(Number(row[key])) : row[key]}
                                                 </TableCell>
                                             ))}
                                         </TableRow>
@@ -130,4 +130,4 @@ const BreaksAndPausesReport: React.FC = () => {
     );
 };
 
-export default BreaksAndPausesReport;
+export default LoginSessionReport;
