@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -37,12 +36,8 @@ const DidLogExportReport = () => {
     });
 
     const handleFetchReport = () => {
-        if (query.phone_number && query.date) {
-            refetch();
-        }
+        refetch();
     };
-
-    const isButtonDisabled = !query.phone_number || !query.date || isLoading;
 
     return (
         <ScrollArea className="h-[calc(100vh-8rem)]">
@@ -62,7 +57,7 @@ const DidLogExportReport = () => {
                                 <Input type="date" id="date" value={query.date} onChange={e => setQuery({ ...query, date: e.target.value })} />
                             </div>
                         </div>
-                        <Button onClick={handleFetchReport} disabled={isButtonDisabled}>
+                        <Button onClick={handleFetchReport} disabled={isLoading}>
                             {isLoading ? 'Loading...' : 'Get Report'}
                         </Button>
                     </CardContent>

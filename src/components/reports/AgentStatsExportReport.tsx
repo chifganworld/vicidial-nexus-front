@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -39,7 +38,6 @@ const AgentStatsExportReport = () => {
         time_format: 'HF',
         group_by_campaign: false,
     });
-    const [enabled, setEnabled] = useState(false);
 
     const reportParams = {
         agent_user: query.agent_user || undefined,
@@ -53,13 +51,11 @@ const AgentStatsExportReport = () => {
     const { data, isLoading, isError, error, refetch, isFetched } = useQuery({
         queryKey: ['agentStatsExport', reportParams],
         queryFn: () => fetchAgentStatsExport(reportParams),
-        enabled: enabled,
+        enabled: false,
     });
 
     const handleFetchReport = () => {
-        setEnabled(true);
-        // This is a manual refetch trigger
-        setTimeout(() => refetch(), 0);
+        refetch();
     };
 
     return (

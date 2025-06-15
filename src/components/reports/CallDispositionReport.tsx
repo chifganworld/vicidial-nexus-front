@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -37,7 +36,6 @@ const CallDispositionReport = () => {
         ingroups: '',
         dids: '',
     });
-    const [enabled, setEnabled] = useState(false);
 
     const reportParams = {
         ...query,
@@ -48,15 +46,10 @@ const CallDispositionReport = () => {
     const { data, isLoading, isError, error, refetch } = useQuery({
         queryKey: ['callDispoReport', reportParams],
         queryFn: () => fetchCallDispoReport(reportParams),
-        enabled: enabled,
+        enabled: false,
     });
 
     const handleFetchReport = () => {
-        if (!query.campaigns && !query.ingroups && !query.dids) {
-            alert('Please provide at least one campaign, in-group, or DID.');
-            return;
-        }
-        setEnabled(true);
         refetch();
     };
 
