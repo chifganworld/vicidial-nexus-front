@@ -1,4 +1,3 @@
-
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import { corsHeaders } from '../_shared/cors.ts'
 
@@ -45,10 +44,10 @@ Deno.serve(async (req) => {
     if (date) params.append('date', date);
     if (uniqueid) params.append('uniqueid', uniqueid);
     if (extension) params.append('extension', extension);
-    if (duration) params.append('duration', duration ? 'Y' : 'N');
+    params.append('duration', duration ? 'Y' : 'N');
 
 
-    const vicidialUrl = `https://${vicidial_domain}/vicidial/non_agent_api.php?${params.toString()}`;
+    const vicidialUrl = `http://${vicidial_domain}/vicidial/non_agent_api.php?${params.toString()}`;
     
     const response = await fetch(vicidialUrl);
     const textResponse = await response.text();
