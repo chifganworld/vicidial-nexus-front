@@ -77,6 +77,63 @@ export type Database = {
           },
         ]
       }
+      group_permissions: {
+        Row: {
+          created_at: string
+          group_id: string
+          permission_id: string
+        }
+        Insert: {
+          created_at?: string
+          group_id: string
+          permission_id: string
+        }
+        Update: {
+          created_at?: string
+          group_id?: string
+          permission_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_permissions_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "groups"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "group_permissions_permission_id_fkey"
+            columns: ["permission_id"]
+            isOneToOne: false
+            referencedRelation: "permissions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      groups: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       leads: {
         Row: {
           agent_id: string | null
@@ -120,6 +177,27 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      permissions: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+        }
+        Relationships: []
       }
       profiles: {
         Row: {
@@ -319,6 +397,32 @@ export type Database = {
         }
         Relationships: []
       }
+      user_groups: {
+        Row: {
+          created_at: string
+          group_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          group_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          group_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_groups_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -405,6 +509,7 @@ export type Database = {
           email: string
           full_name: string
           roles: Database["public"]["Enums"]["app_role"][]
+          groups: string[]
           sip_number: string
           webrtc_number: string
           sip_password: string
