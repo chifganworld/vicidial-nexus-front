@@ -1,1 +1,5 @@
+
 project_id = "vwalfohkwbufyxvmyuqw"
+
+[functions.test-remote-db]
+  verify_jwt = true

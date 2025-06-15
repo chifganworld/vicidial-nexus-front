@@ -13,6 +13,7 @@ type RemoteDbIntegrationTableRow = Database['public']['Tables']['remote_db_integ
 const RemoteDbIntegrationTab: React.FC = () => {
   const [settingsId, setSettingsId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isTesting, setIsTesting] = useState(false);
 
   const form = useForm<RemoteDbIntegrationFormData>({
     resolver: zodResolver(remoteDbIntegrationSchema),
@@ -92,11 +93,48 @@ const RemoteDbIntegrationTab: React.FC = () => {
     }
   };
 
+  const handleTestConnection = async () => {
+    const values = form.getValues();
+    const result = remoteDbIntegrationSchema.safeParse(values);
+
+    if (!result.success) {
+      toast.error('Please fill in all required fields correctly before testing.');
+      form.trigger();
+      return;
+    }
+
+    setIsTesting(true);
+    toast.info('Testing connection...');
+
+    try {
+      const { data, error: invokeError } = await supabase.functions.invoke('test-remote-db', {
+        body: result.data,
+      });
+
+      if (invokeError) {
+        throw invokeError;
+      }
+      
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
+      toast.success(data.message || 'Connection successful!');
+    } catch (error) {
+      toast.error(`${error.message}`);
+    } finally {
+      setIsTesting(false);
+    }
+  };
+
+
   return (
     <RemoteDbIntegrationForm
       form={form}
       onSubmit={onSubmit}
       isLoading={isLoading}
+      onTestConnection={handleTestConnection}
+      isTesting={isTesting}
     />
   );
 };

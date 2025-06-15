@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
@@ -12,16 +11,18 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { Save } from 'lucide-react';
+import { Save, Wifi } from 'lucide-react';
 import { RemoteDbIntegrationFormData } from '@/features/integrations/remoteDbSchemas';
 
 interface RemoteDbIntegrationFormProps {
   form: UseFormReturn<RemoteDbIntegrationFormData>;
   onSubmit: (values: RemoteDbIntegrationFormData) => Promise<void>;
   isLoading: boolean;
+  onTestConnection: () => Promise<void>;
+  isTesting: boolean;
 }
 
-const RemoteDbIntegrationForm: React.FC<RemoteDbIntegrationFormProps> = ({ form, onSubmit, isLoading }) => {
+const RemoteDbIntegrationForm: React.FC<RemoteDbIntegrationFormProps> = ({ form, onSubmit, isLoading, onTestConnection, isTesting }) => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -105,10 +106,16 @@ const RemoteDbIntegrationForm: React.FC<RemoteDbIntegrationFormProps> = ({ form,
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={isLoading || form.formState.isSubmitting} className="w-full">
-          <Save className="mr-2 h-4 w-4" />
-          {isLoading ? 'Saving...' : 'Save Settings'}
-        </Button>
+        <div className="flex w-full space-x-2 pt-4">
+          <Button type="button" variant="outline" onClick={onTestConnection} disabled={isLoading || isTesting || form.formState.isSubmitting} className="w-1/2">
+            <Wifi className="mr-2 h-4 w-4" />
+            {isTesting ? 'Testing...' : 'Test Connection'}
+          </Button>
+          <Button type="submit" disabled={isLoading || isTesting || form.formState.isSubmitting} className="w-1/2">
+            <Save className="mr-2 h-4 w-4" />
+            {isLoading ? 'Saving...' : 'Save Settings'}
+          </Button>
+        </div>
       </form>
     </Form>
   );
