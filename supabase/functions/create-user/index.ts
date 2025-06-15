@@ -25,7 +25,7 @@ Deno.serve(async (req) => {
       });
     }
 
-    const { email, password, fullName, roles, sipNumber, webrtcNumber, sipPassword } = await req.json();
+    const { email, password, fullName, roles, sipNumber, webrtcNumber, sipPassword, group_ids } = await req.json();
 
     // 1. Create the user in auth.users
     const { data: { user }, error: createError } = await supabase.auth.admin.createUser({
@@ -54,8 +54,15 @@ Deno.serve(async (req) => {
       const { error: roleError } = await supabase.from('user_roles').insert(roleInserts);
       if (roleError) throw roleError;
     }
+
+    // 4. Assign groups
+    if (group_ids && group_ids.length > 0) {
+      const groupInserts = group_ids.map((group_id: string) => ({ user_id: user.id, group_id }));
+      const { error: groupError } = await supabase.from('user_groups').insert(groupInserts);
+      if (groupError) throw groupError;
+    }
     
-    // 4. Log the audit event
+    // 5. Log the audit event
     const { error: auditError } = await supabase.from('audit_logs').insert({
         user_id: actor.id,
         user_email: actor.email,
@@ -63,7 +70,7 @@ Deno.serve(async (req) => {
         details: {
             created_user_id: user.id,
             created_user_email: user.email,
-            details: { fullName, email, roles, sipNumber, webrtcNumber }
+            details: { fullName, email, roles, sipNumber, webrtcNumber, group_ids }
         }
     });
     if (auditError) console.error("Failed to log user creation:", auditError.message);

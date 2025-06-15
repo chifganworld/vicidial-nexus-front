@@ -26,6 +26,7 @@ import { UserPlus } from 'lucide-react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import UserGroupsField from './UserGroupsField';
 
 const formSchema = z.object({
   fullName: z.string().min(2, { message: 'Full name must be at least 2 characters.' }),
@@ -37,6 +38,7 @@ const formSchema = z.object({
   roles: z.array(z.string()).refine((value) => value.some((item) => item), {
     message: 'You have to select at least one role.',
   }),
+  group_ids: z.array(z.string()).optional(),
 });
 
 const ROLES = [
@@ -55,6 +57,7 @@ const createUser = async (values: z.infer<typeof formSchema>) => {
             sip_number: values.sipNumber,
             webrtc_number: values.webrtcNumber,
             sip_password: values.sipPassword,
+            group_ids: values.group_ids,
         },
     });
 
@@ -84,6 +87,7 @@ const AddUserDialog: React.FC = () => {
             webrtcNumber: '',
             sipPassword: '',
             roles: ['agent'],
+            group_ids: [],
         },
     });
 
@@ -116,7 +120,7 @@ const AddUserDialog: React.FC = () => {
                 <DialogHeader>
                     <DialogTitle>Add New User</DialogTitle>
                     <DialogDescription>
-                        Create a new user account and assign roles.
+                        Create a new user account and assign roles and groups.
                     </DialogDescription>
                 </DialogHeader>
                 <Form {...form}>
@@ -249,6 +253,8 @@ const AddUserDialog: React.FC = () => {
                                 </FormItem>
                             )}
                         />
+                        <UserGroupsField isLoading={false} />
+
                         <DialogFooter>
                             <Button type="button" variant="ghost" onClick={() => setOpen(false)}>Cancel</Button>
                             <Button type="submit" disabled={mutation.isPending}>
