@@ -145,6 +145,10 @@ This project is built with:
 - Recharts (for charts)
 - Lucide React (for icons)
 
+## Project Documentation
+
+For more detailed technical documentation, please refer to the files in the [`/docs`](./docs) directory. This includes information about the project's architecture, API integrations, and developer guides.
+
 ## How to Contribute
 
 We welcome contributions to enhance the Agent Call Center Dashboard! To contribute, please follow these steps:
