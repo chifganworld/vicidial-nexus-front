@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import RecordingLookupReport from '@/components/reports/RecordingLookupReport';
 import ListInfoReport from '@/components/reports/ListInfoReport';
+import CampaignsListReport from '@/components/reports/CampaignsListReport';
 
 const OtherReportsSection: React.FC = () => {
     return (
@@ -38,7 +39,20 @@ const OtherReportsSection: React.FC = () => {
                         <ListInfoReport />
                     </SheetContent>
                 </Sheet>
-                <Button variant="outline" disabled>Custom Reports (TBD)</Button>
+                <Sheet>
+                    <SheetTrigger asChild>
+                        <Button variant="outline">Campaigns List</Button>
+                    </SheetTrigger>
+                    <SheetContent className="w-full sm:max-w-full md:w-3/4 lg:w-2/3 xl:w-1/2 p-0">
+                        <SheetHeader className="p-6">
+                            <SheetTitle>Campaigns List</SheetTitle>
+                            <SheetDescription>
+                                Displays information about all campaigns in the system.
+                            </SheetDescription>
+                        </SheetHeader>
+                        <CampaignsListReport />
+                    </SheetContent>
+                </Sheet>
             </div>
         </div>
     );
