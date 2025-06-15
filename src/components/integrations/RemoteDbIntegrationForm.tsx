@@ -11,7 +11,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { Save, Wifi } from 'lucide-react';
+import { Save, Wifi, DatabaseZap } from 'lucide-react';
 import { RemoteDbIntegrationFormData } from '@/features/integrations/remoteDbSchemas';
 
 interface RemoteDbIntegrationFormProps {
@@ -20,9 +20,11 @@ interface RemoteDbIntegrationFormProps {
   isLoading: boolean;
   onTestConnection: () => Promise<void>;
   isTesting: boolean;
+  onInitializeDatabase: () => Promise<void>;
+  isInitializing: boolean;
 }
 
-const RemoteDbIntegrationForm: React.FC<RemoteDbIntegrationFormProps> = ({ form, onSubmit, isLoading, onTestConnection, isTesting }) => {
+const RemoteDbIntegrationForm: React.FC<RemoteDbIntegrationFormProps> = ({ form, onSubmit, isLoading, onTestConnection, isTesting, onInitializeDatabase, isInitializing }) => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -107,13 +109,24 @@ const RemoteDbIntegrationForm: React.FC<RemoteDbIntegrationFormProps> = ({ form,
           )}
         />
         <div className="flex w-full space-x-2 pt-4">
-          <Button type="button" variant="outline" onClick={onTestConnection} disabled={isLoading || isTesting || form.formState.isSubmitting} className="w-1/2">
+          <Button type="button" variant="outline" onClick={onTestConnection} disabled={isLoading || isTesting || isInitializing || form.formState.isSubmitting} className="w-1/2">
             <Wifi className="mr-2 h-4 w-4" />
             {isTesting ? 'Testing...' : 'Test Connection'}
           </Button>
-          <Button type="submit" disabled={isLoading || isTesting || form.formState.isSubmitting} className="w-1/2">
+          <Button type="submit" disabled={isLoading || isTesting || isInitializing || form.formState.isSubmitting} className="w-1/2">
             <Save className="mr-2 h-4 w-4" />
             {isLoading ? 'Saving...' : 'Save Settings'}
+          </Button>
+        </div>
+
+        <div className="pt-6 border-t mt-6">
+          <FormLabel>Database Initialization</FormLabel>
+          <FormDescription className="mt-1">
+            Run a script to set up the necessary tables and schema for the application on the remote database. This is a potentially destructive, one-time operation.
+          </FormDescription>
+          <Button type="button" variant="destructive" onClick={onInitializeDatabase} disabled={isLoading || isTesting || isInitializing || form.formState.isSubmitting} className="w-full mt-2">
+            <DatabaseZap className="mr-2 h-4 w-4" />
+            {isInitializing ? 'Initializing...' : 'Initialize Database'}
           </Button>
         </div>
       </form>

@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -14,6 +13,7 @@ const RemoteDbIntegrationTab: React.FC = () => {
   const [settingsId, setSettingsId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isTesting, setIsTesting] = useState(false);
+  const [isInitializing, setIsInitializing] = useState(false);
 
   const form = useForm<RemoteDbIntegrationFormData>({
     resolver: zodResolver(remoteDbIntegrationSchema),
@@ -127,6 +127,39 @@ const RemoteDbIntegrationTab: React.FC = () => {
     }
   };
 
+  const handleInitializeDatabase = async () => {
+    const values = form.getValues();
+    const result = remoteDbIntegrationSchema.safeParse(values);
+
+    if (!result.success) {
+      toast.error('Please fill in all required fields correctly before initializing.');
+      form.trigger();
+      return;
+    }
+    
+    setIsInitializing(true);
+    toast.info('Initializing remote database...');
+
+    try {
+      const { data, error: invokeError } = await supabase.functions.invoke('initialize-remote-db', {
+        body: result.data,
+      });
+
+      if (invokeError) {
+        throw invokeError;
+      }
+      
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
+      toast.success(data.message || 'Database initialized successfully!');
+    } catch (error) {
+      toast.error(`Initialization failed: ${error.message}`);
+    } finally {
+      setIsInitializing(false);
+    }
+  };
 
   return (
     <RemoteDbIntegrationForm
@@ -135,6 +168,8 @@ const RemoteDbIntegrationTab: React.FC = () => {
       isLoading={isLoading}
       onTestConnection={handleTestConnection}
       isTesting={isTesting}
+      onInitializeDatabase={handleInitializeDatabase}
+      isInitializing={isInitializing}
     />
   );
 };
