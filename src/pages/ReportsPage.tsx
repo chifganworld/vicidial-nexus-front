@@ -6,6 +6,7 @@ import { BarChartBig, FileText, Users } from 'lucide-react';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import CallDispositionReport from '@/components/reports/CallDispositionReport';
 import AgentStatsExportReport from '@/components/reports/AgentStatsExportReport';
+import CallStatusStatsReport from '@/components/reports/CallStatusStatsReport';
 
 const ReportsPage: React.FC = () => {
   return (
@@ -83,7 +84,20 @@ const ReportsPage: React.FC = () => {
             <p className="text-xs text-muted-foreground">
               Statistics on campaign calls and status breakdowns.
             </p>
-            <Button className="mt-4 w-full" disabled>Call Status Stats</Button>
+            <Sheet>
+                <SheetTrigger asChild>
+                    <Button className="mt-4 w-full">Call Status Stats</Button>
+                </SheetTrigger>
+                <SheetContent className="w-full sm:max-w-full md:w-3/4 lg:w-2/3 xl:w-1/2 p-0">
+                  <SheetHeader className="p-6">
+                    <SheetTitle>Call Status Stats</SheetTitle>
+                    <SheetDescription>
+                      Report on number of calls made by campaign and ingroup, with hourly and status breakdowns.
+                    </SheetDescription>
+                  </SheetHeader>
+                  <CallStatusStatsReport />
+                </SheetContent>
+            </Sheet>
           </CardContent>
         </Card>
       </div>
