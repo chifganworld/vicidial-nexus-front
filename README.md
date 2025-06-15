@@ -30,94 +30,102 @@ Simply visit the [Lovable Project](https://lovable.dev/projects/a23f20e2-ed8d-4c
 
 Changes made via Lovable will be committed automatically to this repo if GitHub integration is enabled.
 
-**Use your preferred IDE (Ubuntu Setup Guide for Beginners)**
+**Use your preferred IDE (Local Development Setup)**
 
-If you want to work locally using your own IDE on an Ubuntu system, this guide will walk you through the setup. For other operating systems, the general steps for installing Node.js, npm, and Git will be similar, but specific commands may vary.
+To work on this project locally, you'll need to set up a development environment on your computer. Below are the requirements and a detailed guide for Ubuntu users. The steps for macOS and Windows are similar.
 
-**Prerequisites for Ubuntu:**
+### System Requirements
 
-Before you begin, you'll need:
-*   `git`: To clone the repository (copy the project files to your computer).
-*   `curl`: A tool to transfer data, which we'll use to download the nvm installer.
-*   `nvm` (Node Version Manager): This is the recommended way to install Node.js and npm (Node Package Manager). Node.js is the environment where your application runs, and npm is used to manage project dependencies (libraries and tools the project needs). `nvm` allows you to easily switch between different Node.js versions.
+Before you start, ensure you have the following software installed:
 
-**Step-by-step Installation on Ubuntu:**
+*   **Git:** For version control and cloning the project. You can download it from [git-scm.com](https://git-scm.com/).
+*   **Node.js:** The JavaScript runtime environment. This project doesn't use PHP. We recommend using the latest Long-Term Support (LTS) version. As of June 2025, the recommended version is **v20.x**. You can check the current LTS version on the [Node.js website](https://nodejs.org/).
+*   **npm (Node Package Manager):** This comes bundled with Node.js and is used to manage the project's dependencies.
 
-1.  **Open your terminal.**
-    You can usually find it by searching for "Terminal" in your applications or by pressing `Ctrl+Alt+T`.
+The easiest way to manage Node.js and npm versions is by using **nvm (Node Version Manager)**.
 
-2.  **Update your package list:**
-    This command refreshes the list of available software packages.
-    ```sh
-    sudo apt update
-    ```
+### Project Dependencies (The "Requirements File")
 
-3.  **Install Git:**
-    If you don't have Git installed already. The `-y` flag automatically confirms the installation.
-    ```sh
-    sudo apt install git -y
-    ```
+In Node.js projects, the `package.json` file serves as the "requirements file." It lists all the specific libraries and their versions that the project needs to run correctly.
 
-4.  **Install cURL:**
-    cURL is needed to download the nvm installation script.
-    ```sh
-    sudo apt install curl -y
-    ```
+You don't need to install these dependencies one by one. The `npm install` command, which we'll cover below, reads this file and automatically downloads everything for you.
 
-5.  **Install nvm (Node Version Manager):**
-    This command downloads and runs the nvm installation script. For the very latest version and command, you can always check the [official nvm GitHub page](https://github.com/nvm-sh/nvm#installing-and-updating).
-    ```sh
-    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
-    ```
-    After the script finishes, you'll likely need to close and reopen your terminal, or run a command like `source ~/.bashrc` (or `source ~/.zshrc` if you use Zsh) for the `nvm` command to become available. The script usually tells you what to do.
+### Step-by-Step Guide for Ubuntu Beginners
 
-6.  **Install Node.js and npm using nvm:**
-    Now, use nvm to install the latest Long-Term Support (LTS) version of Node.js. LTS versions are stable and recommended for most users. This will also install npm.
-    ```sh
-    nvm install --lts
-    ```
-    Then, tell nvm to use this version:
-    ```sh
-    nvm use --lts
-    ```
-    Verify that Node.js and npm are installed correctly by checking their versions:
-    ```sh
-    node -v
-    npm -v
-    ```
-    You should see version numbers printed for both.
+This guide will walk you through setting up the project on a fresh Ubuntu system. Each command block can be copied and pasted directly into your terminal.
 
-7.  **Clone the Repository:**
-    Now, you'll copy the project files to your computer. You'll need the project's Git URL. If you've connected your Lovable project to GitHub, you can find this URL in your Lovable project settings under "GitHub integration".
-    ```sh
-    git clone <YOUR_GIT_URL>
-    ```
-    Replace `<YOUR_GIT_URL>` with the actual URL (e.g., `https://github.com/your-username/your-project-name.git`).
+**1. Open Your Terminal**
+You can find it by searching for "Terminal" in your applications or by pressing `Ctrl+Alt+T`.
 
-8.  **Navigate to the Project Directory:**
-    After cloning, a new folder will be created. Change your terminal's current location into this new folder.
-    Replace `<YOUR_PROJECT_NAME>` with the name of the folder that was created (it's usually the same as the repository name).
-    ```sh
-    cd <YOUR_PROJECT_NAME>
-    ```
+**2. Install Git and cURL**
+First, update your package list. Then, install `git` (for downloading the code) and `curl` (for downloading installers).
+```sh
+# Update your list of available software packages
+sudo apt update
 
-9.  **Install Project Dependencies:**
-    This project uses several external libraries and tools. This command reads the `package.json` file in the project and downloads/installs everything listed there.
-    ```sh
-    npm install
-    ```
-    (You can also use the shorthand: `npm i`)
+# Install git and curl. The -y flag automatically answers "yes" to prompts.
+sudo apt install git curl -y
+```
 
-10. **Start the Development Server:**
-    This command starts the local web server, builds your application, and watches for any file changes to automatically rebuild and refresh your browser.
-    ```sh
-    npm run dev
-    ```
+**3. Install nvm (Node Version Manager)**
+`nvm` helps you install and switch between different versions of Node.js easily. We'll use `curl` to download and run the official installation script.
+```sh
+# Download and execute the nvm installation script.
+# For the latest version, always check the official nvm GitHub page.
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+```
+> **Important:** After the script finishes, you must **close and reopen your terminal** for the `nvm` command to be available.
 
-11. **View Your Application:**
-    Once the server starts (you'll see some output in the terminal, often mentioning a URL), open your web browser (like Firefox or Chrome) and go to:
-    `http://localhost:8080`
-    This is the default address where your application will be running. You should now see the Agent Call Center Dashboard!
+**4. Install Node.js and npm**
+Use `nvm` to install the latest Long-Term Support (LTS) version of Node.js. This is the most stable and recommended version. `npm` is included automatically.
+```sh
+# Install the latest LTS version of Node.js
+nvm install --lts
+
+# Set the LTS version as the one to use for the current session
+nvm use --lts
+```
+To verify the installation was successful, check the versions:
+```sh
+# Check Node.js version (e.g., v20.14.0)
+node -v
+
+# Check npm version (e.g., 10.7.0)
+npm -v
+```
+
+**5. Clone the Project Repository**
+Now, create a copy of the project on your local machine using `git`. You'll need the project's Git URL from GitHub.
+```sh
+# Replace <YOUR_GIT_URL> with the actual URL
+git clone <YOUR_GIT_URL>
+```
+
+**6. Navigate to the Project Directory**
+Move into the newly created project folder.
+```sh
+# Replace <YOUR_PROJECT_NAME> with the folder name
+cd <YOUR_PROJECT_NAME>
+```
+
+**7. Install Project Dependencies**
+This command reads the `package.json` file and installs all the required libraries for the project to run. This might take a few minutes.
+```sh
+npm install
+```
+
+**8. Start the Development Server**
+You're all set! This command starts a local web server and opens the application. It will also automatically reload the page in your browser whenever you save a file.
+```sh
+npm run dev
+```
+
+**9. View Your Application**
+Open your web browser and go to `http://localhost:8080`. You should now see the application running!
+
+### Notes for macOS and Windows Users
+*   **macOS:** You can use [Homebrew](https://brew.sh/) to install Git (`brew install git`). The `nvm` installation steps are the same as for Ubuntu.
+*   **Windows:** You can download Git from the official website. For Node.js, you can either use the official Windows installer or use [nvm-windows](https://github.com/coreybutler/nvm-windows), a separate but similar tool to `nvm`.
 
 **Edit a file directly in GitHub**
 
