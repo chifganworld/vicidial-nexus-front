@@ -10,6 +10,7 @@ import IntegrationPageHeader from '@/components/integrations/IntegrationPageHead
 import VicidialIntegrationTab from '@/components/integrations/VicidialIntegrationTab';
 import SipIntegrationTab from '@/components/integrations/SipIntegrationTab';
 import SipTrunksTab from '@/components/integrations/SipTrunksTab';
+import RemoteDbIntegrationTab from '@/components/integrations/RemoteDbIntegrationTab';
 
 const IntegrationPage: React.FC = () => {
   return (
@@ -18,10 +19,11 @@ const IntegrationPage: React.FC = () => {
         <IntegrationPageHeader backLink="/settings" />
         <CardContent>
           <Tabs defaultValue="vicidial" className="w-full">
-            <TabsList className="grid w-full grid-cols-3">
+            <TabsList className="grid w-full grid-cols-4">
               <TabsTrigger value="vicidial">Vicidial API</TabsTrigger>
               <TabsTrigger value="sip">SIP Server</TabsTrigger>
               <TabsTrigger value="trunks">SIP Trunks</TabsTrigger>
+              <TabsTrigger value="remote_db">Remote DB</TabsTrigger>
             </TabsList>
             <TabsContent value="vicidial">
               <VicidialIntegrationTab />
@@ -31,6 +33,9 @@ const IntegrationPage: React.FC = () => {
             </TabsContent>
             <TabsContent value="trunks">
               <SipTrunksTab />
+            </TabsContent>
+            <TabsContent value="remote_db">
+              <RemoteDbIntegrationTab />
             </TabsContent>
           </Tabs>
         </CardContent>

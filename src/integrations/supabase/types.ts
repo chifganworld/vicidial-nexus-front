@@ -154,6 +154,39 @@ export type Database = {
         }
         Relationships: []
       }
+      remote_db_integration: {
+        Row: {
+          created_at: string
+          db_name: string
+          db_password: string
+          db_user: string
+          host: string
+          id: string
+          port: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          db_name: string
+          db_password: string
+          db_user: string
+          host: string
+          id?: string
+          port: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          db_name?: string
+          db_password?: string
+          db_user?: string
+          host?: string
+          id?: string
+          port?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       sip_integration: {
         Row: {
           ami_host: string | null
