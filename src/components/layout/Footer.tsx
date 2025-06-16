@@ -21,7 +21,6 @@ const Footer: React.FC = () => {
         </div>
       )}
       <p>&copy; {new Date().getFullYear()} {settings.footerText}</p>
-      <p>Powered by Lovable AI</p>
     </footer>
   );
 };
