@@ -5,6 +5,7 @@ import SignUpForm from '@/components/auth/SignUpForm';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button'; // Import Button
 import { useAuth } from '@/contexts/AuthContext';
+import { useDisplaySettings } from '@/contexts/DisplaySettingsContext';
 import { Link, useNavigate } from 'react-router-dom'; // Import Link
 import { LogIn, ArrowLeft } from 'lucide-react'; // Import ArrowLeft
 import Footer from '@/components/layout/Footer';
@@ -12,6 +13,7 @@ import Footer from '@/components/layout/Footer';
 const AuthPage: React.FC = () => {
   const [isLoginView, setIsLoginView] = useState(true);
   const { session, loading: authLoading } = useAuth();
+  const { settings } = useDisplaySettings();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -38,6 +40,21 @@ const AuthPage: React.FC = () => {
           <span className="sr-only">Back to Home</span>
         </Button>
       </Link>
+      
+      {settings.companyLogo && (
+        <div className="mb-8">
+          <img 
+            src={settings.companyLogo} 
+            alt="Company Logo" 
+            className="h-16 mx-auto object-contain"
+            onError={(e) => {
+              // Hide image if it fails to load
+              e.currentTarget.style.display = 'none';
+            }}
+          />
+        </div>
+      )}
+      
       <div className="text-center mb-8">
         <LogIn size={48} className="mx-auto text-blue-400 mb-4" />
         <h1 className="text-4xl font-bold text-white">Vicidial Nexus</h1>
