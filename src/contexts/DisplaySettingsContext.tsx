@@ -5,6 +5,8 @@ interface DisplaySettings {
   showAvatars: boolean;
   showAgentPerformance: boolean;
   showCampaignPerformance: boolean;
+  footerText: string;
+  companyLogo: string;
   // Future settings can be added here
 }
 
@@ -21,6 +23,8 @@ export const DisplaySettingsProvider: React.FC<{ children: React.ReactNode }> = 
       showAvatars: true,
       showAgentPerformance: true,
       showCampaignPerformance: true,
+      footerText: 'Vicidial Nexus. All rights reserved.',
+      companyLogo: '',
     };
     try {
       const item = window.localStorage.getItem('displaySettings');

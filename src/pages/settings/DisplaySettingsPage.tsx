@@ -10,7 +10,7 @@ import { Label } from '@/components/ui/label';
 import { useDisplaySettings } from '@/contexts/DisplaySettingsContext';
 import { Switch } from '@/components/ui/switch';
 import { Separator } from '@/components/ui/separator';
-
+import { Input } from '@/components/ui/input';
 
 const DisplaySettingsPage: React.FC = () => {
   const { theme, setTheme } = useTheme();
@@ -26,6 +26,14 @@ const DisplaySettingsPage: React.FC = () => {
 
   const handleShowCampaignPerformanceChange = (checked: boolean) => {
     setSettings(prev => ({ ...prev, showCampaignPerformance: checked }));
+  };
+
+  const handleFooterTextChange = (value: string) => {
+    setSettings(prev => ({ ...prev, footerText: value }));
+  };
+
+  const handleCompanyLogoChange = (value: string) => {
+    setSettings(prev => ({ ...prev, companyLogo: value }));
   };
 
   return (
@@ -133,6 +141,54 @@ const DisplaySettingsPage: React.FC = () => {
                 checked={settings.showCampaignPerformance}
                 onCheckedChange={handleShowCampaignPerformanceChange}
               />
+            </div>
+          </div>
+
+          <Separator className="my-6" />
+
+          <div className="space-y-4">
+            <h3 className="text-lg font-medium text-foreground">Footer Customization</h3>
+            <p className="text-sm text-muted-foreground">
+              Customize the footer text and company logo displayed across the application.
+            </p>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="footer-text" className="text-base">Footer Text</Label>
+                <p className="text-sm text-muted-foreground">
+                  The main text displayed in the footer (without the copyright year).
+                </p>
+                <Input
+                  id="footer-text"
+                  value={settings.footerText}
+                  onChange={(e) => handleFooterTextChange(e.target.value)}
+                  placeholder="Vicidial Nexus. All rights reserved."
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="company-logo" className="text-base">Company Logo URL</Label>
+                <p className="text-sm text-muted-foreground">
+                  URL to your company logo image. Leave empty to hide the logo.
+                </p>
+                <Input
+                  id="company-logo"
+                  value={settings.companyLogo}
+                  onChange={(e) => handleCompanyLogoChange(e.target.value)}
+                  placeholder="https://example.com/logo.png"
+                />
+                {settings.companyLogo && (
+                  <div className="mt-2">
+                    <p className="text-sm text-muted-foreground mb-2">Preview:</p>
+                    <img 
+                      src={settings.companyLogo} 
+                      alt="Company Logo Preview" 
+                      className="h-8 object-contain"
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none';
+                      }}
+                    />
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </CardContent>
