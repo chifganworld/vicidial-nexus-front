@@ -28,7 +28,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       
       if (event === 'SIGNED_IN' && window.location.pathname === '/auth') {
         // Small delay to ensure state is updated before navigation
-        setTimeout(() => navigate('/agent'), 0); 
+        setTimeout(() => navigate('/'), 0); 
       } else if (event === 'SIGNED_OUT') {
         navigate('/auth');
       }

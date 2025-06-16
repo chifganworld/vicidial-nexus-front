@@ -18,7 +18,7 @@ const AuthPage: React.FC = () => {
 
   useEffect(() => {
     if (!authLoading && session) {
-      navigate('/agent'); // Or to a more appropriate dashboard page
+      navigate('/'); // Redirect to home page instead of agent console
     }
   }, [session, authLoading, navigate]);
 
