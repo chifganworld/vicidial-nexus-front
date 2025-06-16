@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'; // Import Button
 import { useAuth } from '@/contexts/AuthContext';
 import { Link, useNavigate } from 'react-router-dom'; // Import Link
 import { LogIn, ArrowLeft } from 'lucide-react'; // Import ArrowLeft
+import Footer from '@/components/layout/Footer';
 
 const AuthPage: React.FC = () => {
   const [isLoginView, setIsLoginView] = useState(true);
@@ -59,9 +60,7 @@ const AuthPage: React.FC = () => {
           )}
         </CardContent>
       </Card>
-       <footer className="mt-12 text-sm text-slate-500">
-        <p>&copy; {new Date().getFullYear()} Vicidial Nexus. All rights reserved.</p>
-      </footer>
+      <Footer />
     </div>
   );
 };

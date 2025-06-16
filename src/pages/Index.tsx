@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { LayoutDashboard, UserCheck, FileText, LogIn, LogOut, Shield } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext"; // Import useAuth
 import { toast } from "@/components/ui/use-toast";
+import Footer from "@/components/layout/Footer";
 
 const Index = () => {
   const { session, signOut, loading: authLoading } = useAuth(); // Use auth context
@@ -99,10 +100,7 @@ const Index = () => {
         </Button>
       )}
 
-      <footer className="mt-12 text-sm text-slate-500 animate-fade-in animation-delay-1500">
-        <p>&copy; {new Date().getFullYear()} Vicidial Nexus. All rights reserved.</p>
-        <p>Powered by Lovable AI</p>
-      </footer>
+      <Footer />
     </div>
   );
 };
