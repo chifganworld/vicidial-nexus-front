@@ -1,4 +1,3 @@
-
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { LayoutDashboard, UserCheck, FileText, LogIn, LogOut, Shield } from "lucide-react";
@@ -29,7 +28,7 @@ const Index = () => {
       <div className="text-center mb-12">
         <h1 className="text-5xl font-bold mb-4 animate-fade-in">ViciFront Dialer</h1>
         <p className="text-xl text-slate-300 animate-fade-in animation-delay-300">
-          Your Next-Generation Call Center Interface
+          Next-Gen Dialer
         </p>
       </div>
 
