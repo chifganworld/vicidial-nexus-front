@@ -27,7 +27,7 @@ const Index = () => {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-slate-900 to-slate-700 text-white p-4">
       <div className="text-center mb-12">
-        <h1 className="text-5xl font-bold mb-4 animate-fade-in">Vicidial Nexus</h1>
+        <h1 className="text-5xl font-bold mb-4 animate-fade-in">ViciFront Dialer</h1>
         <p className="text-xl text-slate-300 animate-fade-in animation-delay-300">
           Your Next-Generation Call Center Interface
         </p>

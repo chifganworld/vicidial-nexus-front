@@ -15,8 +15,8 @@ const SupervisorDashboard: React.FC = () => {
       <header className="mb-8">
         <div className="flex justify-between items-center">
           <h1 className="text-3xl font-bold">Supervisor Dashboard</h1>
-          <Link to="/agent">
-            <Button variant="outline">Back to Agent Console</Button>
+          <Link to="/">
+            <Button variant="outline">Back to Home</Button>
           </Link>
         </div>
       </header>

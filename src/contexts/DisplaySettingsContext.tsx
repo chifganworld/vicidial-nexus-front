@@ -23,7 +23,7 @@ export const DisplaySettingsProvider: React.FC<{ children: React.ReactNode }> = 
       showAvatars: true,
       showAgentPerformance: true,
       showCampaignPerformance: true,
-      footerText: 'Vicidial Nexus. All rights reserved.',
+      footerText: 'ViciFront Dialer. All rights reserved.',
       companyLogo: '',
     };
     try {

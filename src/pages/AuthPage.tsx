@@ -57,7 +57,7 @@ const AuthPage: React.FC = () => {
       
       <div className="text-center mb-8">
         <LogIn size={48} className="mx-auto text-blue-400 mb-4" />
-        <h1 className="text-4xl font-bold text-white">Vicidial Nexus</h1>
+        <h1 className="text-4xl font-bold text-white">ViciFront Dialer</h1>
         <p className="text-lg text-slate-300">
           {isLoginView ? 'Login to your account' : 'Create a new account'}
         </p>
