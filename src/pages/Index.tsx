@@ -1,3 +1,4 @@
+
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { LayoutDashboard, UserCheck, FileText, LogIn, LogOut, Shield } from "lucide-react";
@@ -26,6 +27,13 @@ const Index = () => {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-slate-900 to-slate-700 text-white p-4">
       <div className="text-center mb-12">
+        <div className="mb-6">
+          <img 
+            src="https://images.unsplash.com/photo-1605810230434-7631ac76ec81?w=200&h=200&fit=crop&crop=center" 
+            alt="ViciFront Dialer Logo" 
+            className="h-24 w-24 mx-auto rounded-lg shadow-lg animate-fade-in"
+          />
+        </div>
         <h1 className="text-5xl font-bold mb-4 animate-fade-in">ViciFront Dialer</h1>
         <p className="text-xl text-slate-300 animate-fade-in animation-delay-300">
           Next-Gen Dialer
