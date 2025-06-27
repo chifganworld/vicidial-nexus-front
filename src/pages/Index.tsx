@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { LayoutDashboard, UserCheck, FileText, LogIn, LogOut, Shield } from "lucide-react";
+import { LayoutDashboard, UserCheck, FileText, LogIn, LogOut, Shield, Smartphone } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext"; // Import useAuth
 import { toast } from "@/components/ui/use-toast";
 import Footer from "@/components/layout/Footer";
@@ -27,11 +27,9 @@ const Index = () => {
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-slate-900 to-slate-700 text-white p-4">
       <div className="text-center mb-12">
         <div className="mb-6">
-          <img 
-            src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=200&h=200&fit=crop&crop=center" 
-            alt="ViciFront Dialer Phone Logo" 
-            className="h-24 w-24 mx-auto rounded-lg shadow-lg animate-fade-in"
-          />
+          <div className="h-24 w-24 mx-auto rounded-lg shadow-lg animate-fade-in bg-slate-800 flex items-center justify-center">
+            <Smartphone size={48} className="text-blue-400" />
+          </div>
         </div>
         <h1 className="text-5xl font-bold mb-4 animate-fade-in">ViciFront Dialer</h1>
         <p className="text-xl text-slate-300 animate-fade-in animation-delay-300">
